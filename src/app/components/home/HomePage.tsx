@@ -1,0 +1,86 @@
+import { Link } from 'react-router';
+import { ChevronRight } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import {
+  getFeaturedNovels,
+  getLatestNovels,
+  getPopularNovels,
+} from '../../data/api';
+import { GENRES } from '../../data/genres';
+import { useAsync } from '../../hooks/useAsync';
+import { useLocalized } from '../../hooks/useLocalized';
+import { NovelGrid } from '../NovelGrid';
+import { HeroCarousel } from './HeroCarousel';
+import { ContinueReading } from './ContinueReading';
+import { Badge } from '../ui/badge';
+
+function SectionHeader({ index, title, to }: { index: string; title: string; to?: string }) {
+  const { t } = useTranslation();
+  return (
+    <div className="mb-5 flex items-end justify-between gap-4 border-b border-border pb-3">
+      <div className="flex items-baseline gap-3">
+        <span
+          className="text-muted-foreground"
+          style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic', fontSize: '1rem' }}
+        >
+          {index}
+        </span>
+        <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '1.6rem', fontWeight: 600, lineHeight: 1.1 }}>
+          {title}
+        </h2>
+      </div>
+      {to && (
+        <Link
+          to={to}
+          className="group flex shrink-0 items-center gap-0.5 text-muted-foreground transition-colors hover:text-primary"
+          style={{ fontSize: '0.85rem' }}
+        >
+          {t('actions.viewAll')}
+          <ChevronRight className="size-4 transition-transform group-hover:translate-x-0.5" />
+        </Link>
+      )}
+    </div>
+  );
+}
+
+export function HomePage() {
+  const { t } = useTranslation();
+  const { t: tl } = useLocalized();
+  const { data: featured } = useAsync(getFeaturedNovels, [], []);
+  const { data: latest } = useAsync(() => getLatestNovels(12), [], []);
+  const { data: popular } = useAsync(() => getPopularNovels(12), [], []);
+
+  return (
+    <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8">
+      <HeroCarousel novels={featured} />
+
+      <ContinueReading />
+
+      <section className="mt-14">
+        <SectionHeader index="01" title={t('home.latest')} to="/browse?sort=latest" />
+        <NovelGrid novels={latest} />
+      </section>
+
+      <section className="mt-14">
+        <SectionHeader index="02" title={t('home.popular')} to="/browse?sort=popular" />
+        <NovelGrid novels={popular} />
+      </section>
+
+      <section className="mt-14">
+        <SectionHeader index="03" title={t('home.byGenre')} />
+        <div className="flex flex-wrap gap-2">
+          {GENRES.map((g) => (
+            <Link key={g.id} to={`/browse?genre=${g.id}`}>
+              <Badge
+                variant="outline"
+                className="cursor-pointer rounded-full px-4 py-2 transition-colors hover:border-primary hover:bg-accent hover:text-accent-foreground"
+              >
+                {tl(g.name)}
+              </Badge>
+            </Link>
+          ))}
+        </div>
+      </section>
+    </div>
+  );
+}

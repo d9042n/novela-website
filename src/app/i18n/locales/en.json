@@ -1,0 +1,128 @@
+{
+  "app": {
+    "name": "Novela",
+    "tagline": "Lose yourself in every page"
+  },
+  "nav": {
+    "home": "Home",
+    "browse": "Browse",
+    "search": "Search novels, authors...",
+    "searchShort": "Search"
+  },
+  "actions": {
+    "readNow": "Read now",
+    "readFromStart": "Read from start",
+    "continueReading": "Continue reading",
+    "viewAll": "View all",
+    "back": "Back",
+    "showMore": "Show more",
+    "showLess": "Show less",
+    "reset": "Reset",
+    "apply": "Apply"
+  },
+  "home": {
+    "featured": "Featured",
+    "latest": "Latest updates",
+    "popular": "Most popular",
+    "byGenre": "By genre",
+    "continueSection": "Continue reading"
+  },
+  "browse": {
+    "title": "Browse novels",
+    "allGenres": "All genres",
+    "sortBy": "Sort by",
+    "sort": {
+      "popular": "Popular",
+      "latest": "Latest",
+      "rating": "Top rated",
+      "title": "Title (A-Z)"
+    },
+    "resultsCount": "{{count}} novels",
+    "noResults": "No novels match your filters"
+  },
+  "novel": {
+    "author": "Author",
+    "status": "Status",
+    "genres": "Genres",
+    "chapters": "Chapters",
+    "views": "Views",
+    "rating": "Rating",
+    "updated": "Updated",
+    "description": "About",
+    "chapterList": "Chapters",
+    "info": "Info",
+    "filterChapter": "Filter chapters...",
+    "oldestFirst": "Oldest",
+    "newestFirst": "Newest",
+    "read": "Read",
+    "chapterCountLabel": "{{count}} chapters"
+  },
+  "status": {
+    "ongoing": "Ongoing",
+    "completed": "Completed",
+    "hiatus": "On hiatus"
+  },
+  "reader": {
+    "settings": "Reading settings",
+    "contents": "Contents",
+    "prevChapter": "Previous",
+    "nextChapter": "Next",
+    "jumpChapter": "Jump to chapter",
+    "font": "Font",
+    "fontSize": "Font size",
+    "lineHeight": "Line height",
+    "typography": "Typography",
+    "width": "Width",
+    "readerTheme": "Background",
+    "layout": "Layout",
+    "preview": "Preview",
+    "chapterOf": "Chapter {{index}} / {{total}}",
+    "themes": {
+      "light": "Light",
+      "sepia": "Sepia",
+      "dark": "Dark",
+      "oled": "Black"
+    },
+    "layouts": {
+      "scroll": "Scroll",
+      "paged": "Paged",
+      "wide": "Wide"
+    },
+    "fonts": {
+      "literata": "Literata",
+      "lora": "Lora",
+      "merriweather": "Merriweather",
+      "noto-serif": "Noto Serif",
+      "sans": "Be Vietnam Pro"
+    },
+    "widths": {
+      "narrow": "Narrow",
+      "normal": "Normal",
+      "wide": "Wide"
+    },
+    "previewSample": "The reader turns each page, drifting into the words beneath the gentle glow of the night."
+  },
+  "settings": {
+    "theme": "Theme",
+    "language": "Language",
+    "darkMode": "Dark mode",
+    "lightMode": "Light mode",
+    "siteThemes": {
+      "modern": "Modern",
+      "minimal": "Minimal",
+      "glass": "Glass (Neon)"
+    },
+    "layout": "Layout",
+    "layouts": {
+      "comfortable": "Comfortable grid",
+      "compact": "Compact grid",
+      "list": "List"
+    }
+  },
+  "common": {
+    "views": "views",
+    "notFound": "Not found",
+    "notFoundDesc": "The content you are looking for does not exist.",
+    "loading": "Loading..."
+  }
+}

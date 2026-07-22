@@ -1,0 +1,128 @@
+{
+  "app": {
+    "name": "Novela",
+    "tagline": "Đắm chìm trong từng trang truyện"
+  },
+  "nav": {
+    "home": "Trang chủ",
+    "browse": "Duyệt truyện",
+    "search": "Tìm truyện, tác giả...",
+    "searchShort": "Tìm kiếm"
+  },
+  "actions": {
+    "readNow": "Đọc ngay",
+    "readFromStart": "Đọc từ đầu",
+    "continueReading": "Đọc tiếp",
+    "viewAll": "Xem tất cả",
+    "back": "Quay lại",
+    "showMore": "Xem thêm",
+    "showLess": "Thu gọn",
+    "reset": "Đặt lại",
+    "apply": "Áp dụng"
+  },
+  "home": {
+    "featured": "Nổi bật",
+    "latest": "Mới cập nhật",
+    "popular": "Xem nhiều nhất",
+    "byGenre": "Theo thể loại",
+    "continueSection": "Đang đọc dở"
+  },
+  "browse": {
+    "title": "Duyệt truyện",
+    "allGenres": "Tất cả thể loại",
+    "sortBy": "Sắp xếp",
+    "sort": {
+      "popular": "Phổ biến",
+      "latest": "Mới nhất",
+      "rating": "Đánh giá cao",
+      "title": "Theo tên (A-Z)"
+    },
+    "resultsCount": "{{count}} truyện",
+    "noResults": "Không tìm thấy truyện phù hợp"
+  },
+  "novel": {
+    "author": "Tác giả",
+    "status": "Trạng thái",
+    "genres": "Thể loại",
+    "chapters": "Chương",
+    "views": "Lượt xem",
+    "rating": "Đánh giá",
+    "updated": "Cập nhật",
+    "description": "Giới thiệu",
+    "chapterList": "Danh sách chương",
+    "info": "Thông tin",
+    "filterChapter": "Lọc chương...",
+    "oldestFirst": "Cũ nhất",
+    "newestFirst": "Mới nhất",
+    "read": "Đã đọc",
+    "chapterCountLabel": "{{count}} chương"
+  },
+  "status": {
+    "ongoing": "Đang ra",
+    "completed": "Hoàn thành",
+    "hiatus": "Tạm ngưng"
+  },
+  "reader": {
+    "settings": "Tùy chỉnh đọc",
+    "contents": "Mục lục",
+    "prevChapter": "Chương trước",
+    "nextChapter": "Chương sau",
+    "jumpChapter": "Chọn chương",
+    "font": "Phông chữ",
+    "fontSize": "Cỡ chữ",
+    "lineHeight": "Giãn dòng",
+    "typography": "Chữ & khoảng cách",
+    "width": "Độ rộng",
+    "readerTheme": "Nền đọc",
+    "layout": "Bố cục",
+    "preview": "Xem trước",
+    "chapterOf": "Chương {{index}} / {{total}}",
+    "themes": {
+      "light": "Sáng",
+      "sepia": "Sepia",
+      "dark": "Tối",
+      "oled": "Đen tuyền"
+    },
+    "layouts": {
+      "scroll": "Cuộn",
+      "paged": "Lật trang",
+      "wide": "Rộng"
+    },
+    "fonts": {
+      "literata": "Literata",
+      "lora": "Lora",
+      "merriweather": "Merriweather",
+      "noto-serif": "Noto Serif",
+      "sans": "Be Vietnam Pro"
+    },
+    "widths": {
+      "narrow": "Hẹp",
+      "normal": "Vừa",
+      "wide": "Rộng"
+    },
+    "previewSample": "Người đọc lật giở từng trang, thả hồn vào câu chữ dưới ánh đèn dịu êm của màn đêm."
+  },
+  "settings": {
+    "theme": "Giao diện",
+    "language": "Ngôn ngữ",
+    "darkMode": "Chế độ tối",
+    "lightMode": "Chế độ sáng",
+    "siteThemes": {
+      "modern": "Hiện đại",
+      "minimal": "Tối giản",
+      "glass": "Kính (Neon)"
+    },
+    "layout": "Bố cục",
+    "layouts": {
+      "comfortable": "Lưới thoáng",
+      "compact": "Lưới gọn",
+      "list": "Danh sách"
+    }
+  },
+  "common": {
+    "views": "lượt xem",
+    "notFound": "Không tìm thấy",
+    "notFoundDesc": "Nội dung bạn tìm không tồn tại.",
+    "loading": "Đang tải..."
+  }
+}
