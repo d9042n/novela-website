@@ -2,6 +2,9 @@
 
 :root {
   --font-size: 16px;
+  --font-display: "Dosis", "Outfit", sans-serif;
+  --font-body: "Nunito", "DM Sans", sans-serif;
+
   --background: #ffffff;
   --foreground: oklch(0.145 0 0);
   --card: #ffffff;
@@ -39,6 +42,57 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+
+  /* Extended Base theme variables */
+  --bg-base: #ffffff;
+  --bg-card: #ffffff;
+  --bg-card-alt: #f8fafc;
+  --bg-input: #f1f5f9;
+  --bg-glass: rgba(255, 255, 255, 0.75);
+  --bg-secondary: #f8fafc;
+  --bg-elevated: #ffffff;
+
+  --accent-brand: #4f46e5;
+  --accent-brand-hover: #4338ca;
+  --accent-highlight: #f59e0b;
+  --accent-link: #38bdf8;
+  --accent-cyan: #06b6d4;
+
+  --text-primary: #0f172a;
+  --text-body: #334155;
+  --text-muted: #64748b;
+  --text-on-accent: #ffffff;
+  --text-inverse: #ffffff;
+  --text-secondary: #475569;
+
+  --border-hover: #4f46e5;
+
+  --overlay-subtle: rgba(0, 0, 0, 0.05);
+  --overlay-border: rgba(0, 0, 0, 0.1);
+  --overlay-hover: rgba(0, 0, 0, 0.15);
+  --overlay-active: rgba(0, 0, 0, 0.2);
+
+  --overlay-bg-subtle: rgba(255, 255, 255, 0.2);
+  --overlay-bg-card: rgba(255, 255, 255, 0.3);
+  --overlay-bg-input: rgba(255, 255, 255, 0.4);
+  --overlay-bg-deep: rgba(255, 255, 255, 0.5);
+  --overlay-strong: rgba(0, 0, 0, 0.6);
+
+  --accent-match: #22c55e;
+  --accent-amber: #f59e0b;
+  --accent-crimson: #e11d48;
+  --accent-lime: #84cc16;
+  --accent-purple: #a855f7;
+
+  --status-success: #22c55e;
+  --status-warning: #f59e0b;
+  --status-error: #ef4444;
+  --status-info: #3b82f6;
+
+  --genre-action: #f5b50a;
+  --genre-comedy: #a6bb16;
+  --genre-scifi: #1692bb;
+  --genre-adventure: #ec5a1a;
 }
 
 .dark {
@@ -76,9 +130,36 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(0.269 0 0);
   --sidebar-ring: oklch(0.439 0 0);
+
+  /* Extended Dark theme variables */
+  --bg-base: #020617;
+  --bg-card: #0f172a;
+  --bg-card-alt: #1e293b;
+  --bg-input: #334155;
+  --bg-glass: rgba(2, 6, 23, 0.75);
+  --bg-secondary: #0f172a;
+  --bg-elevated: #1e293b;
+
+  --accent-brand: #e11d48;
+  --accent-brand-hover: #be123c;
+  --accent-highlight: #f59e0b;
+  --accent-link: #38bdf8;
+  --accent-cyan: #06b6d4;
+
+  --text-primary: #f1f5f9;
+  --text-body: #abb7c4;
+  --text-muted: #a0aec0;
+  --text-on-accent: #020617;
+  --text-inverse: #ffffff;
+  --text-secondary: #abb7c4;
+
+  --border-hover: #f59e0b;
 }
 
 @theme inline {
+  --font-display: var(--font-display);
+  --font-body: var(--font-body);
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -117,6 +198,57 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+
+  /* Extended Theme Color tokens */
+  --color-bg-base: var(--bg-base);
+  --color-bg-card: var(--bg-card);
+  --color-bg-card-alt: var(--bg-card-alt);
+  --color-bg-input: var(--bg-input);
+  --color-bg-glass: var(--bg-glass);
+  --color-bg-secondary: var(--bg-secondary);
+  --color-bg-elevated: var(--bg-elevated);
+
+  --color-accent-brand: var(--accent-brand);
+  --color-accent-brand-hover: var(--accent-brand-hover);
+  --color-accent-highlight: var(--accent-highlight);
+  --color-accent-link: var(--accent-link);
+  --color-accent-cyan: var(--accent-cyan);
+
+  --color-text-primary: var(--text-primary);
+  --color-text-body: var(--text-body);
+  --color-text-muted: var(--text-muted);
+  --color-text-on-accent: var(--text-on-accent);
+  --color-text-inverse: var(--text-inverse);
+  --color-text-secondary: var(--text-secondary);
+
+  --color-border-hover: var(--border-hover);
+
+  --color-overlay-subtle: var(--overlay-subtle);
+  --color-overlay-border: var(--overlay-border);
+  --color-overlay-hover: var(--overlay-hover);
+  --color-overlay-active: var(--overlay-active);
+
+  --color-overlay-bg-subtle: var(--overlay-bg-subtle);
+  --color-overlay-bg-card: var(--overlay-bg-card);
+  --color-overlay-bg-input: var(--overlay-bg-input);
+  --color-overlay-bg-deep: var(--overlay-bg-deep);
+  --color-overlay-strong: var(--overlay-strong);
+
+  --color-accent-match: var(--accent-match);
+  --color-accent-amber: var(--accent-amber);
+  --color-accent-crimson: var(--accent-crimson);
+  --color-accent-lime: var(--accent-lime);
+  --color-accent-purple: var(--accent-purple);
+
+  --color-status-success: var(--status-success);
+  --color-status-warning: var(--status-warning);
+  --color-status-error: var(--status-error);
+  --color-status-info: var(--status-info);
+
+  --color-genre-action: var(--genre-action);
+  --color-genre-comedy: var(--genre-comedy);
+  --color-genre-scifi: var(--genre-scifi);
+  --color-genre-adventure: var(--genre-adventure);
 }
 
 /* =========================================================================
@@ -145,6 +277,29 @@
   --input-background: #f7f8fa;
   --ring: #4f46e5;
   --sidebar: #f7f8fa;
+
+  --bg-base: #ffffff;
+  --bg-card: #ffffff;
+  --bg-card-alt: #f7f8fa;
+  --bg-input: #f1f3f6;
+  --bg-glass: rgba(255, 255, 255, 0.85);
+  --bg-secondary: #f7f8fa;
+  --bg-elevated: #ffffff;
+
+  --accent-brand: #4f46e5;
+  --accent-brand-hover: #4338ca;
+  --accent-highlight: #f59e0b;
+  --accent-link: #38bdf8;
+  --accent-cyan: #06b6d4;
+
+  --text-primary: #0f1115;
+  --text-body: #374151;
+  --text-muted: #6b7280;
+  --text-on-accent: #ffffff;
+  --text-inverse: #ffffff;
+  --text-secondary: #4b5563;
+
+  --border-hover: #4f46e5;
 }
 [data-site-theme='modern'].dark {
   --background: #0b0d12;
@@ -166,6 +321,29 @@
   --input-background: #151922;
   --ring: #818cf8;
   --sidebar: #151922;
+
+  --bg-base: #0b0d12;
+  --bg-card: #151922;
+  --bg-card-alt: #1b202b;
+  --bg-input: #1b202b;
+  --bg-glass: rgba(11, 13, 18, 0.85);
+  --bg-secondary: #1b202b;
+  --bg-elevated: #151922;
+
+  --accent-brand: #818cf8;
+  --accent-brand-hover: #6366f1;
+  --accent-highlight: #f59e0b;
+  --accent-link: #38bdf8;
+  --accent-cyan: #06b6d4;
+
+  --text-primary: #f5f6f8;
+  --text-body: #cbd5e1;
+  --text-muted: #9aa3b2;
+  --text-on-accent: #0b0d12;
+  --text-inverse: #ffffff;
+  --text-secondary: #cbd5e1;
+
+  --border-hover: #818cf8;
 }
 
 /* --- 2. MINIMALISTIC (near-monochrome) --- */
@@ -190,6 +368,29 @@
   --ring: #171717;
   --radius: 0.375rem;
   --sidebar: #fafafa;
+
+  --bg-base: #ffffff;
+  --bg-card: #ffffff;
+  --bg-card-alt: #fafafa;
+  --bg-input: #f5f5f5;
+  --bg-glass: rgba(255, 255, 255, 0.9);
+  --bg-secondary: #fafafa;
+  --bg-elevated: #ffffff;
+
+  --accent-brand: #111111;
+  --accent-brand-hover: #262626;
+  --accent-highlight: #d97706;
+  --accent-link: #0284c7;
+  --accent-cyan: #0891b2;
+
+  --text-primary: #171717;
+  --text-body: #404040;
+  --text-muted: #737373;
+  --text-on-accent: #ffffff;
+  --text-inverse: #ffffff;
+  --text-secondary: #525252;
+
+  --border-hover: #171717;
 }
 [data-site-theme='minimal'].dark {
   --background: #0a0a0a;
@@ -211,10 +412,76 @@
   --input-background: #111111;
   --ring: #fafafa;
   --sidebar: #111111;
+
+  --bg-base: #0a0a0a;
+  --bg-card: #111111;
+  --bg-card-alt: #141414;
+  --bg-input: #1a1a1a;
+  --bg-glass: rgba(10, 10, 10, 0.9);
+  --bg-secondary: #141414;
+  --bg-elevated: #111111;
+
+  --accent-brand: #fafafa;
+  --accent-brand-hover: #e5e5e5;
+  --accent-highlight: #f59e0b;
+  --accent-link: #38bdf8;
+  --accent-cyan: #06b6d4;
+
+  --text-primary: #ededed;
+  --text-body: #a3a3a3;
+  --text-muted: #8a8a8a;
+  --text-on-accent: #0a0a0a;
+  --text-inverse: #ffffff;
+  --text-secondary: #a3a3a3;
+
+  --border-hover: #fafafa;
 }
 
-/* --- 3. GLASSMORPHISM (NEON) — base tối, glass surface + neon accent --- */
-[data-site-theme='glass'],
+/* --- 3. GLASSMORPHISM (NEON) --- */
+[data-site-theme='glass'] {
+  --background: #f8fafc;
+  --foreground: #0f172a;
+  --card: rgba(255, 255, 255, 0.7);
+  --card-foreground: #0f172a;
+  --popover: #ffffff;
+  --popover-foreground: #0f172a;
+  --primary: #0284c7;
+  --primary-foreground: #ffffff;
+  --secondary: rgba(0, 0, 0, 0.04);
+  --secondary-foreground: #0f172a;
+  --muted: rgba(0, 0, 0, 0.03);
+  --muted-foreground: #64748b;
+  --accent: rgba(124, 58, 237, 0.08);
+  --accent-foreground: #6d28d9;
+  --border: rgba(0, 0, 0, 0.1);
+  --input: rgba(0, 0, 0, 0.04);
+  --input-background: rgba(255, 255, 255, 0.6);
+  --ring: #0284c7;
+  --sidebar: rgba(255, 255, 255, 0.7);
+
+  --bg-base: #f8fafc;
+  --bg-card: rgba(255, 255, 255, 0.7);
+  --bg-card-alt: rgba(241, 245, 249, 0.8);
+  --bg-input: rgba(255, 255, 255, 0.6);
+  --bg-glass: rgba(255, 255, 255, 0.7);
+  --bg-secondary: rgba(241, 245, 249, 0.8);
+  --bg-elevated: #ffffff;
+
+  --accent-brand: #0284c7;
+  --accent-brand-hover: #0369a1;
+  --accent-highlight: #f59e0b;
+  --accent-link: #0284c7;
+  --accent-cyan: #0891b2;
+
+  --text-primary: #0f172a;
+  --text-body: #334155;
+  --text-muted: #64748b;
+  --text-on-accent: #ffffff;
+  --text-inverse: #ffffff;
+  --text-secondary: #475569;
+
+  --border-hover: #0284c7;
+}
 [data-site-theme='glass'].dark {
   --background: #0a0a12;
   --foreground: #f0f4ff;
@@ -237,10 +504,593 @@
   --input-background: rgba(255, 255, 255, 0.05);
   --ring: #00f8f1;
   --sidebar: rgba(255, 255, 255, 0.05);
-  /* neon tokens dùng riêng */
   --neon-cyan: #00f8f1;
   --neon-magenta: #ff00ff;
   --neon-purple: #b388ff;
+
+  --bg-base: #0a0a12;
+  --bg-card: rgba(255, 255, 255, 0.05);
+  --bg-card-alt: rgba(255, 255, 255, 0.08);
+  --bg-input: rgba(255, 255, 255, 0.06);
+  --bg-glass: rgba(10, 10, 18, 0.75);
+  --bg-secondary: rgba(255, 255, 255, 0.06);
+  --bg-elevated: #12101f;
+
+  --accent-brand: #00f8f1;
+  --accent-brand-hover: #00d2cb;
+  --accent-highlight: #ff00ff;
+  --accent-link: #00f8f1;
+  --accent-cyan: #00f8f1;
+
+  --text-primary: #f0f4ff;
+  --text-body: #cbd5e1;
+  --text-muted: #9fb0d0;
+  --text-on-accent: #06121a;
+  --text-inverse: #ffffff;
+  --text-secondary: #cbd5e1;
+
+  --border-hover: #00f8f1;
+}
+
+/* --- 4. SAPPHIRE NIGHT THEME --- */
+[data-site-theme="sapphire"] {
+  --bg-base: #f0f7ff;
+  --bg-card: #ffffff;
+  --bg-card-alt: #e0f2fe;
+  --bg-input: #f0f9ff;
+  --bg-glass: rgba(240, 247, 255, 0.85);
+  --bg-secondary: #e0f2fe;
+  --bg-elevated: #ffffff;
+
+  --accent-brand: #2563eb;
+  --accent-brand-rgb: 37, 99, 235;
+  --accent-brand-hover: #1d4ed8;
+  --accent-highlight: #6366f1;
+  --accent-highlight-rgb: 99, 102, 241;
+  --accent-link: #0284c7;
+  --accent-cyan: #0891b2;
+
+  --text-primary: #0f172a;
+  --text-body: #334155;
+  --text-muted: #64748b;
+  --text-on-accent: #ffffff;
+  --text-inverse: #ffffff;
+  --text-secondary: #475569;
+
+  --border: #bae6fd;
+  --border-hover: #2563eb;
+
+  --overlay-subtle: rgba(37, 99, 235, 0.05);
+  --overlay-border: rgba(37, 99, 235, 0.12);
+  --overlay-hover: rgba(37, 99, 235, 0.2);
+  --overlay-active: rgba(37, 99, 235, 0.3);
+
+  --overlay-bg-subtle: rgba(255, 255, 255, 0.5);
+  --overlay-bg-card: rgba(255, 255, 255, 0.7);
+  --overlay-bg-input: rgba(255, 255, 255, 0.8);
+  --overlay-bg-deep: rgba(255, 255, 255, 0.9);
+
+  --status-success: #16a34a;
+  --status-warning: #d97706;
+  --status-error: #dc2626;
+  --status-info: #2563eb;
+
+  --accent-match: #16a34a;
+  --accent-amber: #d97706;
+  --accent-crimson: #dc2626;
+  --accent-lime: #65a30d;
+  --accent-purple: #7c3aed;
+
+  /* Novela UI tokens bridge */
+  --background: #f0f7ff;
+  --foreground: #0f172a;
+  --card: #ffffff;
+  --card-foreground: #0f172a;
+  --popover: #ffffff;
+  --popover-foreground: #0f172a;
+  --primary: #2563eb;
+  --primary-foreground: #ffffff;
+  --secondary: #e0f2fe;
+  --secondary-foreground: #0f172a;
+  --muted: #e0f2fe;
+  --muted-foreground: #64748b;
+  --accent: #e0f2fe;
+  --accent-foreground: #2563eb;
+  --input: #f0f9ff;
+  --input-background: #ffffff;
+  --ring: #2563eb;
+  --sidebar: #ffffff;
+}
+[data-site-theme="sapphire"].dark {
+  --bg-base: #020617;
+  --bg-card: #0c1a3a;
+  --bg-card-alt: #1e3a5f;
+  --bg-input: #1e40af;
+  --bg-glass: rgba(4, 13, 33, 0.75);
+  --bg-secondary: #0c1a3a;
+  --bg-elevated: #1e3a5f;
+
+  --accent-brand: #3b82f6;
+  --accent-brand-rgb: 59, 130, 246;
+  --accent-brand-hover: #2563eb;
+  --accent-highlight: #818cf8;
+  --accent-highlight-rgb: 129, 140, 248;
+  --accent-link: #67e8f9;
+  --accent-cyan: #22d3ee;
+
+  --text-primary: #e0e7ff;
+  --text-body: #94a3b8;
+  --text-muted: #64748b;
+  --text-on-accent: #ffffff;
+  --text-inverse: #ffffff;
+  --text-secondary: #94a3b8;
+
+  --border: #1e3a5f;
+  --border-hover: #818cf8;
+
+  --overlay-subtle: rgba(99, 102, 241, 0.05);
+  --overlay-border: rgba(99, 102, 241, 0.12);
+  --overlay-hover: rgba(99, 102, 241, 0.2);
+  --overlay-active: rgba(99, 102, 241, 0.3);
+
+  --overlay-bg-subtle: rgba(0, 0, 0, 0.2);
+  --overlay-bg-card: rgba(0, 0, 0, 0.3);
+  --overlay-bg-input: rgba(0, 0, 0, 0.4);
+  --overlay-bg-deep: rgba(0, 0, 0, 0.5);
+
+  --status-success: #34d399;
+  --status-warning: #fbbf24;
+  --status-error: #f87171;
+  --status-info: #60a5fa;
+
+  --accent-match: #34d399;
+  --accent-amber: #fbbf24;
+  --accent-crimson: #f87171;
+  --accent-lime: #a3e635;
+  --accent-purple: #a78bfa;
+
+  /* Novela UI tokens bridge */
+  --background: #020617;
+  --foreground: #e0e7ff;
+  --card: #0c1a3a;
+  --card-foreground: #e0e7ff;
+  --popover: #0c1a3a;
+  --popover-foreground: #e0e7ff;
+  --primary: #3b82f6;
+  --primary-foreground: #ffffff;
+  --secondary: #1e3a5f;
+  --secondary-foreground: #e0e7ff;
+  --muted: #1e3a5f;
+  --muted-foreground: #64748b;
+  --accent: #1e3a5f;
+  --accent-foreground: #818cf8;
+  --input: #1e40af;
+  --input-background: #1e3a5f;
+  --ring: #818cf8;
+  --sidebar: #0c1a3a;
+}
+
+/* --- 5. EMERALD NIGHT THEME --- */
+[data-site-theme="emerald"] {
+  --bg-base: #f0fdf4;
+  --bg-card: #ffffff;
+  --bg-card-alt: #dcfce7;
+  --bg-input: #f0fdf4;
+  --bg-glass: rgba(240, 253, 244, 0.85);
+  --bg-secondary: #dcfce7;
+  --bg-elevated: #ffffff;
+
+  --accent-brand: #059669;
+  --accent-brand-rgb: 5, 150, 105;
+  --accent-brand-hover: #047857;
+  --accent-highlight: #d97706;
+  --accent-highlight-rgb: 217, 119, 6;
+  --accent-link: #059669;
+  --accent-cyan: #0d9488;
+
+  --text-primary: #064e3b;
+  --text-body: #166534;
+  --text-muted: #374151;
+  --text-on-accent: #ffffff;
+  --text-inverse: #ffffff;
+  --text-secondary: #166534;
+
+  --border: #a7f3d0;
+  --border-hover: #059669;
+
+  --overlay-subtle: rgba(5, 150, 105, 0.05);
+  --overlay-border: rgba(5, 150, 105, 0.12);
+  --overlay-hover: rgba(5, 150, 105, 0.2);
+  --overlay-active: rgba(5, 150, 105, 0.3);
+
+  --overlay-bg-subtle: rgba(255, 255, 255, 0.5);
+  --overlay-bg-card: rgba(255, 255, 255, 0.7);
+  --overlay-bg-input: rgba(255, 255, 255, 0.8);
+  --overlay-bg-deep: rgba(255, 255, 255, 0.9);
+
+  --status-success: #16a34a;
+  --status-warning: #d97706;
+  --status-error: #dc2626;
+  --status-info: #0284c7;
+
+  --accent-match: #16a34a;
+  --accent-amber: #d97706;
+  --accent-crimson: #dc2626;
+  --accent-lime: #65a30d;
+  --accent-purple: #7c3aed;
+
+  /* Novela UI tokens bridge */
+  --background: #f0fdf4;
+  --foreground: #064e3b;
+  --card: #ffffff;
+  --card-foreground: #064e3b;
+  --popover: #ffffff;
+  --popover-foreground: #064e3b;
+  --primary: #059669;
+  --primary-foreground: #ffffff;
+  --secondary: #dcfce7;
+  --secondary-foreground: #064e3b;
+  --muted: #dcfce7;
+  --muted-foreground: #374151;
+  --accent: #dcfce7;
+  --accent-foreground: #059669;
+  --input: #f0fdf4;
+  --input-background: #ffffff;
+  --ring: #059669;
+  --sidebar: #ffffff;
+}
+[data-site-theme="emerald"].dark {
+  --bg-base: #022c22;
+  --bg-card: #064e3b;
+  --bg-card-alt: #065f46;
+  --bg-input: #047857;
+  --bg-glass: rgba(2, 44, 34, 0.75);
+  --bg-secondary: #064e3b;
+  --bg-elevated: #065f46;
+
+  --accent-brand: #10b981;
+  --accent-brand-rgb: 16, 185, 129;
+  --accent-brand-hover: #059669;
+  --accent-highlight: #fbbf24;
+  --accent-highlight-rgb: 251, 191, 36;
+  --accent-link: #6ee7b7;
+  --accent-cyan: #2dd4bf;
+
+  --text-primary: #ecfdf5;
+  --text-body: #a7f3d0;
+  --text-muted: #6ee7b7;
+  --text-on-accent: #022c22;
+  --text-inverse: #ffffff;
+  --text-secondary: #a7f3d0;
+
+  --border: #065f46;
+  --border-hover: #fbbf24;
+
+  --overlay-subtle: rgba(16, 185, 129, 0.05);
+  --overlay-border: rgba(16, 185, 129, 0.12);
+  --overlay-hover: rgba(16, 185, 129, 0.2);
+  --overlay-active: rgba(16, 185, 129, 0.3);
+
+  --overlay-bg-subtle: rgba(0, 0, 0, 0.2);
+  --overlay-bg-card: rgba(0, 0, 0, 0.3);
+  --overlay-bg-input: rgba(0, 0, 0, 0.4);
+  --overlay-bg-deep: rgba(0, 0, 0, 0.5);
+
+  --status-success: #4ade80;
+  --status-warning: #fbbf24;
+  --status-error: #f87171;
+  --status-info: #38bdf8;
+
+  --accent-match: #4ade80;
+  --accent-amber: #fbbf24;
+  --accent-crimson: #f87171;
+  --accent-lime: #a3e635;
+  --accent-purple: #c084fc;
+
+  /* Novela UI tokens bridge */
+  --background: #022c22;
+  --foreground: #ecfdf5;
+  --card: #064e3b;
+  --card-foreground: #ecfdf5;
+  --popover: #064e3b;
+  --popover-foreground: #ecfdf5;
+  --primary: #10b981;
+  --primary-foreground: #022c22;
+  --secondary: #065f46;
+  --secondary-foreground: #ecfdf5;
+  --muted: #065f46;
+  --muted-foreground: #6ee7b7;
+  --accent: #065f46;
+  --accent-foreground: #fbbf24;
+  --border: #065f46;
+  --input: #047857;
+  --input-background: #065f46;
+  --ring: #fbbf24;
+  --sidebar: #064e3b;
+}
+
+/* --- 6. CRIMSON VELVET THEME --- */
+[data-site-theme="velvet"] {
+  --bg-base: #fff1f2;
+  --bg-card: #ffffff;
+  --bg-card-alt: #ffe4e6;
+  --bg-input: #fff1f2;
+  --bg-glass: rgba(255, 241, 242, 0.85);
+  --bg-secondary: #ffe4e6;
+  --bg-elevated: #ffffff;
+
+  --accent-brand: #e11d48;
+  --accent-brand-rgb: 225, 29, 72;
+  --accent-brand-hover: #be123c;
+  --accent-highlight: #d97706;
+  --accent-highlight-rgb: 217, 119, 6;
+  --accent-link: #7c3aed;
+  --accent-cyan: #db2777;
+
+  --text-primary: #4c0519;
+  --text-body: #881337;
+  --text-muted: #9f1239;
+  --text-on-accent: #ffffff;
+  --text-inverse: #ffffff;
+  --text-secondary: #881337;
+
+  --border: #fecdd3;
+  --border-hover: #e11d48;
+
+  --overlay-subtle: rgba(225, 29, 72, 0.05);
+  --overlay-border: rgba(225, 29, 72, 0.12);
+  --overlay-hover: rgba(225, 29, 72, 0.2);
+  --overlay-active: rgba(225, 29, 72, 0.3);
+
+  --overlay-bg-subtle: rgba(255, 255, 255, 0.5);
+  --overlay-bg-card: rgba(255, 255, 255, 0.7);
+  --overlay-bg-input: rgba(255, 255, 255, 0.8);
+  --overlay-bg-deep: rgba(255, 255, 255, 0.9);
+
+  --status-success: #16a34a;
+  --status-warning: #d97706;
+  --status-error: #e11d48;
+  --status-info: #7c3aed;
+
+  --accent-match: #16a34a;
+  --accent-amber: #d97706;
+  --accent-crimson: #e11d48;
+  --accent-lime: #65a30d;
+  --accent-purple: #7c3aed;
+
+  /* Novela UI tokens bridge */
+  --background: #fff1f2;
+  --foreground: #4c0519;
+  --card: #ffffff;
+  --card-foreground: #4c0519;
+  --popover: #ffffff;
+  --popover-foreground: #4c0519;
+  --primary: #e11d48;
+  --primary-foreground: #ffffff;
+  --secondary: #ffe4e6;
+  --secondary-foreground: #4c0519;
+  --muted: #ffe4e6;
+  --muted-foreground: #9f1239;
+  --accent: #ffe4e6;
+  --accent-foreground: #e11d48;
+  --input: #fff1f2;
+  --input-background: #ffffff;
+  --ring: #e11d48;
+  --sidebar: #ffffff;
+}
+[data-site-theme="velvet"].dark {
+  --bg-base: #1c1917;
+  --bg-card: #292524;
+  --bg-card-alt: #44403c;
+  --bg-input: #57534e;
+  --bg-glass: rgba(28, 25, 23, 0.75);
+  --bg-secondary: #292524;
+  --bg-elevated: #44403c;
+
+  --accent-brand: #fb7185;
+  --accent-brand-rgb: 251, 113, 133;
+  --accent-brand-hover: #f43f5e;
+  --accent-highlight: #fcd34d;
+  --accent-highlight-rgb: 252, 211, 77;
+  --accent-link: #c4b5fd;
+  --accent-cyan: #f472b6;
+
+  --text-primary: #fafaf9;
+  --text-body: #d6d3d1;
+  --text-muted: #a8a29e;
+  --text-on-accent: #1c1917;
+  --text-inverse: #ffffff;
+  --text-secondary: #d6d3d1;
+
+  --border: #57534e;
+  --border-hover: #fcd34d;
+
+  --overlay-subtle: rgba(251, 113, 133, 0.05);
+  --overlay-border: rgba(251, 113, 133, 0.12);
+  --overlay-hover: rgba(251, 113, 133, 0.2);
+  --overlay-active: rgba(251, 113, 133, 0.3);
+
+  --overlay-bg-subtle: rgba(0, 0, 0, 0.2);
+  --overlay-bg-card: rgba(0, 0, 0, 0.3);
+  --overlay-bg-input: rgba(0, 0, 0, 0.4);
+  --overlay-bg-deep: rgba(0, 0, 0, 0.5);
+
+  --status-success: #4ade80;
+  --status-warning: #fcd34d;
+  --status-error: #fb7185;
+  --status-info: #a78bfa;
+
+  --accent-match: #4ade80;
+  --accent-amber: #fcd34d;
+  --accent-crimson: #fb7185;
+  --accent-lime: #a3e635;
+  --accent-purple: #c084fc;
+
+  /* Novela UI tokens bridge */
+  --background: #1c1917;
+  --foreground: #fafaf9;
+  --card: #292524;
+  --card-foreground: #fafaf9;
+  --popover: #292524;
+  --popover-foreground: #fafaf9;
+  --primary: #fb7185;
+  --primary-foreground: #1c1917;
+  --secondary: #44403c;
+  --secondary-foreground: #fafaf9;
+  --muted: #44403c;
+  --muted-foreground: #a8a29e;
+  --accent: #44403c;
+  --accent-foreground: #fcd34d;
+  --border: #57534e;
+  --input: #57534e;
+  --input-background: #44403c;
+  --ring: #fcd34d;
+  --sidebar: #292524;
+}
+
+/* --- 7. AMETHYST NIGHT THEME --- */
+[data-site-theme="amethyst"] {
+  --bg-base: #f5f3ff;
+  --bg-card: #ffffff;
+  --bg-card-alt: #ede9fe;
+  --bg-input: #f5f3ff;
+  --bg-glass: rgba(245, 243, 255, 0.85);
+  --bg-secondary: #ede9fe;
+  --bg-elevated: #ffffff;
+
+  --accent-brand: #7c3aed;
+  --accent-brand-rgb: 124, 58, 237;
+  --accent-brand-hover: #6d28d9;
+  --accent-highlight: #c026d3;
+  --accent-highlight-rgb: 192, 38, 211;
+  --accent-link: #6d28d9;
+  --accent-cyan: #d946ef;
+
+  --text-primary: #2e1065;
+  --text-body: #5b21b6;
+  --text-muted: #6b7280;
+  --text-on-accent: #ffffff;
+  --text-inverse: #ffffff;
+  --text-secondary: #5b21b6;
+
+  --border: #ddd6fe;
+  --border-hover: #7c3aed;
+
+  --overlay-subtle: rgba(124, 58, 237, 0.05);
+  --overlay-border: rgba(124, 58, 237, 0.12);
+  --overlay-hover: rgba(124, 58, 237, 0.2);
+  --overlay-active: rgba(124, 58, 237, 0.3);
+
+  --overlay-bg-subtle: rgba(255, 255, 255, 0.5);
+  --overlay-bg-card: rgba(255, 255, 255, 0.7);
+  --overlay-bg-input: rgba(255, 255, 255, 0.8);
+  --overlay-bg-deep: rgba(255, 255, 255, 0.9);
+
+  --status-success: #16a34a;
+  --status-warning: #d97706;
+  --status-error: #dc2626;
+  --status-info: #7c3aed;
+
+  --accent-match: #16a34a;
+  --accent-amber: #d97706;
+  --accent-crimson: #dc2626;
+  --accent-lime: #65a30d;
+  --accent-purple: #7c3aed;
+
+  /* Novela UI tokens bridge */
+  --background: #f5f3ff;
+  --foreground: #2e1065;
+  --card: #ffffff;
+  --card-foreground: #2e1065;
+  --popover: #ffffff;
+  --popover-foreground: #2e1065;
+  --primary: #7c3aed;
+  --primary-foreground: #ffffff;
+  --secondary: #ede9fe;
+  --secondary-foreground: #2e1065;
+  --muted: #ede9fe;
+  --muted-foreground: #6b7280;
+  --accent: #ede9fe;
+  --accent-foreground: #7c3aed;
+  --input: #f5f3ff;
+  --input-background: #ffffff;
+  --ring: #7c3aed;
+  --sidebar: #ffffff;
+}
+[data-site-theme="amethyst"].dark {
+  --bg-base: #13111C;
+  --bg-card: #1E1A2E;
+  --bg-card-alt: #2A2540;
+  --bg-input: #352F4A;
+  --bg-glass: rgba(19, 17, 28, 0.75);
+  --bg-secondary: #1E1A2E;
+  --bg-elevated: #2A2540;
+
+  --accent-brand: #7C3AED;
+  --accent-brand-rgb: 124, 58, 237;
+  --accent-brand-hover: #6D28D9;
+  --accent-highlight: #C026D3;
+  --accent-highlight-rgb: 192, 38, 211;
+  --accent-link: #C4B5FD;
+  --accent-cyan: #E879F9;
+
+  --text-primary: #F5F3FF;
+  --text-body: #DDD6FE;
+  --text-muted: #A09ABC;
+  --text-on-accent: #ffffff;
+  --text-inverse: #ffffff;
+  --text-secondary: #DDD6FE;
+
+  --border: #3B3555;
+  --border-hover: #C084FC;
+
+  --overlay-subtle: rgba(124, 58, 237, 0.06);
+  --overlay-border: rgba(124, 58, 237, 0.14);
+  --overlay-hover: rgba(124, 58, 237, 0.22);
+  --overlay-active: rgba(124, 58, 237, 0.32);
+
+  --overlay-bg-subtle: rgba(0, 0, 0, 0.2);
+  --overlay-bg-card: rgba(0, 0, 0, 0.3);
+  --overlay-bg-input: rgba(0, 0, 0, 0.4);
+  --overlay-bg-deep: rgba(0, 0, 0, 0.5);
+
+  --status-success: #4ade80;
+  --status-warning: #fbbf24;
+  --status-error: #f87171;
+  --status-info: #818cf8;
+
+  --accent-match: #4ade80;
+  --accent-amber: #fbbf24;
+  --accent-crimson: #f87171;
+  --accent-lime: #a3e635;
+  --accent-purple: #D946EF;
+  --overlay-strong: rgba(0, 0, 0, 0.6);
+
+  --genre-action: #FBBF24;
+  --genre-comedy: #a3e635;
+  --genre-scifi: #818cf8;
+  --genre-adventure: #C084FC;
+
+  /* Novela UI tokens bridge */
+  --background: #13111C;
+  --foreground: #F5F3FF;
+  --card: #1E1A2E;
+  --card-foreground: #F5F3FF;
+  --popover: #1E1A2E;
+  --popover-foreground: #F5F3FF;
+  --primary: #7C3AED;
+  --primary-foreground: #ffffff;
+  --secondary: #2A2540;
+  --secondary-foreground: #DDD6FE;
+  --muted: #2A2540;
+  --muted-foreground: #A09ABC;
+  --accent: #2A2540;
+  --accent-foreground: #C084FC;
+  --border: #3B3555;
+  --input: #352F4A;
+  --input-background: #2A2540;
+  --ring: #C084FC;
+  --sidebar: #1E1A2E;
 }
 /* Nền gradient động cho glass theme + hỗ trợ glass utilities */
 [data-site-theme='glass'] body {

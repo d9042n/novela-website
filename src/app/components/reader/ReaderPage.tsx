@@ -11,6 +11,8 @@ import { ReaderControls } from './ReaderControls';
 import { fontCssVar, widthPx } from '../../theme/config';
 import { NotFoundPage } from '../NotFoundPage';
 import { Button } from '../ui/button';
+import { useTheme } from '../../theme/ThemeProvider';
+import { ReaderDrawerLayout } from './ReaderDrawerLayout';
 
 export function ReaderPage() {
   const { novelId = '', chapterIndex = '1' } = useParams();
@@ -19,6 +21,7 @@ export function ReaderPage() {
   const { t } = useTranslation();
   const { t: tl } = useLocalized();
   const { settings } = useReaderSettings();
+  const { readerPagePreset } = useTheme();
 
   const [novel, setNovel] = useState<Novel | undefined | null>(undefined);
   const [chapter, setChapter] = useState<Chapter | undefined | null>(undefined);
@@ -29,7 +32,7 @@ export function ReaderPage() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const lastScrollTop = useRef(0);
 
-  const paged = settings.layout === 'paged';
+  const paged = settings.layout === 'paged' || readerPagePreset === 'paged';
 
   // Load data
   useEffect(() => {
@@ -114,6 +117,22 @@ export function ReaderPage() {
   }, [goToChapter, index]);
 
   if (novel === null || chapter === null) return <NotFoundPage />;
+
+  if (readerPagePreset === 'drawer' && novel && chapter) {
+    return (
+      <ReaderDrawerLayout
+        novel={novel}
+        chapter={chapter}
+        chapters={chapters}
+        currentIndex={index}
+        total={total}
+        goToChapter={goToChapter}
+        progress={progress}
+        scrollRef={scrollRef}
+        onScroll={handleScroll}
+      />
+    );
+  }
 
   const maxWidth = settings.layout === 'wide' ? 960 : widthPx(settings.width);
   const contentStyle: React.CSSProperties = {

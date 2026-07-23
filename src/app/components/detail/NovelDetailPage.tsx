@@ -15,11 +15,15 @@ import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
 import { Skeleton } from '../ui/skeleton';
+import { useTheme } from '../../theme/ThemeProvider';
+import { DetailCinematicLayout } from './DetailCinematicLayout';
+import { DetailMinimalLayout } from './DetailMinimalLayout';
 
 export function NovelDetailPage() {
   const { novelId = '' } = useParams();
   const { t } = useTranslation();
   const { t: tl } = useLocalized();
+  const { detailPreset } = useTheme();
   const [novel, setNovel] = useState<Novel | undefined | null>(undefined);
   const [chapters, setChapters] = useState<ChapterSummary[]>([]);
   const lastRead = getProgress(novelId);
@@ -43,12 +47,30 @@ export function NovelDetailPage() {
   }
 
   const readTarget = lastRead ? lastRead.chapterIndex : 1;
-  const stats = [
-    { icon: Star, value: novel.rating.toFixed(1), label: t('novel.rating') },
-    { icon: BookOpen, value: novel.chapterCount, label: t('novel.chapters') },
-    { icon: Eye, value: `${(novel.views / 1000).toFixed(0)}K`, label: t('novel.views') },
-  ];
 
+  if (detailPreset === 'cinematic') {
+    return (
+      <DetailCinematicLayout
+        novel={novel}
+        chapters={chapters}
+        readTarget={readTarget}
+        lastRead={lastRead}
+      />
+    );
+  }
+
+  if (detailPreset === 'minimal') {
+    return (
+      <DetailMinimalLayout
+        novel={novel}
+        chapters={chapters}
+        readTarget={readTarget}
+        lastRead={lastRead}
+      />
+    );
+  }
+
+  // Classic Split Column Layout
   return (
     <div className="mx-auto max-w-5xl px-4 py-6 sm:px-6 sm:py-8">
       {/* Header truyện */}
@@ -94,7 +116,11 @@ export function NovelDetailPage() {
           </div>
 
           <div className="mt-5 flex gap-6">
-            {stats.map(({ icon: Icon, value, label }) => (
+            {[
+              { icon: Star, value: novel.rating.toFixed(1), label: t('novel.rating') },
+              { icon: BookOpen, value: novel.chapterCount, label: t('novel.chapters') },
+              { icon: Eye, value: `${(novel.views / 1000).toFixed(0)}K`, label: t('novel.views') },
+            ].map(({ icon: Icon, value, label }) => (
               <div key={label} className="flex flex-col items-center">
                 <div className="flex items-center gap-1">
                   <Icon className="size-4 text-primary" />
@@ -111,7 +137,7 @@ export function NovelDetailPage() {
             <Button asChild size="lg" className="gap-2">
               <RouterLink to={`/novel/${novel.id}/chapter/${readTarget}`}>
                 <Play className="size-4" />
-                {lastRead ? t('actions.continueReading') : t('actions.readFromStart')}
+                {lastRead ? t('actions.continueReading', { index: readTarget }) : t('actions.readFromStart')}
               </RouterLink>
             </Button>
             {lastRead && (

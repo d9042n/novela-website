@@ -1,0 +1,215 @@
+import { useState } from 'react';
+import { Link } from 'react-router';
+import { ChevronRight, Flame, Trophy, Clock, Star, BookOpen, Tag } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import type { Novel } from '../../data/types';
+import { GENRES } from '../../data/genres';
+import { useLocalized } from '../../hooks/useLocalized';
+import { HeroCarousel } from './HeroCarousel';
+import { ContinueReading } from './ContinueReading';
+import { Badge } from '../ui/badge';
+import { Card, CardContent } from '../ui/card';
+
+interface HomePortalLayoutProps {
+  featured: Novel[];
+  latest: Novel[];
+  popular: Novel[];
+}
+
+export function HomePortalLayout({ featured = [], latest = [], popular = [] }: HomePortalLayoutProps) {
+  const { t } = useTranslation();
+  const { t: tl } = useLocalized();
+  const [rankingTab, setRankingTab] = useState<'popular' | 'latest'>('popular');
+
+  const topRankings = rankingTab === 'popular' ? (popular || []).slice(0, 6) : (latest || []).slice(0, 6);
+
+  return (
+    <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8 space-y-8">
+      {/* Top Banner Hero */}
+      <HeroCarousel novels={featured} />
+
+      {/* Main 2-Column Portal Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        {/* Left Column (70% - 8 cols) */}
+        <div className="lg:col-span-8 space-y-8">
+          <ContinueReading />
+
+          {/* Detailed Feed Section */}
+          <section className="space-y-4">
+            <div className="flex items-center justify-between border-b border-border pb-3">
+              <div className="flex items-center gap-2">
+                <Flame className="size-5 text-primary" />
+                <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '1.4rem', fontWeight: 700 }}>
+                  {t('home.latest')}
+                </h2>
+              </div>
+              <Link
+                to="/browse?sort=latest"
+                className="group/link flex items-center gap-1 text-xs text-muted-foreground hover:text-primary transition-colors"
+              >
+                {t('actions.viewAll')}
+                <ChevronRight className="size-3.5 transition-transform group-hover/link:translate-x-0.5" />
+              </Link>
+            </div>
+
+            <div className="space-y-4">
+              {(latest || []).map((novel) => (
+                <Card
+                  key={novel.id}
+                  className="group overflow-hidden transition-all hover:border-primary/50 hover:shadow-md"
+                >
+                  <CardContent className="p-4 flex flex-col sm:flex-row gap-4">
+                    <Link to={`/novel/${novel.id}`} className="shrink-0">
+                      <div className="relative aspect-[3/4] w-24 sm:w-28 overflow-hidden rounded-md bg-muted">
+                        <img
+                          src={novel.cover}
+                          alt={tl(novel.title)}
+                          className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                          loading="lazy"
+                        />
+                        <div className="absolute top-1 left-1 rounded bg-black/70 px-1.5 py-0.5 text-[10px] font-semibold text-white flex items-center gap-0.5">
+                          <Star className="size-2.5 fill-amber-400 text-amber-400" />
+                          {novel.rating}
+                        </div>
+                      </div>
+                    </Link>
+
+                    <div className="flex-1 flex flex-col justify-between space-y-2 min-w-0">
+                      <div>
+                        <div className="flex flex-wrap items-center gap-2 mb-1">
+                          {(novel.genreIds || []).slice(0, 3).map((gId) => {
+                            const genre = GENRES.find((g) => g.id === gId);
+                            return genre ? (
+                              <Badge key={gId} variant="secondary" className="text-[10px] px-2 py-0">
+                                {tl(genre.name)}
+                              </Badge>
+                            ) : null;
+                          })}
+                        </div>
+                        <Link to={`/novel/${novel.id}`}>
+                          <h3 className="font-semibold text-base sm:text-lg transition-colors group-hover:text-primary line-clamp-1">
+                            {tl(novel.title)}
+                          </h3>
+                        </Link>
+                        <p className="text-xs text-muted-foreground mt-0.5">
+                          {t('novel.author')}: <span className="text-foreground">{tl(novel.author)}</span>
+                        </p>
+                        <p className="text-xs text-muted-foreground line-clamp-2 mt-2 leading-relaxed">
+                          {tl(novel.description)}
+                        </p>
+                      </div>
+
+                      <div className="flex items-center justify-between text-xs text-muted-foreground pt-2 border-t border-border/40">
+                        <span className="flex items-center gap-1">
+                          <BookOpen className="size-3.5 text-primary" />
+                          {t('novel.chapterCountLabel', { count: novel.chapterCount })}
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <Clock className="size-3.5" />
+                          {novel.updatedAt}
+                        </span>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </section>
+        </div>
+
+        {/* Right Sticky Sidebar (30% - 4 cols) */}
+        <div className="lg:col-span-4 space-y-6 lg:sticky lg:top-20">
+          {/* Top Rankings Widget */}
+          <Card className="overflow-hidden border-border/80">
+            <div className="p-4 border-b border-border bg-muted/30 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Trophy className="size-4 text-amber-500" />
+                <h3 className="font-bold text-sm tracking-tight">{t('home.popular')}</h3>
+              </div>
+              <div className="flex items-center rounded-lg bg-background p-0.5 border border-border text-[11px]">
+                <button
+                  type="button"
+                  onClick={() => setRankingTab('popular')}
+                  className={`px-2 py-0.5 rounded-md transition-colors ${
+                    rankingTab === 'popular'
+                      ? 'bg-primary text-primary-foreground font-semibold'
+                      : 'text-muted-foreground hover:text-foreground'
+                  }`}
+                >
+                  Hot
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setRankingTab('latest')}
+                  className={`px-2 py-0.5 rounded-md transition-colors ${
+                    rankingTab === 'latest'
+                      ? 'bg-primary text-primary-foreground font-semibold'
+                      : 'text-muted-foreground hover:text-foreground'
+                  }`}
+                >
+                  New
+                </button>
+              </div>
+            </div>
+
+            <CardContent className="p-0 divide-y divide-border/50">
+              {topRankings.map((novel, idx) => (
+                <Link
+                  key={novel.id}
+                  to={`/novel/${novel.id}`}
+                  className="flex items-center gap-3 p-3 hover:bg-accent/50 transition-colors group/rank"
+                >
+                  <span
+                    className={`flex size-6 shrink-0 items-center justify-center rounded-md text-xs font-bold ${
+                      idx === 0
+                        ? 'bg-amber-500 text-white'
+                        : idx === 1
+                          ? 'bg-slate-400 text-white'
+                          : idx === 2
+                            ? 'bg-amber-700 text-white'
+                            : 'bg-muted text-muted-foreground'
+                    }`}
+                  >
+                    {idx + 1}
+                  </span>
+                  <div className="relative aspect-[3/4] w-10 overflow-hidden rounded bg-muted shrink-0">
+                    <img src={novel.cover} alt={tl(novel.title)} className="h-full w-full object-cover transition-transform group-hover/rank:scale-105" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h4 className="text-xs font-semibold group-hover/rank:text-primary transition-colors truncate">
+                      {tl(novel.title)}
+                    </h4>
+                    <p className="text-[11px] text-muted-foreground truncate">{tl(novel.author)}</p>
+                  </div>
+                  <div className="text-right text-[10px] text-muted-foreground shrink-0">
+                    ⭐ {novel.rating}
+                  </div>
+                </Link>
+              ))}
+            </CardContent>
+          </Card>
+
+          {/* Quick Genres Cloud */}
+          <Card className="p-4 space-y-3">
+            <div className="flex items-center gap-2 border-b border-border/50 pb-2">
+              <Tag className="size-4 text-primary" />
+              <h3 className="font-bold text-sm">{t('home.byGenre')}</h3>
+            </div>
+            <div className="flex flex-wrap gap-1.5">
+              {GENRES.map((g) => (
+                <Link key={g.id} to={`/browse?genre=${g.id}`}>
+                  <Badge
+                    variant="outline"
+                    className="text-xs px-2.5 py-1 rounded-full cursor-pointer hover:border-primary hover:bg-primary/10 transition-colors"
+                  >
+                    {tl(g.name)}
+                  </Badge>
+                </Link>
+              ))}
+            </div>
+          </Card>
+        </div>
+      </div>
+    </div>
+  );
+}

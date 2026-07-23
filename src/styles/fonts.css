@@ -1,29 +1,45 @@
-/* Google Fonts — tất cả có subset Vietnamese (latin-ext + vietnamese) */
-@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;0,7..72,600;1,7..72,400&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,400;0,700;1,400&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,500;0,600;1,400&display=swap');
-/* Display editorial — Playfair Display (Didone, high-contrast, có subset Vietnamese) */
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;0,900;1,500;1,600&display=swap');
+/* Google Fonts — Tất cả phông chữ có hỗ trợ Tiếng Việt 100% (subset Vietnamese) */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;0,7..72,600;1,7..72,400&family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Merriweather:ital,wght@0,400;0,700;1,400&family=Noto+Serif:ital,wght@0,400;0,500;0,600;1,400&family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,500&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Crimson+Pro:ital,wght@0,400;0,500;0,600;1,400&family=Spectral:ital,wght@0,400;0,500;0,600;1,400&family=Bitter:ital,wght@0,400;0,500;0,600;1,400&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Nunito:wght@400;600;700&display=swap');
 
 :root {
-  /* Font UI mặc định — Be Vietnam Pro tối ưu cho tiếng Việt */
-  --font-ui: 'Be Vietnam Pro', 'Inter', system-ui, -apple-system, sans-serif;
+  /* Font UI mặc định — Inter + Apple System */
+  --font-ui: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif;
 
-  /* Font display editorial — tiêu đề lớn, hero, section (Didone high-contrast) */
+  /* Font display editorial — tiêu đề lớn, hero, section */
   --font-display: 'Playfair Display', 'Literata', Georgia, serif;
 
-  /* Reading font families (chọn được trong reader) */
+  /* Giãn dòng & giãn ký tự toàn trang */
+  --site-line-height: 1.5;
+  --site-letter-spacing: 0px;
+
+  /* Reading font families */
   --reading-literata: 'Literata', Georgia, serif;
   --reading-lora: 'Lora', Georgia, serif;
   --reading-merriweather: 'Merriweather', Georgia, serif;
   --reading-noto-serif: 'Noto Serif', Georgia, serif;
-  --reading-sans: 'Be Vietnam Pro', 'Inter', system-ui, sans-serif;
+  --reading-sans: 'Inter', -apple-system, system-ui, sans-serif;
 }
 
 html,
 body {
   font-family: var(--font-ui);
+  line-height: var(--site-line-height);
+  letter-spacing: var(--site-letter-spacing);
+  transition: line-height 0.15s ease-out, letter-spacing 0.15s ease-out;
+}
+
+/* Bảo vệ an toàn cho tất cả UI components (Nút bấm, Badge, Tabs, Ô nhập, Icon) 
+   chống tràn khung hoặc đè chữ khi tùy chỉnh giãn dòng/giãn chữ toàn website */
+button,
+input,
+select,
+textarea,
+[role="button"],
+[role="tab"],
+[data-slot="button"],
+[data-slot="badge"],
+[data-slot="tabs-trigger"],
+.badge,
+.btn {
+  line-height: normal;
 }

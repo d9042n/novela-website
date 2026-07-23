@@ -1,19 +1,96 @@
 /** Config theme giao diện & reader — khai báo dạng data, không hardcode trong component. */
 
-export type SiteTheme = 'modern' | 'minimal' | 'glass';
+export type SiteTheme = 'modern' | 'minimal' | 'glass' | 'sapphire' | 'emerald' | 'velvet' | 'amethyst';
 export type ColorMode = 'light' | 'dark';
 
 export const SITE_THEMES: { id: SiteTheme; labelKey: string; swatch: string }[] = [
   { id: 'modern', labelKey: 'settings.siteThemes.modern', swatch: '#4f46e5' },
   { id: 'minimal', labelKey: 'settings.siteThemes.minimal', swatch: '#171717' },
   { id: 'glass', labelKey: 'settings.siteThemes.glass', swatch: '#00f8f1' },
+  { id: 'sapphire', labelKey: 'settings.siteThemes.sapphire', swatch: '#3b82f6' },
+  { id: 'emerald', labelKey: 'settings.siteThemes.emerald', swatch: '#10b981' },
+  { id: 'velvet', labelKey: 'settings.siteThemes.velvet', swatch: '#fb7185' },
+  { id: 'amethyst', labelKey: 'settings.siteThemes.amethyst', swatch: '#7c3aed' },
 ];
 
-// Glass theme luôn tối → mode bị khoá về dark khi ở glass.
-export const ALWAYS_DARK_THEMES: SiteTheme[] = ['glass'];
+// Tình trạng khóa dark mode (rỗng = mọi theme đều hỗ trợ cả sáng & tối)
+export const ALWAYS_DARK_THEMES: SiteTheme[] = [];
 
-/* --- Bố cục hiển thị toàn site (áp cho lưới truyện ở Home/Browse) --- */
+export type SiteFont =
+  | 'inter'
+  | 'literata'
+  | 'lora'
+  | 'garamond'
+  | 'crimson'
+  | 'spectral'
+  | 'cormorant'
+  | 'merriweather'
+  | 'noto-serif'
+  | 'bitter'
+  | 'nunito'
+  | 'playfair';
+
+export const SITE_FONTS: { id: SiteFont; name: string; labelKey: string; fontCss: string }[] = [
+  { id: 'inter', name: 'Inter', labelKey: 'settings.siteFonts.inter', fontCss: "'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif" },
+  { id: 'literata', name: 'Literata', labelKey: 'settings.siteFonts.literata', fontCss: "'Literata', Georgia, serif" },
+  { id: 'lora', name: 'Lora', labelKey: 'settings.siteFonts.lora', fontCss: "'Lora', Georgia, serif" },
+  { id: 'garamond', name: 'EB Garamond', labelKey: 'settings.siteFonts.garamond', fontCss: "'EB Garamond', Georgia, serif" },
+  { id: 'crimson', name: 'Crimson Pro', labelKey: 'settings.siteFonts.crimson', fontCss: "'Crimson Pro', Georgia, serif" },
+  { id: 'spectral', name: 'Spectral', labelKey: 'settings.siteFonts.spectral', fontCss: "'Spectral', Georgia, serif" },
+  { id: 'cormorant', name: 'Cormorant Garamond', labelKey: 'settings.siteFonts.cormorant', fontCss: "'Cormorant Garamond', Georgia, serif" },
+  { id: 'merriweather', name: 'Merriweather', labelKey: 'settings.siteFonts.merriweather', fontCss: "'Merriweather', Georgia, serif" },
+  { id: 'noto-serif', name: 'Noto Serif', labelKey: 'settings.siteFonts.notoSerif', fontCss: "'Noto Serif', Georgia, serif" },
+  { id: 'bitter', name: 'Bitter', labelKey: 'settings.siteFonts.bitter', fontCss: "'Bitter', Georgia, serif" },
+  { id: 'nunito', name: 'Nunito', labelKey: 'settings.siteFonts.nunito', fontCss: "'Nunito', sans-serif" },
+  { id: 'playfair', name: 'Playfair Display', labelKey: 'settings.siteFonts.playfair', fontCss: "'Playfair Display', Georgia, serif" },
+];
+
 export type SiteLayout = 'comfortable' | 'compact' | 'list';
+
+/* --- Bố cục Khung Ứng Dụng toàn trang (App Shell Layouts) --- */
+export type ShellLayout = 'topnav' | 'sidebar' | 'dock';
+
+export const SHELL_LAYOUTS: { id: ShellLayout; labelKey: string }[] = [
+  { id: 'topnav', labelKey: 'settings.shellLayouts.topnav' },
+  { id: 'sidebar', labelKey: 'settings.shellLayouts.sidebar' },
+  { id: 'dock', labelKey: 'settings.shellLayouts.dock' },
+];
+
+/* --- Mẫu Bố cục Trang Chủ (Home Page Presets) --- */
+export type HomePreset = 'classic' | 'portal' | 'reels' | 'magazine';
+
+export const HOME_PRESETS: { id: HomePreset; labelKey: string }[] = [
+  { id: 'classic', labelKey: 'settings.homePresets.classic' },
+  { id: 'portal', labelKey: 'settings.homePresets.portal' },
+  { id: 'reels', labelKey: 'settings.homePresets.reels' },
+  { id: 'magazine', labelKey: 'settings.homePresets.magazine' },
+];
+
+/* --- Mẫu Bố cục Trang Duyệt Truyện (Browse Page Presets) --- */
+export type BrowsePreset = 'grid' | 'sidebar';
+
+export const BROWSE_PRESETS: { id: BrowsePreset; labelKey: string }[] = [
+  { id: 'grid', labelKey: 'settings.browsePresets.grid' },
+  { id: 'sidebar', labelKey: 'settings.browsePresets.sidebar' },
+];
+
+/* --- Mẫu Bố cục Trang Chi Tiết Truyện (Novel Detail Presets) --- */
+export type DetailPreset = 'classic' | 'cinematic' | 'minimal';
+
+export const DETAIL_PRESETS: { id: DetailPreset; labelKey: string }[] = [
+  { id: 'classic', labelKey: 'settings.detailPresets.classic' },
+  { id: 'cinematic', labelKey: 'settings.detailPresets.cinematic' },
+  { id: 'minimal', labelKey: 'settings.detailPresets.minimal' },
+];
+
+/* --- Mẫu Bố cục Trang Đọc Truyện (Reader Page Presets) --- */
+export type ReaderPagePreset = 'scroll' | 'drawer' | 'paged';
+
+export const READER_PAGE_PRESETS: { id: ReaderPagePreset; labelKey: string }[] = [
+  { id: 'scroll', labelKey: 'settings.readerPagePresets.scroll' },
+  { id: 'drawer', labelKey: 'settings.readerPagePresets.drawer' },
+  { id: 'paged', labelKey: 'settings.readerPagePresets.paged' },
+];
 
 export const SITE_LAYOUTS: {
   id: SiteLayout;

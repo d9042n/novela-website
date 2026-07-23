@@ -1,101 +1,135 @@
 {
   "app": {
     "name": "Novela",
-    "tagline": "Lose yourself in every page"
+    "tagline": "Elegant & Premium Web Novel Reading Experience"
   },
   "nav": {
     "home": "Home",
-    "browse": "Browse",
-    "search": "Search novels, authors...",
-    "searchShort": "Search"
-  },
-  "actions": {
-    "readNow": "Read now",
-    "readFromStart": "Read from start",
-    "continueReading": "Continue reading",
-    "viewAll": "View all",
-    "back": "Back",
-    "showMore": "Show more",
-    "showLess": "Show less",
-    "reset": "Reset",
-    "apply": "Apply"
+    "browse": "Search & Explore",
+    "search": "Search title, author...",
+    "searchShort": "Search...",
+    "expandSidebar": "Expand sidebar",
+    "collapseSidebar": "Collapse sidebar"
   },
   "home": {
-    "featured": "Featured",
-    "latest": "Latest updates",
-    "popular": "Most popular",
-    "byGenre": "By genre",
-    "continueSection": "Continue reading"
+    "featured": "Featured Novels",
+    "latest": "Latest Releases",
+    "popular": "Most Popular",
+    "byGenre": "Explore Genres",
+    "continueReading": "Continue Reading",
+    "continueSection": "Continue Reading",
+    "editorsChoice": "Editor's Choice",
+    "magazineQuote": "“Words are in my not-so-humble opinion, our most inexhaustible source of magic. Capable of both inflicting injury, and remedying it.”",
+    "magazineQuoteAuthor": "— Novela Curated Literary Highlights"
   },
   "browse": {
-    "title": "Browse novels",
-    "allGenres": "All genres",
-    "sortBy": "Sort by",
+    "title": "Search & Explore Library",
+    "allGenres": "All Genres",
+    "genresCount": "Genres ({{count}})",
+    "selectGenres": "Select Genres",
+    "allStatuses": "All Statuses",
+    "statusesCount": "Status ({{count}})",
+    "selectStatuses": "Select Status",
+    "sortBy": "Sort By",
+    "resultsCount": "{{count}} novels found",
+    "noResults": "No matching novels found.",
+    "clearSelection": "Clear selection",
+    "clearFilters": "Clear filters",
+    "clearAllFilters": "Clear all filters",
     "sort": {
-      "popular": "Popular",
-      "latest": "Latest",
-      "rating": "Top rated",
-      "title": "Title (A-Z)"
-    },
-    "resultsCount": "{{count}} novels",
-    "noResults": "No novels match your filters"
+      "popular": "Most Popular",
+      "latest": "Recently Updated",
+      "rating": "Highest Rated",
+      "title": "Title A-Z"
+    }
   },
   "novel": {
-    "author": "Author",
-    "status": "Status",
-    "genres": "Genres",
+    "updated": "Updated",
+    "rating": "Rating",
     "chapters": "Chapters",
     "views": "Views",
-    "rating": "Rating",
-    "updated": "Updated",
-    "description": "About",
-    "chapterList": "Chapters",
-    "info": "Info",
-    "filterChapter": "Filter chapters...",
-    "oldestFirst": "Oldest",
-    "newestFirst": "Newest",
-    "read": "Read",
-    "chapterCountLabel": "{{count}} chapters"
+    "info": "Information",
+    "chapterList": "Chapter List",
+    "description": "Synopsis",
+    "author": "Author",
+    "chapterCountLabel": "{{count}} chapters",
+    "filterChapter": "Search chapter...",
+    "newestFirst": "Newest First",
+    "oldestFirst": "Oldest First"
+  },
+  "actions": {
+    "readNow": "Read Now",
+    "readFromStart": "Start Reading",
+    "continueReading": "Continue Ch. {{index}}",
+    "viewAll": "View All",
+    "previousChapter": "Previous Chapter",
+    "nextChapter": "Next Chapter",
+    "close": "Close",
+    "reset": "Reset",
+    "back": "Back",
+    "clearSelection": "Clear selection",
+    "clearFilters": "Clear filters"
   },
   "status": {
     "ongoing": "Ongoing",
-    "completed": "Completed",
-    "hiatus": "On hiatus"
+    "completed": "Completed"
   },
   "reader": {
-    "settings": "Reading settings",
+    "toc": "Contents",
     "contents": "Contents",
-    "prevChapter": "Previous",
-    "nextChapter": "Next",
-    "jumpChapter": "Jump to chapter",
-    "font": "Font",
-    "fontSize": "Font size",
-    "lineHeight": "Line height",
-    "typography": "Typography",
-    "width": "Width",
-    "readerTheme": "Background",
+    "settings": "Reader Settings",
+    "prevChapter": "Previous Chapter",
+    "nextChapter": "Next Chapter",
+    "chapterOf": "Ch. {{index}} of {{total}}",
+    "readerTheme": "Reading Theme",
     "layout": "Layout",
-    "preview": "Preview",
-    "chapterOf": "Chapter {{index}} / {{total}}",
+    "width": "Reading Width",
+    "font": "Font Family",
+    "typography": "Typography",
+    "fontFamily": "Font Family",
+    "fontSize": "Font Size",
+    "lineHeight": "Line Height",
+    "paragraphSpacing": "Paragraph Spacing",
+    "maxWidth": "Reading Width",
+    "textAlign": "Text Alignment",
+    "alignLeft": "Align Left",
+    "alignJustify": "Justify",
+    "layoutScroll": "Continuous Scroll",
+    "layoutPaged": "Book Spread",
     "themes": {
       "light": "Light",
       "sepia": "Sepia",
       "dark": "Dark",
-      "oled": "Black"
+      "oled": "OLED Black"
     },
     "layouts": {
-      "scroll": "Scroll",
-      "paged": "Paged",
-      "wide": "Wide"
+      "scroll": "Continuous Scroll",
+      "paged": "Book Spread",
+      "wide": "Wide View"
     },
     "fonts": {
-      "literata": "Literata",
-      "lora": "Lora",
+      "literata": "Literata Serif",
+      "lora": "Lora Serif",
       "merriweather": "Merriweather",
       "noto-serif": "Noto Serif",
-      "sans": "Be Vietnam Pro"
+      "sans": "System Sans"
     },
     "widths": {
+      "narrow": "Narrow",
+      "normal": "Normal",
+      "wide": "Wide"
+    },
+    "lineHeightValues": {
+      "compact": "Compact",
+      "normal": "Normal",
+      "relaxed": "Relaxed"
+    },
+    "spacingValues": {
+      "compact": "Compact",
+      "normal": "Normal",
+      "relaxed": "Relaxed"
+    },
+    "widthValues": {
       "narrow": "Narrow",
       "normal": "Normal",
       "wide": "Wide"
@@ -105,18 +139,79 @@
   "settings": {
     "theme": "Theme",
     "language": "Language",
+    "siteFontTitle": "System Font Family",
+    "siteLineHeight": "Site Line Height",
+    "siteLetterSpacing": "Site Letter Spacing",
+    "siteTabs": {
+      "theme": "Theme",
+      "shell": "Layout",
+      "font": "Font",
+      "lang": "Language"
+    },
+    "siteFonts": {
+      "inter": "Apple / Modern Clean Sans",
+      "literata": "Digital Reading Serif",
+      "lora": "Calligraphic Book Serif",
+      "garamond": "Classic Literary Garamond",
+      "crimson": "Long-form Reading Serif",
+      "spectral": "Editorial News Serif",
+      "cormorant": "High-End Serif",
+      "merriweather": "Screen-Optimized Serif",
+      "notoSerif": "Universal Clean Serif",
+      "bitter": "Comfortable Slab Serif",
+      "nunito": "Friendly Rounded Sans",
+      "playfair": "High-Contrast Display"
+    },
     "darkMode": "Dark mode",
     "lightMode": "Light mode",
+    "themePalette": "Theme Palette Swatches",
+    "selectLanguage": "System Display Language",
+    "resetDefaults": "Reset to Defaults",
     "siteThemes": {
-      "modern": "Modern",
-      "minimal": "Minimal",
-      "glass": "Glass (Neon)"
+      "modern": "Modern Slate Blue",
+      "minimal": "Minimalist Monokai Black",
+      "glass": "Glassmorphic Neon",
+      "sapphire": "Deep Sapphire",
+      "emerald": "Forest Emerald",
+      "velvet": "Velvet Crimson",
+      "amethyst": "Royal Amethyst"
     },
     "layout": "Layout",
+    "shellLayoutTitle": "App Shell Layout",
+    "shellLayouts": {
+      "topnav": "Top Navigation Header (TopNav)",
+      "sidebar": "Left Dashboard Sidebar",
+      "dock": "Floating Glass Capsule Dock"
+    },
+    "homePresetTitle": "Home Page Layout Preset",
+    "homePresets": {
+      "classic": "Classic Standard Grid",
+      "portal": "Reader Portal & Rankings",
+      "reels": "Cinematic Reels Showcase",
+      "magazine": "Editorial Bento Magazine"
+    },
+    "browsePresetTitle": "Search Page Layout",
+    "browsePresets": {
+      "grid": "Grid Search Toolbar",
+      "sidebar": "Sticky Sidebar Filter"
+    },
+    "detailPresetTitle": "Novel Detail Layout",
+    "detailPresets": {
+      "classic": "Classic Split Column",
+      "cinematic": "Cinematic Backdrop Banner",
+      "minimal": "Minimal 3D Showcase"
+    },
+    "readerPagePresetTitle": "Reader View Mode",
+    "readerPagePresets": {
+      "scroll": "Zen Continuous Scroll",
+      "drawer": "Split Drawer & Panel",
+      "paged": "Dual Book Spread"
+    },
+    "cardGridTitle": "Card Grid Density",
     "layouts": {
-      "comfortable": "Comfortable grid",
-      "compact": "Compact grid",
-      "list": "List"
+      "comfortable": "Comfortable Grid",
+      "compact": "Compact Grid",
+      "list": "Horizontal List"
     }
   },
   "common": {

@@ -33,4 +33,18 @@ export default defineConfig({
 
   // File types to support raw imports. Never add .css, .tsx, or .ts files to this.
   assetsInclude: ['**/*.svg', '**/*.csv'],
+
+  // Dev server configuration optimized for Docker volume mount & HMR live reload
+  server: {
+    host: '0.0.0.0',
+    port: 5173,
+    strictPort: true,
+    watch: {
+      usePolling: true, // Enables file change detection across macOS host <-> Docker container mounts
+      interval: 100,
+    },
+    hmr: {
+      clientPort: 5573, // Host exposed port for HMR WebSocket connection
+    },
+  },
 })

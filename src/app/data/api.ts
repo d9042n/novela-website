@@ -16,6 +16,8 @@ export type SortKey = 'popular' | 'latest' | 'rating' | 'title';
 export interface BrowseParams {
   query?: string;
   genreId?: string;
+  genreIds?: string[];
+  statusList?: ('ongoing' | 'completed')[];
   sort?: SortKey;
   locale?: Locale;
 }
@@ -59,15 +61,14 @@ export function getNovelsByGenre(genreId: string, limit = 12) {
 export function browseNovels({
   query = '',
   genreId,
+  genreIds,
+  statusList,
   sort = 'popular',
   locale = 'vi',
 }: BrowseParams): Promise<Novel[]> {
   let result = [...NOVELS];
 
-  if (genreId) {
-    result = result.filter((n) => n.genreIds.includes(genreId));
-  }
-
+  // 1. Kết hợp lọc theo từ khóa tìm kiếm (Tên truyện, Tác giả, Mô tả)
   const q = query.trim().toLowerCase();
   if (q) {
     result = result.filter(
@@ -75,13 +76,34 @@ export function browseNovels({
         n.title[locale].toLowerCase().includes(q) ||
         n.title.vi.toLowerCase().includes(q) ||
         n.title.en.toLowerCase().includes(q) ||
-        n.author[locale].toLowerCase().includes(q),
+        n.author[locale].toLowerCase().includes(q) ||
+        n.author.vi.toLowerCase().includes(q) ||
+        n.author.en.toLowerCase().includes(q) ||
+        n.description[locale].toLowerCase().includes(q) ||
+        n.description.vi.toLowerCase().includes(q),
     );
   }
 
+  // 2. Kết hợp lọc Multiple Thể loại (Genre Multi-Select)
+  const activeGenres =
+    genreIds && genreIds.length > 0 ? genreIds : genreId ? [genreId] : [];
+  if (activeGenres.length > 0) {
+    result = result.filter((n) =>
+      activeGenres.some((gid) => n.genreIds.includes(gid)),
+    );
+  }
+
+  // 3. Kết hợp lọc Multiple Trạng thái (Ongoing, Completed)
+  if (statusList && statusList.length > 0) {
+    result = result.filter((n) => statusList.includes(n.status));
+  }
+
+  // 4. Sắp xếp kết quả kết hợp (Sorting)
   switch (sort) {
     case 'latest':
-      result.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
+      result.sort(
+        (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
+      );
       break;
     case 'rating':
       result.sort((a, b) => b.rating - a.rating);
@@ -102,6 +124,9 @@ export function getChapterList(novelId: string): Promise<ChapterSummary[]> {
   return delay(buildChapterList(novelId));
 }
 
-export function getChapter(novelId: string, index: number): Promise<Chapter | undefined> {
-  return delay(buildChapter(novelId, index));
+export function getChapter(
+  novelId: string,
+  chapterIndex: number,
+): Promise<Chapter | undefined> {
+  return delay(buildChapter(novelId, chapterIndex));
 }

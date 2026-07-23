@@ -13,6 +13,10 @@ import { NovelGrid } from '../NovelGrid';
 import { HeroCarousel } from './HeroCarousel';
 import { ContinueReading } from './ContinueReading';
 import { Badge } from '../ui/badge';
+import { useTheme } from '../../theme/ThemeProvider';
+import { HomePortalLayout } from './HomePortalLayout';
+import { HomeReelsLayout } from './HomeReelsLayout';
+import { HomeMagazineLayout } from './HomeMagazineLayout';
 
 function SectionHeader({ index, title, to }: { index: string; title: string; to?: string }) {
   const { t } = useTranslation();
@@ -46,12 +50,27 @@ function SectionHeader({ index, title, to }: { index: string; title: string; to?
 export function HomePage() {
   const { t } = useTranslation();
   const { t: tl } = useLocalized();
-  const { data: featured } = useAsync(getFeaturedNovels, [], []);
-  const { data: latest } = useAsync(() => getLatestNovels(12), [], []);
-  const { data: popular } = useAsync(() => getPopularNovels(12), [], []);
+  const { homePreset } = useTheme();
 
+  const { data: featured = [] } = useAsync(getFeaturedNovels, [], []);
+  const { data: latest = [] } = useAsync(() => getLatestNovels(12), [], []);
+  const { data: popular = [] } = useAsync(() => getPopularNovels(12), [], []);
+
+  if (homePreset === 'portal') {
+    return <HomePortalLayout featured={featured} latest={latest} popular={popular} />;
+  }
+
+  if (homePreset === 'reels') {
+    return <HomeReelsLayout featured={featured} latest={latest} popular={popular} />;
+  }
+
+  if (homePreset === 'magazine') {
+    return <HomeMagazineLayout featured={featured} latest={latest} popular={popular} />;
+  }
+
+  // Classic Preset
   return (
-    <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8">
+    <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8 space-y-8">
       <HeroCarousel novels={featured} />
 
       <ContinueReading />

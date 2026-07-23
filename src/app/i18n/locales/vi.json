@@ -1,122 +1,217 @@
 {
   "app": {
     "name": "Novela",
-    "tagline": "Đắm chìm trong từng trang truyện"
+    "tagline": "Trải nghiệm đọc web novel tinh tế & cao cấp"
   },
   "nav": {
     "home": "Trang chủ",
-    "browse": "Duyệt truyện",
-    "search": "Tìm truyện, tác giả...",
-    "searchShort": "Tìm kiếm"
+    "browse": "Tìm kiếm",
+    "search": "Tìm tên truyện, tác giả...",
+    "searchShort": "Tìm kiếm...",
+    "expandSidebar": "Mở rộng thanh bên",
+    "collapseSidebar": "Thu gọn thanh bên"
+  },
+  "home": {
+    "featured": "Truyện nổi bật",
+    "latest": "Mới cập nhật",
+    "popular": "Đọc nhiều nhất",
+    "byGenre": "Thể loại phong phú",
+    "continueReading": "Đọc tiếp",
+    "continueSection": "Đọc tiếp",
+    "editorsChoice": "Lựa chọn của biên tập viên",
+    "magazineQuote": "“Từ ngữ, theo ý kiến không mấy khiêm tốn của tôi, là nguồn phép thuật vô tận nhất. Vừa có thể gây thương tổn, lại vừa có thể chữa lành.”",
+    "magazineQuoteAuthor": "— Điểm nhấn văn học Novela"
+  },
+  "browse": {
+    "title": "Tìm Kiếm & Khám Phá",
+    "allGenres": "Tất cả thể loại",
+    "genresCount": "Thể loại ({{count}})",
+    "selectGenres": "Chọn thể loại",
+    "allStatuses": "Trạng thái (Tất cả)",
+    "statusesCount": "Trạng thái ({{count}})",
+    "selectStatuses": "Chọn trạng thái",
+    "sortBy": "Sắp xếp theo",
+    "resultsCount": "Tìm thấy {{count}} tác phẩm",
+    "noResults": "Không tìm thấy tác phẩm nào phù hợp.",
+    "clearSelection": "Xóa chọn",
+    "clearFilters": "Xóa lọc",
+    "clearAllFilters": "Xóa tất cả bộ lọc",
+    "sort": {
+      "popular": "Phổ biến nhất",
+      "latest": "Mới nhất",
+      "rating": "Đánh giá cao",
+      "title": "Tên A-Z"
+    }
+  },
+  "novel": {
+    "updated": "Cập nhật",
+    "rating": "Đánh giá",
+    "chapters": "Chương",
+    "views": "Lượt xem",
+    "info": "Thông tin chi tiết",
+    "chapterList": "Danh sách chương",
+    "description": "Nội dung tóm tắt",
+    "author": "Tác giả",
+    "chapterCountLabel": "{{count}} chương",
+    "filterChapter": "Tìm số chương, tên chương...",
+    "newestFirst": "Mới nhất trước",
+    "oldestFirst": "Cũ nhất trước"
   },
   "actions": {
     "readNow": "Đọc ngay",
     "readFromStart": "Đọc từ đầu",
-    "continueReading": "Đọc tiếp",
+    "continueReading": "Đọc tiếp ch. {{index}}",
     "viewAll": "Xem tất cả",
-    "back": "Quay lại",
-    "showMore": "Xem thêm",
-    "showLess": "Thu gọn",
+    "previousChapter": "Chương trước",
+    "nextChapter": "Chương sau",
+    "close": "Đóng",
     "reset": "Đặt lại",
-    "apply": "Áp dụng"
-  },
-  "home": {
-    "featured": "Nổi bật",
-    "latest": "Mới cập nhật",
-    "popular": "Xem nhiều nhất",
-    "byGenre": "Theo thể loại",
-    "continueSection": "Đang đọc dở"
-  },
-  "browse": {
-    "title": "Duyệt truyện",
-    "allGenres": "Tất cả thể loại",
-    "sortBy": "Sắp xếp",
-    "sort": {
-      "popular": "Phổ biến",
-      "latest": "Mới nhất",
-      "rating": "Đánh giá cao",
-      "title": "Theo tên (A-Z)"
-    },
-    "resultsCount": "{{count}} truyện",
-    "noResults": "Không tìm thấy truyện phù hợp"
-  },
-  "novel": {
-    "author": "Tác giả",
-    "status": "Trạng thái",
-    "genres": "Thể loại",
-    "chapters": "Chương",
-    "views": "Lượt xem",
-    "rating": "Đánh giá",
-    "updated": "Cập nhật",
-    "description": "Giới thiệu",
-    "chapterList": "Danh sách chương",
-    "info": "Thông tin",
-    "filterChapter": "Lọc chương...",
-    "oldestFirst": "Cũ nhất",
-    "newestFirst": "Mới nhất",
-    "read": "Đã đọc",
-    "chapterCountLabel": "{{count}} chương"
+    "back": "Quay lại",
+    "clearSelection": "Xóa chọn",
+    "clearFilters": "Xóa lọc"
   },
   "status": {
     "ongoing": "Đang ra",
-    "completed": "Hoàn thành",
-    "hiatus": "Tạm ngưng"
+    "completed": "Hoàn thành"
   },
   "reader": {
-    "settings": "Tùy chỉnh đọc",
+    "toc": "Mục lục",
     "contents": "Mục lục",
+    "settings": "Tùy chỉnh đọc",
     "prevChapter": "Chương trước",
     "nextChapter": "Chương sau",
-    "jumpChapter": "Chọn chương",
-    "font": "Phông chữ",
-    "fontSize": "Cỡ chữ",
-    "lineHeight": "Giãn dòng",
-    "typography": "Chữ & khoảng cách",
-    "width": "Độ rộng",
+    "chapterOf": "Ch. {{index}} / {{total}}",
     "readerTheme": "Nền đọc",
     "layout": "Bố cục",
-    "preview": "Xem trước",
-    "chapterOf": "Chương {{index}} / {{total}}",
+    "width": "Chiều rộng khung",
+    "font": "Phông chữ",
+    "typography": "Cỡ chữ & Giãn dòng",
+    "fontFamily": "Phông chữ",
+    "fontSize": "Cỡ chữ",
+    "lineHeight": "Khoảng cách dòng",
+    "paragraphSpacing": "Khoảng cách đoạn",
+    "maxWidth": "Chiều rộng khung",
+    "textAlign": "Căn chỉnh lề",
+    "alignLeft": "Lề trái",
+    "alignJustify": "Căn đều",
+    "layoutScroll": "Cuộn dọc",
+    "layoutPaged": "Lật trang",
     "themes": {
       "light": "Sáng",
-      "sepia": "Sepia",
+      "sepia": "Vàng kem",
       "dark": "Tối",
-      "oled": "Đen tuyền"
+      "oled": "Đen OLED"
     },
     "layouts": {
-      "scroll": "Cuộn",
+      "scroll": "Cuộn mượt",
       "paged": "Lật trang",
-      "wide": "Rộng"
+      "wide": "Mở rộng"
     },
     "fonts": {
-      "literata": "Literata",
-      "lora": "Lora",
+      "literata": "Literata Serif",
+      "lora": "Lora Serif",
       "merriweather": "Merriweather",
       "noto-serif": "Noto Serif",
-      "sans": "Be Vietnam Pro"
+      "sans": "Sans-Serif"
     },
     "widths": {
       "narrow": "Hẹp",
       "normal": "Vừa",
       "wide": "Rộng"
     },
+    "lineHeightValues": {
+      "compact": "Gọn",
+      "normal": "Vừa",
+      "relaxed": "Thoáng"
+    },
+    "spacingValues": {
+      "compact": "Hẹp",
+      "normal": "Vừa",
+      "relaxed": "Rộng"
+    },
+    "widthValues": {
+      "narrow": "Hẹp",
+      "normal": "Vừa",
+      "relaxed": "Rộng"
+    },
     "previewSample": "Người đọc lật giở từng trang, thả hồn vào câu chữ dưới ánh đèn dịu êm của màn đêm."
   },
   "settings": {
     "theme": "Giao diện",
     "language": "Ngôn ngữ",
+    "siteFontTitle": "Phông chữ hệ thống",
+    "siteLineHeight": "Khoảng cách dòng toàn trang",
+    "siteLetterSpacing": "Khoảng cách ký tự toàn trang",
+    "siteTabs": {
+      "theme": "Giao diện",
+      "shell": "Bố cục",
+      "font": "Phông chữ",
+      "lang": "Ngôn ngữ"
+    },
+    "siteFonts": {
+      "inter": "Apple / Không chân hiện đại",
+      "literata": "Chân chuyên dụng đọc ebook",
+      "lora": "Chân thư pháp thanh lịch",
+      "garamond": "Chân văn học Garamond",
+      "crimson": "Chân đọc truyện dài tập",
+      "spectral": "Chân tạp chí báo chí",
+      "cormorant": "Chân cao cấp",
+      "merriweather": "Chân tối ưu màn hình",
+      "notoSerif": "Chân Noto sắc nét",
+      "bitter": "Chân Vuông mượt mà",
+      "nunito": "Không chân bo tròn thân thiện",
+      "playfair": "Chân nghệ thuật tương phản"
+    },
     "darkMode": "Chế độ tối",
     "lightMode": "Chế độ sáng",
+    "themePalette": "Bảng màu chủ đạo",
+    "selectLanguage": "Ngôn ngữ hiển thị hệ thống",
+    "resetDefaults": "Đặt lại mặc định",
     "siteThemes": {
-      "modern": "Hiện đại",
-      "minimal": "Tối giản",
-      "glass": "Kính (Neon)"
+      "modern": "Hiện Đại (Slate Blue)",
+      "minimal": "Tối Giản (Monokai Black)",
+      "glass": "Kính Neon (Glassmorphic)",
+      "sapphire": "Lam Bảo (Deep Sapphire)",
+      "emerald": "Lục Bảo (Forest Emerald)",
+      "velvet": "Đỏ Nhung (Velvet Crimson)",
+      "amethyst": "Thạch Anh (Royal Amethyst)"
     },
     "layout": "Bố cục",
+    "shellLayoutTitle": "Khung giao diện ứng dụng",
+    "shellLayouts": {
+      "topnav": "Thanh Điều Hướng Header (TopNav)",
+      "sidebar": "Bảng Điều Khiển Sidebar Trái",
+      "dock": "Thanh Capsule Thủy Tinh Nổi (Floating Dock)"
+    },
+    "homePresetTitle": "Mẫu bố cục trang chủ",
+    "homePresets": {
+      "classic": "Lưới Tiêu Chuẩn (Classic Grid)",
+      "portal": "Cổng Thông Tin & Xếp Hạng (Portal Feed)",
+      "reels": "Trình Chiếu Điện Ảnh (Cinematic Reels)",
+      "magazine": "Tạp Chí Văn Học (Editorial Bento)"
+    },
+    "browsePresetTitle": "Bố cục trang Tìm kiếm & Khám phá",
+    "browsePresets": {
+      "grid": "Công Cụ Tìm Kiếm Dạng Lưới",
+      "sidebar": "Bộ Lọc Sidebar Cố Định"
+    },
+    "detailPresetTitle": "Bố cục trang chi tiết truyện",
+    "detailPresets": {
+      "classic": "Bố Cụ Phân Cột Chuẩn",
+      "cinematic": "Giao Diện Banner Điện Ảnh",
+      "minimal": "Trưng Bày Bìa 3D Tối Giản"
+    },
+    "readerPagePresetTitle": "Bố cục trang đọc truyện",
+    "readerPagePresets": {
+      "scroll": "Đọc Cuộn Mượt (Zen Scroll)",
+      "drawer": "Khung Kính & Mục Lục Cố Định",
+      "paged": "Đọc Sách Đôi 2 Trang (Dual Spread)"
+    },
+    "cardGridTitle": "Mật độ thẻ truyện",
     "layouts": {
-      "comfortable": "Lưới thoáng",
-      "compact": "Lưới gọn",
-      "list": "Danh sách"
+      "comfortable": "Lưới Chuẩn (Comfortable)",
+      "compact": "Lưới Gọn (Compact)",
+      "list": "Danh Sách Hàng Dọc (List)"
     }
   },
   "common": {

@@ -37,7 +37,7 @@ export function ContinueReading() {
           ✦
         </span>
         <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '1.6rem', fontWeight: 600, lineHeight: 1.1 }}>
-          {t('home.continueSection')}
+          {t('home.continueReading')}
         </h2>
       </div>
       <div className="flex gap-4 overflow-x-auto pb-2">
