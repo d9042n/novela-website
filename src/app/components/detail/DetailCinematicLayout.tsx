@@ -78,7 +78,7 @@ export function DetailCinematicLayout({
               </span>
               <span className="flex items-center gap-1">
                 <Eye className="size-4" />
-                {(novel.views / 1000).toFixed(0)}K {t('common.views')}
+                {(novel.views / 1000).toFixed(0)}K {t('novel.views')}
               </span>
             </div>
 

@@ -7,22 +7,30 @@ import type {
   ReaderWidth,
 } from '../../theme/config';
 
+export type ReaderAlign = 'justify' | 'left';
+
 export interface ReaderSettings {
   font: ReaderFont;
   fontSize: number; // px
   lineHeight: number;
+  letterSpacing: number; // px (-1 to 4)
+  wordSpacing: number; // px (0 to 8)
   width: ReaderWidth;
   theme: ReaderTheme;
   layout: ReaderLayout;
+  align: ReaderAlign;
 }
 
 const DEFAULT_SETTINGS: ReaderSettings = {
   font: 'literata',
   fontSize: 19,
   lineHeight: 1.7,
+  letterSpacing: 0,
+  wordSpacing: 0,
   width: 'normal',
   theme: 'light',
   layout: 'scroll',
+  align: 'justify',
 };
 
 interface ReaderSettingsContextValue {
@@ -39,18 +47,25 @@ export function ReaderSettingsProvider({ children }: { children: ReactNode }) {
     DEFAULT_SETTINGS,
   );
 
+  const mergedSettings: ReaderSettings = {
+    ...DEFAULT_SETTINGS,
+    ...settings,
+  };
+
   const update: ReaderSettingsContextValue['update'] = (key, value) =>
-    setSettings((prev) => ({ ...prev, [key]: value }));
+    setSettings((prev) => ({ ...DEFAULT_SETTINGS, ...prev, [key]: value }));
 
   const reset = () => setSettings(DEFAULT_SETTINGS);
 
-  return <Ctx.Provider value={{ settings, update, reset }}>{children}</Ctx.Provider>;
+  return (
+    <Ctx.Provider value={{ settings: mergedSettings, update, reset }}>
+      {children}
+    </Ctx.Provider>
+  );
 }
 
 export function useReaderSettings() {
-  const ctx = useContext(Ctx);
-  if (!ctx) throw new Error('useReaderSettings must be used within ReaderSettingsProvider');
-  return ctx;
+  const v = useContext(Ctx);
+  if (!v) throw new Error('useReaderSettings must be used inside ReaderSettingsProvider');
+  return v;
 }
-
-export { DEFAULT_SETTINGS };

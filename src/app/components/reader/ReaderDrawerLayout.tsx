@@ -40,6 +40,8 @@ export function ReaderDrawerLayout({
     fontFamily: fontCssVar(settings.font),
     fontSize: `${settings.fontSize}px`,
     lineHeight: settings.lineHeight,
+    letterSpacing: `${settings.letterSpacing ?? 0}px`,
+    wordSpacing: `${settings.wordSpacing ?? 0}px`,
     color: 'var(--reader-fg)',
   };
 
@@ -106,20 +108,40 @@ export function ReaderDrawerLayout({
                 {tl(chapter.title)}
               </h1>
               {chapter.paragraphs.map((p, i) => (
-                <p key={i} style={{ marginBottom: '1.1em', textAlign: 'justify' }}>
+                <p key={i} style={{ marginBottom: '1.1em', textAlign: settings.align ?? 'justify' }}>
                   {tl(p)}
                 </p>
               ))}
             </article>
 
             {/* Bottom Nav */}
-            <div className="mt-12 flex items-center justify-between gap-3 pt-6 border-t border-border/30">
-              <Button variant="outline" size="sm" disabled={currentIndex <= 1} onClick={() => goToChapter(currentIndex - 1)}>
+            <div className="mt-12 flex items-center justify-between gap-3 pt-6 border-t" style={{ borderColor: 'color-mix(in srgb, var(--reader-fg) 15%, transparent)' }}>
+              <button
+                type="button"
+                disabled={currentIndex <= 1}
+                onClick={() => goToChapter(currentIndex - 1)}
+                className="flex items-center gap-1 rounded-xl px-4 py-2 text-xs font-semibold border transition-all duration-150 disabled:opacity-30 disabled:pointer-events-none active:scale-95"
+                style={{
+                  backgroundColor: 'color-mix(in srgb, var(--reader-fg) 10%, transparent)',
+                  borderColor: 'color-mix(in srgb, var(--reader-fg) 18%, transparent)',
+                  color: 'var(--reader-fg)',
+                }}
+              >
                 {t('reader.prevChapter')}
-              </Button>
-              <Button size="sm" disabled={currentIndex >= total} onClick={() => goToChapter(currentIndex + 1)}>
+              </button>
+              <button
+                type="button"
+                disabled={currentIndex >= total}
+                onClick={() => goToChapter(currentIndex + 1)}
+                className="flex items-center gap-1 rounded-xl px-4 py-2 text-xs font-semibold border transition-all duration-150 disabled:opacity-30 disabled:pointer-events-none active:scale-95"
+                style={{
+                  backgroundColor: 'color-mix(in srgb, var(--reader-fg) 10%, transparent)',
+                  borderColor: 'color-mix(in srgb, var(--reader-fg) 18%, transparent)',
+                  color: 'var(--reader-fg)',
+                }}
+              >
                 {t('reader.nextChapter')}
-              </Button>
+              </button>
             </div>
           </div>
         </main>

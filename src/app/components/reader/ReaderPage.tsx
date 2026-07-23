@@ -139,6 +139,8 @@ export function ReaderPage() {
     fontFamily: fontCssVar(settings.font),
     fontSize: `${settings.fontSize}px`,
     lineHeight: settings.lineHeight,
+    letterSpacing: `${settings.letterSpacing ?? 0}px`,
+    wordSpacing: `${settings.wordSpacing ?? 0}px`,
     color: 'var(--reader-fg)',
   };
 
@@ -180,24 +182,44 @@ export function ReaderPage() {
                 columnGap: '3rem',
               }}
             >
-              <ChapterBody chapter={chapter} title={tl(chapter.title)} />
+              <ChapterBody chapter={chapter} title={tl(chapter.title)} align={settings.align ?? 'justify'} />
             </div>
           </div>
         ) : (
           <div className="mx-auto px-5 py-20 sm:px-6" style={{ maxWidth: `${maxWidth}px` }}>
             <div style={contentStyle}>
-              <ChapterBody chapter={chapter} title={tl(chapter.title)} />
+              <ChapterBody chapter={chapter} title={tl(chapter.title)} align={settings.align ?? 'justify'} />
             </div>
 
             {/* Điều hướng cuối chương */}
-            <div className="mt-12 flex items-center justify-between gap-3">
-              <Button variant="outline" disabled={index <= 1} onClick={() => goToChapter(index - 1)}>
+            <div className="mt-12 flex items-center justify-between gap-3 pt-6 border-t" style={{ borderColor: 'color-mix(in srgb, var(--reader-fg) 15%, transparent)' }}>
+              <Button
+                variant="outline"
+                className="font-semibold shadow-none border hover:opacity-85 disabled:opacity-30"
+                style={{
+                  backgroundColor: 'color-mix(in srgb, var(--reader-fg) 10%, transparent)',
+                  color: 'var(--reader-fg)',
+                  borderColor: 'color-mix(in srgb, var(--reader-fg) 18%, transparent)',
+                }}
+                disabled={index <= 1}
+                onClick={() => goToChapter(index - 1)}
+              >
                 {t('reader.prevChapter')}
               </Button>
-              <span className="opacity-60" style={{ fontSize: '0.85rem' }}>
+              <span className="opacity-70 font-medium" style={{ fontSize: '0.85rem' }}>
                 {t('reader.chapterOf', { index, total })}
               </span>
-              <Button disabled={index >= total} onClick={() => goToChapter(index + 1)}>
+              <Button
+                variant="outline"
+                className="font-semibold shadow-none border hover:opacity-85 disabled:opacity-30"
+                style={{
+                  backgroundColor: 'color-mix(in srgb, var(--reader-fg) 10%, transparent)',
+                  color: 'var(--reader-fg)',
+                  borderColor: 'color-mix(in srgb, var(--reader-fg) 18%, transparent)',
+                }}
+                disabled={index >= total}
+                onClick={() => goToChapter(index + 1)}
+              >
                 {t('reader.nextChapter')}
               </Button>
             </div>
@@ -220,7 +242,7 @@ export function ReaderPage() {
   );
 }
 
-function ChapterBody({ chapter, title }: { chapter: Chapter; title: string }) {
+function ChapterBody({ chapter, title, align }: { chapter: Chapter; title: string; align: 'justify' | 'left' }) {
   const { t: tl } = useLocalized();
   return (
     <article>
@@ -228,7 +250,7 @@ function ChapterBody({ chapter, title }: { chapter: Chapter; title: string }) {
         {title}
       </h1>
       {chapter.paragraphs.map((p, i) => (
-        <p key={i} style={{ marginBottom: '1.1em', textAlign: 'justify' }}>
+        <p key={i} style={{ marginBottom: '1.1em', textAlign: align }}>
           {tl(p)}
         </p>
       ))}

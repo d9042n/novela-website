@@ -19,13 +19,18 @@ interface ThemeContextValue {
   setSiteTheme: (t: SiteTheme) => void;
   siteFont: SiteFont;
   setSiteFont: (f: SiteFont) => void;
+  siteFontUi: SiteFont;
+  setSiteFontUi: (f: SiteFont) => void;
+  siteFontDisplay: SiteFont;
+  setSiteFontDisplay: (f: SiteFont) => void;
   siteLineHeight: number;
-  setSiteLineHeight: (lh: number) => void;
+  setSiteLineHeight: (v: number) => void;
   siteLetterSpacing: number;
-  setSiteLetterSpacing: (ls: number) => void;
+  setSiteLetterSpacing: (v: number) => void;
   mode: ColorMode;
-  toggleMode: () => void;
   isDark: boolean;
+  toggleMode: () => void;
+  setMode: (m: ColorMode) => void;
   layout: SiteLayout;
   setLayout: (l: SiteLayout) => void;
   shellLayout: ShellLayout;
@@ -45,7 +50,9 @@ const ThemeContext = createContext<ThemeContextValue | null>(null);
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [siteTheme, setSiteTheme] = useLocalStorage<SiteTheme>('novela.siteTheme', 'modern');
-  const [siteFont, setSiteFont] = useLocalStorage<SiteFont>('novela.siteFont', 'inter');
+  const [siteFont, setSiteFont] = useLocalStorage<SiteFont>('novela.siteFont', 'vietnam');
+  const [siteFontUi, setSiteFontUi] = useLocalStorage<SiteFont>('novela.siteFontUi', 'vietnam');
+  const [siteFontDisplay, setSiteFontDisplay] = useLocalStorage<SiteFont>('novela.siteFontDisplay', 'playfair');
   const [siteLineHeight, setSiteLineHeight] = useLocalStorage<number>('novela.siteLineHeight', 1.5);
   const [siteLetterSpacing, setSiteLetterSpacing] = useLocalStorage<number>('novela.siteLetterSpacing', 0);
   const [mode, setMode] = useLocalStorage<ColorMode>('novela.colorMode', 'light');
@@ -66,24 +73,32 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     root.setAttribute('data-shell-layout', shellLayout);
     root.classList.toggle('dark', isDark);
 
-    const activeFont = SITE_FONTS.find((f) => f.id === siteFont) ?? SITE_FONTS[0];
-    if (siteFont === 'inter') {
+    const fontUiObj = SITE_FONTS.find((f) => f.id === siteFontUi) ?? SITE_FONTS[0];
+    const fontDisplayObj = SITE_FONTS.find((f) => f.id === siteFontDisplay) ?? SITE_FONTS[1];
+
+    if (siteFontUi === 'vietnam') {
       root.style.removeProperty('--font-ui');
+    } else {
+      root.style.setProperty('--font-ui', fontUiObj.fontCss);
+    }
+
+    if (siteFontDisplay === 'playfair') {
       root.style.removeProperty('--font-display');
     } else {
-      root.style.setProperty('--font-ui', activeFont.fontCss);
-      root.style.setProperty('--font-display', activeFont.fontCss);
+      root.style.setProperty('--font-display', fontDisplayObj.fontCss);
     }
 
     root.style.setProperty('--site-line-height', String(siteLineHeight));
     root.style.setProperty('--site-letter-spacing', `${siteLetterSpacing}px`);
-  }, [siteTheme, siteFont, siteLineHeight, siteLetterSpacing, isDark, layout, shellLayout]);
+  }, [siteTheme, siteFontUi, siteFontDisplay, siteLineHeight, siteLetterSpacing, isDark, layout, shellLayout]);
 
   const toggleMode = () => setMode((m) => (m === 'dark' ? 'light' : 'dark'));
 
   const resetDefaults = () => {
     setSiteTheme('modern');
-    setSiteFont('inter');
+    setSiteFont('vietnam');
+    setSiteFontUi('vietnam');
+    setSiteFontDisplay('playfair');
     setSiteLineHeight(1.5);
     setSiteLetterSpacing(0);
     setMode('light');
@@ -95,20 +110,30 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     setReaderPagePreset('scroll');
   };
 
+  const handleSetSiteFont = (f: SiteFont) => {
+    setSiteFont(f);
+    setSiteFontUi(f);
+  };
+
   return (
     <ThemeContext.Provider
       value={{
         siteTheme,
         setSiteTheme,
         siteFont,
-        setSiteFont,
+        setSiteFont: handleSetSiteFont,
+        siteFontUi,
+        setSiteFontUi,
+        siteFontDisplay,
+        setSiteFontDisplay,
         siteLineHeight,
         setSiteLineHeight,
         siteLetterSpacing,
         setSiteLetterSpacing,
         mode,
-        toggleMode,
         isDark,
+        toggleMode,
+        setMode,
         layout,
         setLayout,
         shellLayout,

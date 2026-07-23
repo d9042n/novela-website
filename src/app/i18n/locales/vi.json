@@ -72,7 +72,8 @@
   },
   "status": {
     "ongoing": "Đang ra",
-    "completed": "Hoàn thành"
+    "completed": "Hoàn thành",
+    "hiatus": "Tạm dừng"
   },
   "reader": {
     "toc": "Mục lục",
@@ -89,6 +90,8 @@
     "fontFamily": "Phông chữ",
     "fontSize": "Cỡ chữ",
     "lineHeight": "Khoảng cách dòng",
+    "letterSpacing": "Khoảng cách ký tự",
+    "wordSpacing": "Khoảng cách giữa các từ",
     "paragraphSpacing": "Khoảng cách đoạn",
     "maxWidth": "Chiều rộng khung",
     "textAlign": "Căn chỉnh lề",
@@ -99,7 +102,11 @@
     "themes": {
       "light": "Sáng",
       "sepia": "Vàng kem",
-      "dark": "Tối",
+      "emerald": "Trà xanh",
+      "mocha": "Cà phê ấm",
+      "nordic": "Xám sương",
+      "dark": "Tối đêm",
+      "ocean": "Đại dương",
       "oled": "Đen OLED"
     },
     "layouts": {
@@ -140,6 +147,10 @@
     "theme": "Giao diện",
     "language": "Ngôn ngữ",
     "siteFontTitle": "Phông chữ hệ thống",
+    "siteFontUiTitle": "1. Phông chữ UI Giao diện (Font UI)",
+    "siteFontDisplayTitle": "2. Phông chữ Tiêu đề (Font Display)",
+    "siteFontUiDefault": "Mặc định: Be Vietnam Pro",
+    "siteFontDisplayDefault": "Mặc định: Playfair Display",
     "siteLineHeight": "Khoảng cách dòng toàn trang",
     "siteLetterSpacing": "Khoảng cách ký tự toàn trang",
     "siteTabs": {
@@ -149,6 +160,7 @@
       "lang": "Ngôn ngữ"
     },
     "siteFonts": {
+      "vietnam": "Be Vietnam Pro (Mặc định UI)",
       "inter": "Apple / Không chân hiện đại",
       "literata": "Chân chuyên dụng đọc ebook",
       "lora": "Chân thư pháp thanh lịch",

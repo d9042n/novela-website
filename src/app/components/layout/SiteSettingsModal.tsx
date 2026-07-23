@@ -1,4 +1,4 @@
-import { Check, Moon, Palette, Sun, PanelTop, Sidebar, Dock, Globe, Settings2, RotateCcw, Type, Minus, Plus, AlignJustify, MoveHorizontal } from 'lucide-react';
+import { Check, Moon, Palette, Sun, PanelTop, Sidebar, Dock, Globe, Settings2, RotateCcw, Type, AlignJustify, MoveHorizontal } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import {
   Dialog,
@@ -37,6 +37,10 @@ export function SiteSettingsModal({ open, onOpenChange }: SiteSettingsModalProps
     setSiteTheme,
     siteFont,
     setSiteFont,
+    siteFontUi,
+    setSiteFontUi,
+    siteFontDisplay,
+    setSiteFontDisplay,
     siteLineHeight,
     setSiteLineHeight,
     siteLetterSpacing,
@@ -271,19 +275,62 @@ export function SiteSettingsModal({ open, onOpenChange }: SiteSettingsModalProps
                 </div>
               </div>
 
-              {/* Danh sách Font Family */}
+              {/* 1. Tùy chỉnh Font UI Giao diện */}
               <div className="space-y-2">
-                <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                  {t('settings.siteFontTitle')}
-                </label>
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                    {t('settings.siteFontUiTitle')}
+                  </label>
+                  <span className="text-[11px] text-primary font-semibold">
+                    {t('settings.siteFontUiDefault')}
+                  </span>
+                </div>
                 <div className="grid grid-cols-1 gap-2">
                   {SITE_FONTS.map((f) => {
-                    const active = siteFont === f.id;
+                    const active = siteFontUi === f.id;
                     return (
                       <button
                         key={f.id}
                         type="button"
-                        onClick={() => setSiteFont(f.id)}
+                        onClick={() => {
+                          setSiteFontUi(f.id);
+                          setSiteFont(f.id);
+                        }}
+                        className={`w-full flex items-center justify-between p-3 rounded-xl border text-xs transition-all ${
+                          active
+                            ? 'border-primary bg-primary/10 text-primary font-semibold shadow-sm'
+                            : 'border-border bg-card/60 text-muted-foreground hover:bg-accent hover:text-foreground'
+                        }`}
+                      >
+                        <div className="text-left space-y-0.5" style={{ fontFamily: f.fontCss, lineHeight: siteLineHeight, letterSpacing: `${siteLetterSpacing}px` }}>
+                          <div className="text-sm font-bold text-foreground">{f.name}</div>
+                          <div className="text-xs opacity-75">{t(f.labelKey)}</div>
+                        </div>
+                        {active && <Check className="size-5 text-primary shrink-0" />}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* 2. Tùy chỉnh Font Display Tiêu đề */}
+              <div className="space-y-2 pt-3 border-t border-border/60">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                    {t('settings.siteFontDisplayTitle')}
+                  </label>
+                  <span className="text-[11px] text-primary font-semibold">
+                    {t('settings.siteFontDisplayDefault')}
+                  </span>
+                </div>
+                <div className="grid grid-cols-1 gap-2">
+                  {SITE_FONTS.map((f) => {
+                    const active = siteFontDisplay === f.id;
+                    return (
+                      <button
+                        key={`display-${f.id}`}
+                        type="button"
+                        onClick={() => setSiteFontDisplay(f.id)}
                         className={`w-full flex items-center justify-between p-3 rounded-xl border text-xs transition-all ${
                           active
                             ? 'border-primary bg-primary/10 text-primary font-semibold shadow-sm'

@@ -72,7 +72,8 @@
   },
   "status": {
     "ongoing": "Ongoing",
-    "completed": "Completed"
+    "completed": "Completed",
+    "hiatus": "On Hiatus"
   },
   "reader": {
     "toc": "Contents",
@@ -89,6 +90,8 @@
     "fontFamily": "Font Family",
     "fontSize": "Font Size",
     "lineHeight": "Line Height",
+    "letterSpacing": "Letter Spacing",
+    "wordSpacing": "Word Spacing",
     "paragraphSpacing": "Paragraph Spacing",
     "maxWidth": "Reading Width",
     "textAlign": "Text Alignment",
@@ -99,7 +102,11 @@
     "themes": {
       "light": "Light",
       "sepia": "Sepia",
+      "emerald": "Mint Tea",
+      "mocha": "Mocha",
+      "nordic": "Nordic Slate",
       "dark": "Dark",
+      "ocean": "Deep Ocean",
       "oled": "OLED Black"
     },
     "layouts": {
@@ -140,6 +147,10 @@
     "theme": "Theme",
     "language": "Language",
     "siteFontTitle": "System Font Family",
+    "siteFontUiTitle": "1. UI Font Family (Font UI)",
+    "siteFontDisplayTitle": "2. Heading Font (Font Display)",
+    "siteFontUiDefault": "Default: Be Vietnam Pro",
+    "siteFontDisplayDefault": "Default: Playfair Display",
     "siteLineHeight": "Site Line Height",
     "siteLetterSpacing": "Site Letter Spacing",
     "siteTabs": {
@@ -149,6 +160,7 @@
       "lang": "Language"
     },
     "siteFonts": {
+      "vietnam": "Be Vietnam Pro (Default UI Sans)",
       "inter": "Apple / Modern Clean Sans",
       "literata": "Digital Reading Serif",
       "lora": "Calligraphic Book Serif",

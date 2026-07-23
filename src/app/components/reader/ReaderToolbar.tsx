@@ -1,4 +1,3 @@
-import { Link } from 'react-router';
 import { RouterLink } from '../ui/router-link';
 import { ChevronLeft, List, Settings2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -63,11 +62,11 @@ export function ReaderToolbar({ novel, chapter, chapters, visible }: ReaderToolb
               <List className="size-5" />
             </Button>
           </SheetTrigger>
-          <SheetContent side="left" className="w-[85vw] sm:w-96">
-            <SheetHeader>
-              <SheetTitle>{t('reader.contents')}</SheetTitle>
+          <SheetContent side="left" className="w-[85vw] sm:w-96 flex flex-col p-0 overflow-hidden">
+            <SheetHeader className="p-4 pb-2 border-b border-border/40">
+              <SheetTitle className="text-base font-bold">{t('reader.contents')}</SheetTitle>
             </SheetHeader>
-            <div className="mt-4 h-[calc(100vh-6rem)] overflow-hidden">
+            <div className="flex-1 overflow-hidden pt-2">
               <ReaderContents
                 novelId={novel.id}
                 chapters={chapters}
@@ -84,11 +83,11 @@ export function ReaderToolbar({ novel, chapter, chapters, visible }: ReaderToolb
               <Settings2 className="size-5" />
             </Button>
           </SheetTrigger>
-          <SheetContent side="right" className="w-[85vw] overflow-y-auto sm:w-96">
-            <SheetHeader>
+          <SheetContent side="right" className="w-[85vw] overflow-y-auto sm:w-96 gap-1">
+            <SheetHeader className="p-4 pb-1">
               <SheetTitle>{t('reader.settings')}</SheetTitle>
             </SheetHeader>
-            <div className="mt-2 px-1">
+            <div className="mt-0 px-1">
               <ReaderSettingsPanel />
             </div>
           </SheetContent>

@@ -13,11 +13,13 @@ export const SITE_THEMES: { id: SiteTheme; labelKey: string; swatch: string }[] 
   { id: 'amethyst', labelKey: 'settings.siteThemes.amethyst', swatch: '#7c3aed' },
 ];
 
-// Tình trạng khóa dark mode (rỗng = mọi theme đều hỗ trợ cả sáng & tối)
+// Tình trạng khóa dark mode (rỗng = mọi theme đều hỗ trợ cả sáng & tối 100%)
 export const ALWAYS_DARK_THEMES: SiteTheme[] = [];
 
 export type SiteFont =
+  | 'vietnam'
   | 'inter'
+  | 'playfair'
   | 'literata'
   | 'lora'
   | 'garamond'
@@ -27,10 +29,11 @@ export type SiteFont =
   | 'merriweather'
   | 'noto-serif'
   | 'bitter'
-  | 'nunito'
-  | 'playfair';
+  | 'nunito';
 
 export const SITE_FONTS: { id: SiteFont; name: string; labelKey: string; fontCss: string }[] = [
+  { id: 'vietnam', name: 'Be Vietnam Pro (Mặc định UI)', labelKey: 'settings.siteFonts.vietnam', fontCss: "'Be Vietnam Pro', 'Inter', system-ui, sans-serif" },
+  { id: 'playfair', name: 'Playfair Display (Mặc định Display)', labelKey: 'settings.siteFonts.playfair', fontCss: "'Playfair Display', 'Literata', Georgia, serif" },
   { id: 'inter', name: 'Inter', labelKey: 'settings.siteFonts.inter', fontCss: "'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif" },
   { id: 'literata', name: 'Literata', labelKey: 'settings.siteFonts.literata', fontCss: "'Literata', Georgia, serif" },
   { id: 'lora', name: 'Lora', labelKey: 'settings.siteFonts.lora', fontCss: "'Lora', Georgia, serif" },
@@ -42,7 +45,6 @@ export const SITE_FONTS: { id: SiteFont; name: string; labelKey: string; fontCss
   { id: 'noto-serif', name: 'Noto Serif', labelKey: 'settings.siteFonts.notoSerif', fontCss: "'Noto Serif', Georgia, serif" },
   { id: 'bitter', name: 'Bitter', labelKey: 'settings.siteFonts.bitter', fontCss: "'Bitter', Georgia, serif" },
   { id: 'nunito', name: 'Nunito', labelKey: 'settings.siteFonts.nunito', fontCss: "'Nunito', sans-serif" },
-  { id: 'playfair', name: 'Playfair Display', labelKey: 'settings.siteFonts.playfair', fontCss: "'Playfair Display', Georgia, serif" },
 ];
 
 export type SiteLayout = 'comfortable' | 'compact' | 'list';
@@ -120,16 +122,20 @@ export function gridClassFor(id: SiteLayout): string {
   return SITE_LAYOUTS.find((l) => l.id === id)?.gridClass ?? SITE_LAYOUTS[0].gridClass;
 }
 
-export type ReaderTheme = 'light' | 'sepia' | 'dark' | 'oled';
+export type ReaderTheme = 'light' | 'sepia' | 'emerald' | 'mocha' | 'nordic' | 'dark' | 'ocean' | 'oled';
 export type ReaderLayout = 'scroll' | 'paged' | 'wide';
 export type ReaderFont = 'literata' | 'lora' | 'merriweather' | 'noto-serif' | 'sans';
 export type ReaderWidth = 'narrow' | 'normal' | 'wide';
 
 export const READER_THEMES: { id: ReaderTheme; labelKey: string; swatch: string; fg: string }[] = [
-  { id: 'light', labelKey: 'reader.themes.light', swatch: '#fbfbfb', fg: '#1a1a1a' },
-  { id: 'sepia', labelKey: 'reader.themes.sepia', swatch: '#f8f1e3', fg: '#5f4b32' },
-  { id: 'dark', labelKey: 'reader.themes.dark', swatch: '#121212', fg: '#b0b0b0' },
-  { id: 'oled', labelKey: 'reader.themes.oled', swatch: '#000000', fg: '#c9c9c9' },
+  { id: 'light', labelKey: 'reader.themes.light', swatch: '#ffffff', fg: '#0f172a' },
+  { id: 'sepia', labelKey: 'reader.themes.sepia', swatch: '#f8f1e3', fg: '#43302b' },
+  { id: 'emerald', labelKey: 'reader.themes.emerald', swatch: '#e8f5e9', fg: '#064e3b' },
+  { id: 'mocha', labelKey: 'reader.themes.mocha', swatch: '#f5ebe0', fg: '#3e2723' },
+  { id: 'nordic', labelKey: 'reader.themes.nordic', swatch: '#e2e8f0', fg: '#0f172a' },
+  { id: 'dark', labelKey: 'reader.themes.dark', swatch: '#1e1e24', fg: '#f3f4f6' },
+  { id: 'ocean', labelKey: 'reader.themes.ocean', swatch: '#0f172a', fg: '#f8fafc' },
+  { id: 'oled', labelKey: 'reader.themes.oled', swatch: '#000000', fg: '#f3f4f6' },
 ];
 
 export const READER_LAYOUTS: { id: ReaderLayout; labelKey: string }[] = [
@@ -138,12 +144,37 @@ export const READER_LAYOUTS: { id: ReaderLayout; labelKey: string }[] = [
   { id: 'wide', labelKey: 'reader.layouts.wide' },
 ];
 
-export const READER_FONTS: { id: ReaderFont; labelKey: string; cssVar: string }[] = [
-  { id: 'literata', labelKey: 'reader.fonts.literata', cssVar: 'var(--reading-literata)' },
-  { id: 'lora', labelKey: 'reader.fonts.lora', cssVar: 'var(--reading-lora)' },
-  { id: 'merriweather', labelKey: 'reader.fonts.merriweather', cssVar: 'var(--reading-merriweather)' },
-  { id: 'noto-serif', labelKey: 'reader.fonts.noto-serif', cssVar: 'var(--reading-noto-serif)' },
-  { id: 'sans', labelKey: 'reader.fonts.sans', cssVar: 'var(--reading-sans)' },
+export type ReaderFont =
+  | 'literata'
+  | 'lora'
+  | 'merriweather'
+  | 'noto-serif'
+  | 'vietnam'
+  | 'inter'
+  | 'garamond'
+  | 'crimson'
+  | 'spectral'
+  | 'cormorant'
+  | 'bitter'
+  | 'nunito'
+  | 'playfair'
+  | 'sans';
+
+export const READER_FONTS: { id: ReaderFont; name: string; labelKey: string; cssVar: string }[] = [
+  { id: 'literata', name: 'Literata', labelKey: 'reader.fonts.literata', cssVar: "var(--reading-literata, 'Literata', Georgia, serif)" },
+  { id: 'lora', name: 'Lora', labelKey: 'reader.fonts.lora', cssVar: "var(--reading-lora, 'Lora', Georgia, serif)" },
+  { id: 'merriweather', name: 'Merriweather', labelKey: 'reader.fonts.merriweather', cssVar: "var(--reading-merriweather, 'Merriweather', Georgia, serif)" },
+  { id: 'noto-serif', name: 'Noto Serif', labelKey: 'reader.fonts.noto-serif', cssVar: "var(--reading-noto-serif, 'Noto Serif', Georgia, serif)" },
+  { id: 'vietnam', name: 'Be Vietnam Pro (Sans)', labelKey: 'settings.siteFonts.vietnam', cssVar: "var(--reading-sans, 'Be Vietnam Pro', 'Inter', system-ui, sans-serif)" },
+  { id: 'inter', name: 'Inter', labelKey: 'settings.siteFonts.inter', cssVar: "'Inter', -apple-system, system-ui, sans-serif" },
+  { id: 'garamond', name: 'EB Garamond', labelKey: 'settings.siteFonts.garamond', cssVar: "'EB Garamond', Georgia, serif" },
+  { id: 'crimson', name: 'Crimson Pro', labelKey: 'settings.siteFonts.crimson', cssVar: "'Crimson Pro', Georgia, serif" },
+  { id: 'spectral', name: 'Spectral', labelKey: 'settings.siteFonts.spectral', cssVar: "'Spectral', Georgia, serif" },
+  { id: 'cormorant', name: 'Cormorant', labelKey: 'settings.siteFonts.cormorant', cssVar: "'Cormorant Garamond', Georgia, serif" },
+  { id: 'bitter', name: 'Bitter', labelKey: 'settings.siteFonts.bitter', cssVar: "'Bitter', Georgia, serif" },
+  { id: 'nunito', name: 'Nunito', labelKey: 'settings.siteFonts.nunito', cssVar: "'Nunito', sans-serif" },
+  { id: 'playfair', name: 'Playfair Display', labelKey: 'settings.siteFonts.playfair', cssVar: "'Playfair Display', Georgia, serif" },
+  { id: 'sans', name: 'System Sans', labelKey: 'reader.fonts.sans', cssVar: "var(--reading-sans, 'Be Vietnam Pro', 'Inter', system-ui, sans-serif)" },
 ];
 
 export const READER_WIDTHS: { id: ReaderWidth; labelKey: string; maxWidth: number }[] = [

@@ -1,23 +1,23 @@
-/* Google Fonts — Tất cả phông chữ có hỗ trợ Tiếng Việt 100% (subset Vietnamese) */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;0,7..72,600;1,7..72,400&family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Merriweather:ital,wght@0,400;0,700;1,400&family=Noto+Serif:ital,wght@0,400;0,500;0,600;1,400&family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,500&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Crimson+Pro:ital,wght@0,400;0,500;0,600;1,400&family=Spectral:ital,wght@0,400;0,500;0,600;1,400&family=Bitter:ital,wght@0,400;0,500;0,600;1,400&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Nunito:wght@400;600;700&display=swap');
+/* Google Fonts API v2 — Khai báo 13 họ phông chữ chuẩn Google Fonts với đầy đủ dải Unicode Tiếng Việt (Vietnamese Subset) */
+@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Bitter:ital,wght@0,400;0,600;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400&family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;0,7..72,600;0,7..72,700;1,7..72,400&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Merriweather:ital,wght@0,300;0,400;0,700;1,400&family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400&family=Nunito:wght@400;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Spectral:ital,wght@0,400;0,600;0,700;1,400&display=swap');
 
 :root {
-  /* Font UI mặc định — Inter + Apple System */
-  --font-ui: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif;
+  /* 1. Font UI mặc định — Be Vietnam Pro (Fallback: Inter, system-ui) */
+  --font-ui: 'Be Vietnam Pro', 'Inter', system-ui, -apple-system, sans-serif;
 
-  /* Font display editorial — tiêu đề lớn, hero, section */
+  /* 2. Font Display mặc định — Playfair Display (Fallback: Literata, Georgia) */
   --font-display: 'Playfair Display', 'Literata', Georgia, serif;
 
   /* Giãn dòng & giãn ký tự toàn trang */
   --site-line-height: 1.5;
   --site-letter-spacing: 0px;
 
-  /* Reading font families */
+  /* 3. Reading font families (Trình đọc truyện) */
   --reading-literata: 'Literata', Georgia, serif;
   --reading-lora: 'Lora', Georgia, serif;
   --reading-merriweather: 'Merriweather', Georgia, serif;
   --reading-noto-serif: 'Noto Serif', Georgia, serif;
-  --reading-sans: 'Inter', -apple-system, system-ui, sans-serif;
+  --reading-sans: 'Be Vietnam Pro', 'Inter', system-ui, sans-serif;
 }
 
 html,

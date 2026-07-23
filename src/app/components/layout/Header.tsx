@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router';
-import { Search } from 'lucide-react';
+import { Home, Compass, Search } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Input } from '../ui/input';
 import { cn } from '../ui/utils';
@@ -22,8 +22,8 @@ export function Header() {
 
   const navLinkClass = ({ isActive }: { isActive: boolean }) =>
     cn(
-      'px-3 py-2 rounded-md transition-colors hover:text-foreground',
-      isActive ? 'text-foreground' : 'text-muted-foreground',
+      'px-3 py-2 rounded-md transition-colors hover:text-foreground text-sm font-medium',
+      isActive ? 'text-foreground font-semibold' : 'text-muted-foreground',
     );
 
   return (
@@ -44,7 +44,7 @@ export function Header() {
           </span>
         </Link>
 
-        <nav className="hidden items-center md:flex">
+        <nav className="hidden items-center md:flex gap-1">
           <NavLink to="/" end className={navLinkClass}>
             {t('nav.home')}
           </NavLink>
@@ -60,21 +60,39 @@ export function Header() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder={t('nav.search')}
-              className="pl-9"
+              className="pl-9 h-9 text-xs"
               aria-label={t('nav.searchShort')}
             />
           </div>
         </form>
 
         <div className="ml-auto flex items-center gap-1 sm:ml-0">
+          <NavLink
+            to="/"
+            end
+            className="md:hidden p-2 text-muted-foreground hover:text-foreground transition-colors rounded-lg hover:bg-accent"
+            title={t('nav.home')}
+          >
+            <Home className="size-5" />
+          </NavLink>
+
+          <NavLink
+            to="/browse"
+            className="md:hidden p-2 text-muted-foreground hover:text-foreground transition-colors rounded-lg hover:bg-accent"
+            title={t('nav.browse')}
+          >
+            <Compass className="size-5" />
+          </NavLink>
+
           <button
             type="button"
             onClick={() => navigate('/browse')}
-            className="text-muted-foreground hover:text-foreground sm:hidden p-2"
+            className="text-muted-foreground hover:text-foreground sm:hidden p-2 transition-colors rounded-lg hover:bg-accent"
             aria-label={t('nav.searchShort')}
           >
             <Search className="size-5" />
           </button>
+
           <LanguageSwitcher />
           <ThemeControls />
         </div>
