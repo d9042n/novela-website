@@ -11,8 +11,13 @@
  * Lỗi: { error: { code, message } } — parse `code` để phân nhánh (404 -> not_found...).
  */
 
+// Fallback phải bền với CHUỖI RỖNG, không chỉ undefined. Dockerfile khai
+// `ENV VITE_API_BASE=$VITE_API_BASE`, nên build thiếu --build-arg cho ra biến
+// rỗng (chứ không phải không tồn tại). `??` chỉ bắt null/undefined -> Vite
+// inline "" -> base rỗng -> client gọi '/stories' thay vì '/api/v1/stories'.
+// Dùng `||` + trim để rỗng/toàn-khoảng-trắng đều rơi về default.
 const API_BASE: string =
-  (import.meta.env.VITE_API_BASE as string | undefined)?.replace(/\/$/, '') ??
+  (import.meta.env.VITE_API_BASE as string | undefined)?.trim().replace(/\/$/, '') ||
   '/api/v1';
 
 /** Envelope phân trang từ backend. */

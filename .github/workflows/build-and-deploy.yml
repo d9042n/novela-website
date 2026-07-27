@@ -38,6 +38,14 @@ jobs:
           target: runtime
           push: true
           tags: registry.gitlab.com/d9042n/image-registry/${{ env.projectName }}:${{ github.sha }}
+          # VITE_* là BUILD-TIME: Vite nhúng thẳng vào bundle lúc `pnpm build`, nên
+          # phải truyền ở đây. Không truyền -> src/app/data/client.ts rơi về default
+          # '/api/v1' (same-origin), nginx của website không có route đó nên
+          # SPA-fallback trả index.html + 200 OK cho request JSON -> client báo
+          # "invalid JSON response" ở mọi query. Giá trị là domain API CÔNG KHAI
+          # (Kong gateway), KÈM /api/v1 vì client.ts gọi path tương đối ('/stories').
+          build-args: |
+            VITE_API_BASE=https://novela-api.d9042n.online/api/v1
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
 

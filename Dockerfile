@@ -37,6 +37,17 @@ RUN corepack enable && corepack prepare pnpm@9 --activate
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
+# API base URL nhúng vào bundle. Vite chỉ đọc biến VITE_* CÓ TRONG ENV LÚC BUILD,
+# nên đây là điểm cấu hình DUY NHẤT — không thể đổi ở runtime bằng env của pod
+# nginx (bundle đã compile xong từ stage này).
+# CI truyền qua --build-arg (xem .github/workflows/build-and-deploy.yml); giá trị
+# là DOMAIN CÔNG KHAI của Kong gateway vì browser gọi trực tiếp, không qua proxy.
+# Không truyền -> rỗng -> client.ts rơi về default '/api/v1' (same-origin) = đúng
+# hành vi dev, nhưng ở prod sẽ bị nginx SPA-fallback trả index.html cho request
+# JSON -> "invalid JSON response". Vậy nên build prod BẮT BUỘC truyền biến này.
+ARG VITE_API_BASE
+ENV VITE_API_BASE=$VITE_API_BASE
+
 # Vite build cho production bundle
 RUN pnpm build
 
