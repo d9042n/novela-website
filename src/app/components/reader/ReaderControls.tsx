@@ -1,7 +1,8 @@
+import { useEffect, useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { ChapterSummary } from '../../data/types';
-import { useLocalized } from '../../hooks/useLocalized';
+import { getChapterList } from '../../data/api';
 import { useReaderSettings } from './ReaderSettingsContext';
 import {
   Select,
@@ -13,31 +14,68 @@ import {
 import { cn } from '../ui/utils';
 
 interface ReaderControlsProps {
-  chapters: ChapterSummary[];
-  currentIndex: number;
+  slug: string;
+  currentNo: number;
+  /** Tiêu đề chương hiện tại — hiển thị ngay ở trigger, không cần chờ fetch. */
+  currentTitle: string;
   total: number;
+  prevNo: number | null;
+  nextNo: number | null;
   onPrev: () => void;
   onNext: () => void;
-  onJump: (index: number) => void;
+  onJump: (no: number) => void;
   visible: boolean;
 }
 
 const DARK_READER_THEMES = ['dark', 'ocean', 'oled'];
 
+/** Cửa sổ chương nạp cho dropdown — KHÔNG nạp toàn bộ (D4). */
+const WINDOW_SIZE = 50;
+
+/**
+ * Thanh điều hướng dưới cùng của reader.
+ *
+ * Điều hướng prev/next dùng prev_no/next_no THẬT (D5: chapter_no không liên tục).
+ * Ô giữa là picker nhảy chương: chỉ nạp CỬA SỔ {@link WINDOW_SIZE} chương quanh
+ * chương hiện tại, nạp LAZY khi mở dropdown — truyện có thể >11.000 chương nên
+ * liệt kê toàn bộ sẽ nổ RAM (D4). Mục lục đầy đủ (server pagination + tìm kiếm)
+ * vẫn nằm ở toolbar.
+ */
 export function ReaderControls({
-  chapters,
-  currentIndex,
+  slug,
+  currentNo,
+  currentTitle,
   total,
+  prevNo,
+  nextNo,
   onPrev,
   onNext,
   onJump,
   visible,
 }: ReaderControlsProps) {
   const { t } = useTranslation();
-  const { t: tl } = useLocalized();
   const { settings } = useReaderSettings();
+  const isDark = DARK_READER_THEMES.includes(settings.theme);
 
-  const isDarkReader = DARK_READER_THEMES.includes(settings.theme);
+  const [open, setOpen] = useState(false);
+  const [items, setItems] = useState<ChapterSummary[]>([]);
+
+  // Nạp cửa sổ chương lần đầu mở dropdown (và khi đổi truyện/đổi cửa sổ).
+  const page = Math.max(1, Math.ceil(currentNo / WINDOW_SIZE));
+  useEffect(() => {
+    if (!open) return;
+    let active = true;
+    getChapterList(slug, { page, size: WINDOW_SIZE, order: 'asc' })
+      .then((res) => active && setItems(res.items))
+      .catch(() => active && setItems([]));
+    return () => {
+      active = false;
+    };
+  }, [open, slug, page]);
+
+  // chapter_no KHÔNG liên tục -> cửa sổ suy ra theo vị trí có thể không chứa
+  // chương hiện tại. Chỉ gắn value khi thực sự có item khớp, tránh Select hiện rỗng.
+  const hasCurrent = items.some((c) => c.chapterNo === currentNo);
 
   return (
     <div
@@ -56,7 +94,7 @@ export function ReaderControls({
         <button
           type="button"
           onClick={onPrev}
-          disabled={currentIndex <= 1}
+          disabled={prevNo == null}
           className="flex items-center gap-1 rounded-xl px-3 py-2 text-xs font-semibold border transition-all duration-150 shrink-0 disabled:opacity-30 disabled:pointer-events-none active:scale-95"
           style={{
             backgroundColor: 'color-mix(in srgb, var(--reader-fg) 10%, transparent)',
@@ -68,9 +106,22 @@ export function ReaderControls({
           <span className="hidden sm:inline">{t('reader.prevChapter')}</span>
         </button>
 
-        <div className="flex-1">
-          <Select value={String(currentIndex)} onValueChange={(v) => onJump(Number(v))}>
+        {/* min-w-0 là phần bắt buộc, không phải trang trí: flex-1 một mình vẫn
+            không cho ô này co xuống dưới chiều rộng NỘI TẠI của nó, mà nội dung
+            là tiêu đề chương với whitespace-nowrap (có thể rất dài). Ở 320px ô
+            này phình tới 271px và đẩy nút "Chương sau" ra ngoài mép phải — đo
+            được: element trải tới x=383 trên viewport 320. min-w-0 cho phép co;
+            phần cắt chữ do ui/select.tsx lo sẵn (line-clamp-1 trên select-value),
+            nên ở đây không cần thêm gì. */}
+        <div className="min-w-0 flex-1">
+          <Select
+            open={open}
+            onOpenChange={setOpen}
+            value={hasCurrent ? String(currentNo) : undefined}
+            onValueChange={(v) => onJump(Number(v))}
+          >
             <SelectTrigger
+              aria-label={t('reader.contents')}
               className="mx-auto w-full max-w-xs text-xs font-semibold rounded-xl border transition-all"
               style={{
                 backgroundColor: 'color-mix(in srgb, var(--reader-fg) 10%, transparent)',
@@ -78,52 +129,51 @@ export function ReaderControls({
                 color: 'var(--reader-fg)',
               }}
             >
-              <SelectValue />
+              <SelectValue placeholder={currentTitle} />
             </SelectTrigger>
             <SelectContent
               className={cn(
                 'max-h-72 border shadow-2xl z-[100] opacity-100',
-                isDarkReader ? 'reader-dark-dropdown !bg-[#18181b] !border-white/20' : 'reader-light-dropdown !bg-white !border-black/15',
+                isDark
+                  ? 'reader-dark-dropdown !bg-[#18181b] !border-white/20'
+                  : 'reader-light-dropdown !bg-white !border-black/15',
               )}
               style={{
-                backgroundColor: isDarkReader ? '#18181b' : '#ffffff',
-                borderColor: isDarkReader ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.15)',
-                color: isDarkReader ? '#ffffff' : '#0f172a',
+                backgroundColor: isDark ? '#18181b' : '#ffffff',
+                borderColor: isDark ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.15)',
+                color: isDark ? '#ffffff' : '#0f172a',
                 opacity: 1,
               }}
             >
-              {chapters.map((c) => (
+              {items.map((c) => (
                 <SelectItem
-                  key={c.id}
-                  value={String(c.index)}
+                  key={c.chapterNo}
+                  value={String(c.chapterNo)}
                   className={cn(
                     'text-xs cursor-pointer font-medium transition-all py-2 px-3 rounded-lg my-0.5',
-                    isDarkReader
+                    isDark
                       ? '!text-white focus:!bg-white/20 focus:!text-white data-[state=checked]:!bg-white/25 data-[state=checked]:!text-white'
                       : '!text-slate-900 focus:!bg-black/10 focus:!text-slate-900 data-[state=checked]:!bg-black/10 data-[state=checked]:!text-slate-900',
                   )}
-                  style={{
-                    color: isDarkReader ? '#ffffff' : '#0f172a',
-                  }}
+                  style={{ color: isDark ? '#ffffff' : '#0f172a' }}
                 >
                   <span
                     className="font-medium"
-                    style={{
-                      color: isDarkReader ? '#ffffff' : '#0f172a',
-                    }}
+                    style={{ color: isDark ? '#ffffff' : '#0f172a' }}
                   >
-                    {tl(c.title)}
+                    {c.title}
                   </span>
                 </SelectItem>
               ))}
             </SelectContent>
           </Select>
+          <p className="sr-only">{t('reader.chapterOf', { index: currentNo, total })}</p>
         </div>
 
         <button
           type="button"
           onClick={onNext}
-          disabled={currentIndex >= total}
+          disabled={nextNo == null}
           className="flex items-center gap-1 rounded-xl px-3 py-2 text-xs font-semibold border transition-all duration-150 shrink-0 disabled:opacity-30 disabled:pointer-events-none active:scale-95"
           style={{
             backgroundColor: 'color-mix(in srgb, var(--reader-fg) 10%, transparent)',

@@ -20,7 +20,8 @@
     "continueSection": "Đọc tiếp",
     "editorsChoice": "Lựa chọn của biên tập viên",
     "magazineQuote": "“Từ ngữ, theo ý kiến không mấy khiêm tốn của tôi, là nguồn phép thuật vô tận nhất. Vừa có thể gây thương tổn, lại vừa có thể chữa lành.”",
-    "magazineQuoteAuthor": "— Điểm nhấn văn học Novela"
+    "magazineQuoteAuthor": "— Điểm nhấn văn học Novela",
+    "goToSlide": "Xem truyện nổi bật {{index}} trên {{total}}"
   },
   "browse": {
     "title": "Tìm Kiếm & Khám Phá",
@@ -126,21 +127,6 @@
       "normal": "Vừa",
       "wide": "Rộng"
     },
-    "lineHeightValues": {
-      "compact": "Gọn",
-      "normal": "Vừa",
-      "relaxed": "Thoáng"
-    },
-    "spacingValues": {
-      "compact": "Hẹp",
-      "normal": "Vừa",
-      "relaxed": "Rộng"
-    },
-    "widthValues": {
-      "narrow": "Hẹp",
-      "normal": "Vừa",
-      "relaxed": "Rộng"
-    },
     "previewSample": "Người đọc lật giở từng trang, thả hồn vào câu chữ dưới ánh đèn dịu êm của màn đêm."
   },
   "settings": {
@@ -230,6 +216,9 @@
     "views": "lượt xem",
     "notFound": "Không tìm thấy",
     "notFoundDesc": "Nội dung bạn tìm không tồn tại.",
-    "loading": "Đang tải..."
+    "loading": "Đang tải...",
+    "loadError": "Không tải được nội dung. Vui lòng thử lại.",
+    "retry": "Thử lại",
+    "untitled": "Truyện chưa có tiêu đề"
   }
 }

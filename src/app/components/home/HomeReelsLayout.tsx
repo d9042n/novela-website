@@ -2,9 +2,8 @@ import { Link } from 'react-router';
 import { ChevronRight, Flame, Sparkles, TrendingUp } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { Novel } from '../../data/types';
-import { useLocalized } from '../../hooks/useLocalized';
 import { Badge } from '../ui/badge';
-import { GENRES } from '../../data/genres';
+import { useGenres } from '../../data/genres';
 import { HeroCarousel } from './HeroCarousel';
 import { NovelCard } from '../NovelCard';
 import {
@@ -62,7 +61,7 @@ function ReelRow({
       <Carousel opts={{ align: 'start', loop: true }} className="w-full relative px-1">
         <CarouselContent className="-ml-3">
           {(novels || []).map((novel) => (
-            <CarouselItem key={novel.id} className="pl-3 basis-1/2 sm:basis-1/3 md:basis-1/4 lg:basis-1/5 xl:basis-1/6">
+            <CarouselItem key={novel.slug} className="pl-3 basis-1/2 sm:basis-1/3 md:basis-1/4 lg:basis-1/5 xl:basis-1/6">
               <NovelCard novel={novel} />
             </CarouselItem>
           ))}
@@ -76,7 +75,7 @@ function ReelRow({
 
 export function HomeReelsLayout({ featured = [], latest = [], popular = [] }: HomeReelsLayoutProps) {
   const { t } = useTranslation();
-  const { t: tl } = useLocalized();
+  const { genres } = useGenres();
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8 space-y-8 pb-8">
@@ -118,13 +117,13 @@ export function HomeReelsLayout({ featured = [], latest = [], popular = [] }: Ho
             {t('home.byGenre')}
           </h2>
           <div className="flex flex-wrap gap-2">
-            {GENRES.map((g) => (
-              <Link key={g.id} to={`/browse?genre=${g.id}`}>
+            {genres.map((g) => (
+              <Link key={g.slug} to={`/browse?genre=${g.slug}`}>
                 <Badge
                   variant="outline"
                   className="px-3.5 py-1.5 text-xs rounded-full cursor-pointer transition-all hover:border-primary hover:bg-accent hover:text-accent-foreground"
                 >
-                  {tl(g.name)}
+                  {g.name}
                 </Badge>
               </Link>
             ))}

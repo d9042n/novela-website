@@ -1,10 +1,9 @@
 import { Link } from 'react-router';
 import { RouterLink } from '../ui/router-link';
-import { BookOpen, Eye, Play, Star } from 'lucide-react';
+import { BookOpen, Play, Star } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import type { ChapterSummary, Novel } from '../../data/types';
-import { getGenre } from '../../data/genres';
-import { useLocalized } from '../../hooks/useLocalized';
+import { displayTitle } from '../../data/format';
+import type { Novel } from '../../data/types';
 import { ImageWithFallback } from '../figma/ImageWithFallback';
 import { ChapterList } from './ChapterList';
 import { Button } from '../ui/button';
@@ -12,19 +11,20 @@ import { Badge } from '../ui/badge';
 
 interface DetailCinematicLayoutProps {
   novel: Novel;
-  chapters: ChapterSummary[];
   readTarget: number;
-  lastRead: { chapterIndex: number; chapterTitle: string; updatedAt: number } | null;
+  firstChapterNo: number;
+  lastRead: { chapterNo: number; updatedAt: number } | null;
 }
 
+// TODO(i18n-content): title/author/genre/description đơn ngữ VN (backend chỉ có VN).
 export function DetailCinematicLayout({
   novel,
-  chapters,
   readTarget,
   lastRead,
 }: DetailCinematicLayoutProps) {
   const { t } = useTranslation();
-  const { t: tl } = useLocalized();
+  const scoreText = novel.score != null ? novel.score.toFixed(1) : '—';
+  const chapterCount = novel.chapterCount ?? 0;
 
   return (
     <div className="space-y-8 pb-10">
@@ -33,7 +33,7 @@ export function DetailCinematicLayout({
         <div className="absolute inset-0 z-0">
           <ImageWithFallback
             src={novel.cover}
-            alt={tl(novel.title)}
+            alt={displayTitle(novel.title, t('common.untitled'))}
             className="h-full w-full object-cover opacity-50 blur-2xl scale-110"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
@@ -43,48 +43,41 @@ export function DetailCinematicLayout({
           <div className="relative aspect-[2/3] w-40 sm:w-48 shrink-0 overflow-hidden rounded-xl shadow-2xl border-2 border-white/20">
             <ImageWithFallback
               src={novel.cover}
-              alt={tl(novel.title)}
+              alt={displayTitle(novel.title, t('common.untitled'))}
               className="h-full w-full object-cover"
             />
           </div>
 
           <div className="flex-1 space-y-3 text-center sm:text-left">
             <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
-              {novel.genreIds.map((gid) => {
-                const g = getGenre(gid);
-                return g ? (
-                  <Link key={gid} to={`/browse?genre=${gid}`}>
-                    <Badge variant="secondary" className="bg-white/20 text-white hover:bg-white/30 backdrop-blur-md">
-                      {tl(g.name)}
-                    </Badge>
-                  </Link>
-                ) : null;
-              })}
+              {novel.genres.map((g) => (
+                <Link key={g.slug} to={`/browse?genre=${g.slug}`}>
+                  <Badge variant="secondary" className="bg-white/20 text-white hover:bg-white/30 backdrop-blur-md">
+                    {g.name}
+                  </Badge>
+                </Link>
+              ))}
             </div>
 
             <h1 style={{ fontFamily: 'var(--font-display)', fontSize: '2.4rem', fontWeight: 800, lineHeight: 1.1 }}>
-              {tl(novel.title)}
+              {displayTitle(novel.title, t('common.untitled'))}
             </h1>
-            <p className="text-white/80 font-serif italic text-base">{tl(novel.author)}</p>
+            <p className="text-white/80 font-serif italic text-base">{novel.authors[0]?.name ?? ''}</p>
 
             <div className="flex flex-wrap items-center justify-center sm:justify-start gap-6 text-sm text-white/90 pt-2">
               <span className="flex items-center gap-1 font-bold text-amber-400">
                 <Star className="size-4 fill-amber-400" />
-                {novel.rating.toFixed(1)}
+                {scoreText}
               </span>
               <span className="flex items-center gap-1">
                 <BookOpen className="size-4 text-primary" />
-                {novel.chapterCount} {t('novel.chapters')}
-              </span>
-              <span className="flex items-center gap-1">
-                <Eye className="size-4" />
-                {(novel.views / 1000).toFixed(0)}K {t('novel.views')}
+                {chapterCount} {t('novel.chapters')}
               </span>
             </div>
 
             <div className="pt-3 flex flex-wrap items-center justify-center sm:justify-start gap-3">
               <Button asChild size="lg" className="rounded-full gap-2 font-bold shadow-lg">
-                <RouterLink to={`/novel/${novel.id}/chapter/${readTarget}`}>
+                <RouterLink to={`/novel/${novel.slug}/chapter/${readTarget}`}>
                   <Play className="size-4" />
                   {lastRead ? t('actions.continueReading', { index: readTarget }) : t('actions.readFromStart')}
                 </RouterLink>
@@ -100,7 +93,7 @@ export function DetailCinematicLayout({
           <div className="p-5 rounded-2xl bg-card border border-border space-y-3">
             <h2 className="font-bold text-base border-b border-border pb-2">{t('novel.description')}</h2>
             <p className="text-xs text-muted-foreground whitespace-pre-line leading-relaxed">
-              {tl(novel.description)}
+              {novel.description}
             </p>
           </div>
         </div>
@@ -108,9 +101,9 @@ export function DetailCinematicLayout({
         <div className="lg:col-span-8 space-y-4">
           <div className="p-5 rounded-2xl bg-card border border-border space-y-4">
             <h2 className="font-bold text-base border-b border-border pb-2">
-              {t('novel.chapterList')} ({novel.chapterCount})
+              {t('novel.chapterList')} ({chapterCount})
             </h2>
-            <ChapterList novelId={novel.id} chapters={chapters} lastReadIndex={lastRead?.chapterIndex} />
+            <ChapterList slug={novel.slug} total={novel.chapterCount} lastReadNo={lastRead?.chapterNo} />
           </div>
         </div>
       </div>

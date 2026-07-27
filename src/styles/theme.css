@@ -210,8 +210,9 @@
 }
 
 @theme inline {
-  --font-display: var(--font-display);
-  --font-body: var(--font-body);
+  /* --font-display/-body cố ý KHÔNG khai ở đây: `--x: var(--x)` là tự tham chiếu,
+     và fonts.css (import sau) mới giữ giá trị thật. Utility `font-display`/
+     `font-body` không được dùng ở đâu; component gọi var(--font-display) trực tiếp. */
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);

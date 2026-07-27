@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import type { Novel } from '../../data/types';
-import { getNovelById } from '../../data/api';
+import { getNovelBySlug } from '../../data/api';
+import { displayTitle } from '../../data/format';
 import { getContinueList, type ReadingRecord } from '../../hooks/useReadingProgress';
-import { useLocalized } from '../../hooks/useLocalized';
 import { ImageWithFallback } from '../figma/ImageWithFallback';
 import { Progress } from '../ui/progress';
 
@@ -13,19 +13,36 @@ interface Entry {
   novel: Novel;
 }
 
+// TODO(i18n-content): title đơn ngữ VN (backend chỉ có VN).
 export function ContinueReading() {
   const { t } = useTranslation();
-  const { t: tl } = useLocalized();
   const [entries, setEntries] = useState<Entry[]>([]);
 
   useEffect(() => {
+    // active flag: mỗi record là một request riêng, tối đa 8 cái. Người dùng
+    // bấm sang trang khác trước khi cả 8 xong là chuyện thường, và khi đó
+    // setEntries chạy trên component đã unmount -> React cảnh báo, và giữ
+    // luôn tham chiếu tới state đã bỏ. Các effect khác trong repo dùng đúng
+    // pattern này (xem NovelDetailPage, ReaderPage).
+    let active = true;
     const records = getContinueList().slice(0, 8);
     Promise.all(
       records.map(async (record) => {
-        const novel = await getNovelById(record.novelId);
-        return novel ? { record, novel } : null;
+        try {
+          const novel = await getNovelBySlug(record.slug);
+          return { record, novel };
+        } catch {
+          // Truyện không còn tồn tại -> bỏ qua khỏi danh sách đọc tiếp.
+          return null;
+        }
       }),
-    ).then((list) => setEntries(list.filter(Boolean) as Entry[]));
+    ).then((list) => {
+      if (!active) return;
+      setEntries(list.filter(Boolean) as Entry[]);
+    });
+    return () => {
+      active = false;
+    };
   }, []);
 
   if (entries.length === 0) return null;
@@ -43,24 +60,24 @@ export function ContinueReading() {
       <div className="flex gap-4 overflow-x-auto pb-2">
         {entries.map(({ record, novel }) => (
           <Link
-            key={novel.id}
-            to={`/novel/${novel.id}/chapter/${record.chapterIndex}`}
+            key={novel.slug}
+            to={`/novel/${novel.slug}/chapter/${record.chapterNo}`}
             className="group flex w-64 shrink-0 gap-3 rounded-lg border border-border bg-card p-3 hover:border-primary/50"
           >
             <div className="h-24 w-16 shrink-0 overflow-hidden rounded-md bg-muted">
               <ImageWithFallback
                 src={novel.cover}
-                alt={tl(novel.title)}
+                alt={displayTitle(novel.title, t('common.untitled'))}
                 className="h-full w-full object-cover"
               />
             </div>
             <div className="flex min-w-0 flex-1 flex-col justify-between">
               <div>
-                <h3 className="line-clamp-1 group-hover:text-primary" style={{ fontFamily: 'var(--font-display)', fontSize: '1rem', fontWeight: 600 }}>{tl(novel.title)}</h3>
+                <h3 className="line-clamp-1 group-hover:text-primary" style={{ fontFamily: 'var(--font-display)', fontSize: '1rem', fontWeight: 600 }}>{displayTitle(novel.title, t('common.untitled'))}</h3>
                 <p className="text-muted-foreground" style={{ fontSize: '0.8rem' }}>
                   {t('reader.chapterOf', {
-                    index: record.chapterIndex,
-                    total: novel.chapterCount,
+                    index: record.chapterNo,
+                    total: novel.chapterCount ?? '?',
                   })}
                 </p>
               </div>

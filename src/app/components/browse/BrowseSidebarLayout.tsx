@@ -1,8 +1,6 @@
 import { Search, Filter, Check, RotateCcw } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import type { Novel } from '../../data/types';
-import { GENRES } from '../../data/genres';
-import { useLocalized } from '../../hooks/useLocalized';
+import type { Genre, Novel, NovelStatus } from '../../data/types';
 import { Input } from '../ui/input';
 import { Card } from '../ui/card';
 import { Checkbox } from '../ui/checkbox';
@@ -11,25 +9,29 @@ import { NovelGrid } from '../NovelGrid';
 
 interface BrowseSidebarLayoutProps {
   query: string;
-  genreIds: string[];
-  statusList: ('ongoing' | 'completed')[];
+  genreSlugs: string[];
+  statusList: NovelStatus[];
   sort: string;
+  genres: Genre[];
   results: Novel[];
-  paged: Novel[];
-  toggleGenre: (id: string) => void;
-  toggleStatus: (st: 'ongoing' | 'completed') => void;
+  total: number;
+  toggleGenre: (slug: string) => void;
+  toggleStatus: (st: NovelStatus) => void;
   setParam: (key: string, value: string) => void;
   clearAllFilters: () => void;
   paginationNode: React.ReactNode;
 }
 
+const STATUS_OPTIONS: NovelStatus[] = ['ongoing', 'completed'];
+
 export function BrowseSidebarLayout({
   query,
-  genreIds = [],
+  genreSlugs = [],
   statusList = [],
   sort,
+  genres = [],
   results = [],
-  paged = [],
+  total,
   toggleGenre,
   toggleStatus,
   setParam,
@@ -37,9 +39,8 @@ export function BrowseSidebarLayout({
   paginationNode,
 }: BrowseSidebarLayoutProps) {
   const { t } = useTranslation();
-  const { t: tl } = useLocalized();
 
-  const hasActiveFilters = genreIds.length > 0 || statusList.length > 0 || query !== '';
+  const hasActiveFilters = genreSlugs.length > 0 || statusList.length > 0 || query !== '';
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8 space-y-6">
@@ -49,7 +50,7 @@ export function BrowseSidebarLayout({
             {t('browse.title')}
           </h1>
           <p className="text-xs text-muted-foreground mt-1">
-            {t('browse.resultsCount', { count: (results || []).length })}
+            {t('browse.resultsCount', { count: total })}
           </p>
         </div>
 
@@ -112,7 +113,7 @@ export function BrowseSidebarLayout({
                 {t('browse.selectStatuses')}
               </div>
               <div className="space-y-2 text-xs">
-                {(['ongoing', 'completed'] as const).map((st) => {
+                {STATUS_OPTIONS.map((st) => {
                   const checked = statusList.includes(st);
                   return (
                     <label
@@ -137,19 +138,19 @@ export function BrowseSidebarLayout({
             <div className="pt-3 border-t border-border/60 space-y-2">
               <div className="flex items-center justify-between text-xs font-bold uppercase tracking-wider text-muted-foreground">
                 <span>{t('browse.selectGenres')}</span>
-                {genreIds.length > 0 && (
+                {genreSlugs.length > 0 && (
                   <span className="text-primary font-bold text-[11px] lowercase">
-                    ({genreIds.length})
+                    ({genreSlugs.length})
                   </span>
                 )}
               </div>
 
               <div className="space-y-1.5 max-h-72 overflow-y-auto pr-1 text-xs">
-                {GENRES.map((g) => {
-                  const checked = genreIds.includes(g.id);
+                {genres.map((g) => {
+                  const checked = genreSlugs.includes(g.slug);
                   return (
                     <label
-                      key={g.id}
+                      key={g.slug}
                       className={`flex items-center justify-between px-2.5 py-1.5 rounded-md cursor-pointer transition-colors ${
                         checked
                           ? 'bg-primary/10 text-primary font-bold'
@@ -159,9 +160,9 @@ export function BrowseSidebarLayout({
                       <span className="flex items-center gap-2.5">
                         <Checkbox
                           checked={checked}
-                          onCheckedChange={() => toggleGenre(g.id)}
+                          onCheckedChange={() => toggleGenre(g.slug)}
                         />
-                        <span>{tl(g.name)}</span>
+                        <span>{g.name}</span>
                       </span>
                       {checked && <Check className="size-3.5 text-primary" />}
                     </label>
@@ -174,11 +175,11 @@ export function BrowseSidebarLayout({
 
         {/* Right Main Grid Area */}
         <main className="lg:col-span-9 space-y-6">
-          {(results || []).length === 0 ? (
+          {total === 0 ? (
             <p className="py-16 text-center text-muted-foreground">{t('browse.noResults')}</p>
           ) : (
             <>
-              <NovelGrid novels={paged || []} />
+              <NovelGrid novels={results} />
               {paginationNode}
             </>
           )}

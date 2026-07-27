@@ -21,10 +21,10 @@ export default function App() {
             <Route element={<AppLayout />}>
               <Route index element={<HomePage />} />
               <Route path="browse" element={<BrowsePage />} />
-              <Route path="novel/:novelId" element={<NovelDetailPage />} />
+              <Route path="novel/:slug" element={<NovelDetailPage />} />
               <Route path="*" element={<NotFoundPage />} />
             </Route>
-            <Route path="novel/:novelId/chapter/:chapterIndex" element={<ReaderPage />} />
+            <Route path="novel/:slug/chapter/:chapterNo" element={<ReaderPage />} />
           </Routes>
         </BrowserRouter>
         <Toaster />

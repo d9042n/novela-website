@@ -6,9 +6,8 @@ import {
   getLatestNovels,
   getPopularNovels,
 } from '../../data/api';
-import { GENRES } from '../../data/genres';
+import { useGenres } from '../../data/genres';
 import { useAsync } from '../../hooks/useAsync';
-import { useLocalized } from '../../hooks/useLocalized';
 import { NovelGrid } from '../NovelGrid';
 import { HeroCarousel } from './HeroCarousel';
 import { ContinueReading } from './ContinueReading';
@@ -49,10 +48,11 @@ function SectionHeader({ index, title, to }: { index: string; title: string; to?
 
 export function HomePage() {
   const { t } = useTranslation();
-  const { t: tl } = useLocalized();
   const { homePreset } = useTheme();
+  // TODO(i18n-content): tên thể loại đơn ngữ VN (từ API /genres).
+  const { genres } = useGenres();
 
-  const { data: featured = [] } = useAsync(getFeaturedNovels, [], []);
+  const { data: featured = [] } = useAsync(() => getFeaturedNovels(6), [], []);
   const { data: latest = [] } = useAsync(() => getLatestNovels(12), [], []);
   const { data: popular = [] } = useAsync(() => getPopularNovels(12), [], []);
 
@@ -88,13 +88,13 @@ export function HomePage() {
       <section className="mt-14">
         <SectionHeader index="03" title={t('home.byGenre')} />
         <div className="flex flex-wrap gap-2">
-          {GENRES.map((g) => (
-            <Link key={g.id} to={`/browse?genre=${g.id}`}>
+          {genres.map((g) => (
+            <Link key={g.slug} to={`/browse?genre=${g.slug}`}>
               <Badge
                 variant="outline"
                 className="cursor-pointer rounded-full px-4 py-2 transition-colors hover:border-primary hover:bg-accent hover:text-accent-foreground"
               >
-                {tl(g.name)}
+                {g.name}
               </Badge>
             </Link>
           ))}

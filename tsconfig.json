@@ -1,0 +1,47 @@
+{
+  // Typecheck-only config. Vite/esbuild STRIPS types without checking them, so
+  // `pnpm build` passing says nothing about type correctness — this file is what
+  // makes `pnpm typecheck` (tsc --noEmit) possible. noEmit is set because tsc
+  // never produces the bundle here; Vite owns that.
+  //
+  // Run it through Docker (the host has no Node toolchain):
+  //   docker compose run --rm website pnpm typecheck
+  "compilerOptions": {
+    "target": "ES2022",
+    "useDefineForClassFields": true,
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "skipLibCheck": true,
+
+    // Bundler mode: Vite resolves imports, not tsc.
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "moduleDetection": "force",
+    "noEmit": true,
+    "jsx": "react-jsx",
+
+    // vite/client declares import.meta.env (src/app/data/client.ts reads
+    // VITE_API_BASE); node covers the __dirname/process/path use in
+    // vite.config.ts, which runs in Node, not the browser.
+    "types": ["vite/client", "node"],
+
+    "strict": true,
+    // ON, not off: `pnpm typecheck` is meant to be the gate that says "no errors,
+    // no warnings", and tsc has no warning level — an unused local is either an
+    // error or invisible. Leaving these false would have hidden three real dead
+    // bindings (an unused map index, an unread prop, an unread context value).
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+
+    // Mirrors the `@` -> src alias in vite.config.ts so tsc resolves the same
+    // specifiers the bundler does.
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
+  "include": ["src", "vite.config.ts"]
+}

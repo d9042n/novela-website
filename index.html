@@ -8,6 +8,16 @@
       <title>Novela</title>
       <meta name="description" content="Discover and read a vast collection of novels with a user-friendly interface that enhances reading experience through customizable features and easy navigation." />
       <meta name="robots" content="noindex, nofollow" />
+      <!-- Google Fonts nạp qua <link>, KHÔNG qua @import trong CSS: fonts.css được
+           import lồng (index.css -> fonts.css) nên khi bundle làm phẳng, @import url()
+           không còn ở đầu file -> vị trí không hợp lệ -> bundler bỏ luôn, prod mất
+           @font-face và rơi về Georgia. Dev không bundle nên không lộ lỗi này. -->
+      <link rel="preconnect" href="https://fonts.googleapis.com" />
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Bitter:ital,wght@0,400;0,600;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400&family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;0,7..72,600;0,7..72,700;1,7..72,400&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Merriweather:ital,wght@0,300;0,400;0,700;1,400&family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400&family=Nunito:wght@400;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Spectral:ital,wght@0,400;0,600;0,700;1,400&display=swap"
+      />
       <style>html, body { height: 100%; margin: 0; } #root { height: 100%; }</style>
       
     </head>

@@ -35,7 +35,10 @@ export function SiteSettingsModal({ open, onOpenChange }: SiteSettingsModalProps
   const {
     siteTheme,
     setSiteTheme,
-    siteFont,
+    // siteFont (the value) is deliberately not pulled in: the modal only WRITES
+    // this setting via setSiteFont, and reads siteFontUi/siteFontDisplay for the
+    // active-state highlight. Destructuring the unread value tripped
+    // noUnusedLocals.
     setSiteFont,
     siteFontUi,
     setSiteFontUi,

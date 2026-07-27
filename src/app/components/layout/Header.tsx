@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router';
-import { Home, Compass, Search } from 'lucide-react';
+import { Compass, Search } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Input } from '../ui/input';
 import { cn } from '../ui/utils';
@@ -34,10 +34,16 @@ export function Header() {
       )}
     >
       <div className="mx-auto flex h-16 max-w-7xl items-center gap-4 px-4 sm:px-6">
-        <Link to="/" className="flex items-center gap-2.5 shrink-0">
-          <NovelaMark className="size-7 text-primary" />
+        {/* min-w-0 chứ không shrink-0: ở 320px hàng icon bên phải cần chỗ, mà
+            logo shrink-0 thì nó không nhường một pixel nào và cả header tràn
+            ngang (đo được: scrollWidth 422 trên viewport 320).
+            min-w-0 một mình KHÔNG đủ — nó chỉ cho phép co, còn phải truncate trên
+            chữ mới thực sự co. Dấu hiệu (svg) giữ nguyên kích thước nhờ shrink-0
+            đặt thẳng trên nó, nên thứ nhường chỗ là chữ, không phải logo. */}
+        <Link to="/" className="flex min-w-0 items-center gap-2.5">
+          <NovelaMark className="size-7 shrink-0 text-primary" />
           <span
-            className="tracking-tight"
+            className="truncate tracking-tight"
             style={{ fontFamily: 'var(--font-display)', fontSize: '1.5rem', fontWeight: 700, letterSpacing: '-0.01em' }}
           >
             {t('app.name')}
@@ -66,16 +72,10 @@ export function Header() {
           </div>
         </form>
 
-        <div className="ml-auto flex items-center gap-1 sm:ml-0">
-          <NavLink
-            to="/"
-            end
-            className="md:hidden p-2 text-muted-foreground hover:text-foreground transition-colors rounded-lg hover:bg-accent"
-            title={t('nav.home')}
-          >
-            <Home className="size-5" />
-          </NavLink>
-
+        {/* gap-1 -> gap-0.5 dưới sm: ở 320px hàng này từng rộng 280px cố định và
+            đẩy tràn ngang 102px (đo được). Nút Home cũ đã bỏ hẳn — nó trùng đúng
+            chức năng với logo bên trái (logo cũng link "/"), nên nó chỉ chiếm chỗ. */}
+        <div className="ml-auto flex shrink-0 items-center gap-0.5 sm:ml-0 sm:gap-1">
           <NavLink
             to="/browse"
             className="md:hidden p-2 text-muted-foreground hover:text-foreground transition-colors rounded-lg hover:bg-accent"

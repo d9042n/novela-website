@@ -100,7 +100,12 @@ function Carousel({
     api.on("select", onSelect);
 
     return () => {
+      // Phải off ĐỦ cả hai: chỉ off("select") thì handler reInit còn treo trên
+      // api. Hiện vô hại vì api/onSelect đều stable nên effect chạy đúng một
+      // lần, nhưng nếu api đổi identity (đổi orientation, remount viewport) thì
+      // mỗi vòng để lại một handler chết bám vào api cũ.
       api?.off("select", onSelect);
+      api?.off("reInit", onSelect);
     };
   }, [api, onSelect]);
 

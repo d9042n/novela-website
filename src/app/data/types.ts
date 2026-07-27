@@ -1,48 +1,93 @@
 /**
  * Kiểu dữ liệu domain cho Novela.
- * Text đa ngôn ngữ dùng LocalizedText { vi, en } để component render theo i18n.
+ *
+ * Content (title/author/description/genre name/chapter title/paragraph) là ĐƠN NGỮ
+ * tiếng Việt — khớp backend hiện chỉ có tiếng Việt.
+ * TODO(i18n-content): khi backend có nội dung đa ngôn ngữ, mở lại shape đa ngữ
+ * cho các field content bên dưới (KHÔNG dùng lại mock {vi,en} cứng).
+ *
+ * UI chrome (nút, label, menu) VẪN song ngữ qua i18n/locales/*.json — tách bạch,
+ * không liên quan các type ở đây.
  */
+
+/** Ngôn ngữ UI chrome (không phải content). Dùng cho i18n hệ thống. */
 export type Locale = 'vi' | 'en';
 
-export interface LocalizedText {
-  vi: string;
-  en: string;
-}
+/**
+ * Trạng thái truyện dùng ở UI.
+ * API trả `"ongoing"` | `"full"`; tầng map đổi `full` -> `completed`.
+ */
+export type NovelStatus = 'ongoing' | 'completed';
 
-export type NovelStatus = 'ongoing' | 'completed' | 'hiatus';
-
+/** Thể loại (từ endpoint /genres, phân trang KHÔNG có — tập cố định 46 genre). */
 export interface Genre {
-  id: string;
-  name: LocalizedText;
-}
-
-export interface Novel {
-  id: string;
+  id: number;
+  name: string;
   slug: string;
-  title: LocalizedText;
-  author: LocalizedText;
-  cover: string; // imported asset URL
-  description: LocalizedText;
-  genreIds: string[];
+}
+
+/** Tác giả nhúng trong story (list + detail). */
+export interface Author {
+  name: string;
+  slug: string;
+}
+
+/** Thể loại nhúng trong story (chỉ name + slug, khác Genre có id). */
+export interface NovelGenre {
+  name: string;
+  slug: string;
+}
+
+/**
+ * Truyện — hợp nhất list item + detail.
+ * `slug` là khóa định danh duy nhất (bỏ `id`, route bằng slug).
+ */
+export interface Novel {
+  slug: string;
+  title: string;
+  description: string;
+  /** cover_url; có thể là "" -> component dùng ImageWithFallback. */
+  cover: string;
   status: NovelStatus;
-  rating: number; // 0..5
+  isAdult: boolean;
+  /** Thang /10, nullable khi chưa có điểm. */
+  score: number | null;
+  /** Số lượt đánh giá cào sẵn từ nguồn, nullable. */
+  ratingCount: number | null;
+  /** Lượt xem hệ thống tự tracking (view_count), NOT NULL default 0. */
   views: number;
-  chapterCount: number;
-  updatedAt: string; // ISO date
-  featured?: boolean;
+  /**
+   * Số chương. List map từ `latest_chapter_no`, detail map từ `chapter_count`.
+   * Nullable (list có thể chưa có latest_chapter_no).
+   */
+  chapterCount: number | null;
+  /** RFC3339, nullable. */
+  updatedAt: string | null;
+  /** LUÔN là mảng (có thể rỗng). List + detail đều trả. */
+  authors: Author[];
+  /** LUÔN là mảng (có thể rỗng). */
+  genres: NovelGenre[];
 }
 
-/** Tóm tắt chương (cho danh sách) — không kèm nội dung nặng. */
+/** Tóm tắt chương cho danh sách (endpoint /stories/{slug}/chapters). */
 export interface ChapterSummary {
-  id: string;
-  novelId: string;
-  index: number; // số thứ tự chương (1-based)
-  title: LocalizedText;
-  publishedAt: string; // ISO date
-  wordCount: number;
+  chapterNo: number;
+  title: string;
+  /** Đường dẫn suy ra `/{slug}/chuong-{no}/` (không lưu DB). */
+  url: string;
 }
 
-/** Chương đầy đủ, có nội dung là mảng đoạn văn. */
-export interface Chapter extends ChapterSummary {
-  paragraphs: LocalizedText[];
+/** Chương đầy đủ (endpoint /stories/{slug}/chapters/{no}). */
+export interface Chapter {
+  chapterNo: number;
+  title: string;
+  /** Text thuần, phân đoạn bằng `\n\n`. */
+  content: string;
+  /** content đã split thành đoạn văn (tiện cho reader render). */
+  paragraphs: string[];
+  wordCount: number | null;
+  url: string;
+  /** Chương liền kề; null ở biên. Điều hướng dùng 2 field này, KHÔNG tự +-1. */
+  prevNo: number | null;
+  nextNo: number | null;
 }

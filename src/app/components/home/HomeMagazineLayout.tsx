@@ -1,11 +1,11 @@
 import { Link } from 'react-router';
 import { ChevronRight, Quote, BookOpen, Star, Sparkles } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { displayTitle } from '../../data/format';
 import type { Novel } from '../../data/types';
-import { useLocalized } from '../../hooks/useLocalized';
+import { ImageWithFallback } from '../figma/ImageWithFallback';
 import { Badge } from '../ui/badge';
 import { Card, CardContent } from '../ui/card';
-import { GENRES } from '../../data/genres';
 
 interface HomeMagazineLayoutProps {
   featured: Novel[];
@@ -13,9 +13,13 @@ interface HomeMagazineLayoutProps {
   popular: Novel[];
 }
 
-export function HomeMagazineLayout({ featured = [], latest = [], popular = [] }: HomeMagazineLayoutProps) {
+const scoreText = (score: number | null) => (score != null ? score.toFixed(1) : '—');
+
+// TODO(i18n-content): title/author/genre/description đơn ngữ VN (backend chỉ có VN).
+// `latest` stays in the props type — HomePage passes it — but this layout never
+// renders it: the magazine grid is built from featured + popular only.
+export function HomeMagazineLayout({ featured = [], popular = [] }: HomeMagazineLayoutProps) {
   const { t } = useTranslation();
-  const { t: tl } = useLocalized();
 
   const heroMain = (featured && featured[0]) || (popular && popular[0]);
   const heroSub = (featured && featured.length > 1)
@@ -37,12 +41,12 @@ export function HomeMagazineLayout({ featured = [], latest = [], popular = [] }:
           {/* Main Bento Hero Card (7 cols) */}
           {heroMain && (
             <Link
-              to={`/novel/${heroMain.id}`}
+              to={`/novel/${heroMain.slug}`}
               className="lg:col-span-7 group relative flex flex-col justify-end min-h-[380px] sm:min-h-[460px] rounded-2xl overflow-hidden bg-black p-6 sm:p-8 text-white shadow-xl transition-all duration-300 hover:shadow-2xl border border-border/40"
             >
-              <img
+              <ImageWithFallback
                 src={heroMain.cover}
-                alt={tl(heroMain.title)}
+                alt={displayTitle(heroMain.title, t('common.untitled'))}
                 className="absolute inset-0 h-full w-full object-cover opacity-65 transition-transform duration-700 group-hover:scale-105"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
@@ -54,20 +58,20 @@ export function HomeMagazineLayout({ featured = [], latest = [], popular = [] }:
                   </Badge>
                   <span className="text-xs text-white/80 flex items-center gap-1">
                     <Star className="size-3.5 fill-amber-400 text-amber-400" />
-                    {heroMain.rating}
+                    {scoreText(heroMain.score)}
                   </span>
                 </div>
 
                 <h1 style={{ fontFamily: 'var(--font-display)', fontSize: '2rem', fontWeight: 800, lineHeight: 1.15 }}>
-                  {tl(heroMain.title)}
+                  {displayTitle(heroMain.title, t('common.untitled'))}
                 </h1>
 
                 <p className="text-sm text-white/80 line-clamp-2 leading-relaxed">
-                  {tl(heroMain.description)}
+                  {heroMain.description}
                 </p>
 
                 <div className="pt-2 flex items-center justify-between text-xs text-white/70 border-t border-white/20">
-                  <span>{tl(heroMain.author)}</span>
+                  <span>{heroMain.authors[0]?.name ?? ''}</span>
                   <span className="flex items-center gap-1 text-primary-foreground font-semibold">
                     {t('actions.readNow')}
                     <ChevronRight className="size-4" />
@@ -81,29 +85,29 @@ export function HomeMagazineLayout({ featured = [], latest = [], popular = [] }:
           <div className="lg:col-span-5 grid grid-cols-1 gap-4">
             {(heroSub || []).map((novel) => (
               <Link
-                key={novel.id}
-                to={`/novel/${novel.id}`}
+                key={novel.slug}
+                to={`/novel/${novel.slug}`}
                 className="group relative flex items-center gap-4 rounded-xl border border-border bg-card p-3 transition-all hover:border-primary/50 hover:shadow-md"
               >
                 <div className="relative aspect-[3/4] w-20 shrink-0 overflow-hidden rounded-lg bg-muted">
-                  <img
+                  <ImageWithFallback
                     src={novel.cover}
-                    alt={tl(novel.title)}
+                    alt={displayTitle(novel.title, t('common.untitled'))}
                     className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                   />
                 </div>
                 <div className="flex-1 min-w-0 space-y-1">
                   <h3 className="font-bold text-sm truncate group-hover:text-primary transition-colors">
-                    {tl(novel.title)}
+                    {displayTitle(novel.title, t('common.untitled'))}
                   </h3>
-                  <p className="text-xs text-muted-foreground truncate">{tl(novel.author)}</p>
+                  <p className="text-xs text-muted-foreground truncate">{novel.authors[0]?.name ?? ''}</p>
                   <p className="text-xs text-muted-foreground line-clamp-2 leading-tight">
-                    {tl(novel.description)}
+                    {novel.description}
                   </p>
                   <div className="pt-1 flex items-center gap-2 text-[11px] text-muted-foreground">
-                    <span className="text-amber-500 font-semibold">⭐ {novel.rating}</span>
+                    <span className="text-amber-500 font-semibold">⭐ {scoreText(novel.score)}</span>
                     <span>•</span>
-                    <span>{t('novel.chapterCountLabel', { count: novel.chapterCount })}</span>
+                    <span>{t('novel.chapterCountLabel', { count: novel.chapterCount ?? 0 })}</span>
                   </div>
                 </div>
               </Link>
@@ -145,13 +149,13 @@ export function HomeMagazineLayout({ featured = [], latest = [], popular = [] }:
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {(popular || []).slice(0, 6).map((novel) => (
-            <Card key={novel.id} className="overflow-hidden transition-all hover:border-primary/50 hover:shadow-lg">
+            <Card key={novel.slug} className="overflow-hidden transition-all hover:border-primary/50 hover:shadow-lg">
               <CardContent className="p-4 flex gap-4">
-                <Link to={`/novel/${novel.id}`} className="shrink-0 group">
+                <Link to={`/novel/${novel.slug}`} className="shrink-0 group">
                   <div className="relative aspect-[3/4] w-28 overflow-hidden rounded-lg bg-muted shadow">
-                    <img
+                    <ImageWithFallback
                       src={novel.cover}
-                      alt={tl(novel.title)}
+                      alt={displayTitle(novel.title, t('common.untitled'))}
                       className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                       loading="lazy"
                     />
@@ -161,32 +165,29 @@ export function HomeMagazineLayout({ featured = [], latest = [], popular = [] }:
                 <div className="flex-1 flex flex-col justify-between space-y-2 min-w-0">
                   <div>
                     <div className="flex items-center gap-2 mb-1">
-                      {(novel.genreIds || []).slice(0, 2).map((gId) => {
-                        const genre = GENRES.find((g) => g.id === gId);
-                        return genre ? (
-                          <Badge key={gId} variant="outline" className="text-[10px] px-2 py-0">
-                            {tl(genre.name)}
-                          </Badge>
-                        ) : null;
-                      })}
+                      {(novel.genres || []).slice(0, 2).map((genre) => (
+                        <Badge key={genre.slug} variant="outline" className="text-[10px] px-2 py-0">
+                          {genre.name}
+                        </Badge>
+                      ))}
                     </div>
-                    <Link to={`/novel/${novel.id}`}>
+                    <Link to={`/novel/${novel.slug}`}>
                       <h3 className="font-bold text-base hover:text-primary transition-colors line-clamp-1">
-                        {tl(novel.title)}
+                        {displayTitle(novel.title, t('common.untitled'))}
                       </h3>
                     </Link>
-                    <p className="text-xs text-muted-foreground">{tl(novel.author)}</p>
+                    <p className="text-xs text-muted-foreground">{novel.authors[0]?.name ?? ''}</p>
                     <p className="text-xs text-muted-foreground line-clamp-2 mt-2 leading-relaxed">
-                      {tl(novel.description)}
+                      {novel.description}
                     </p>
                   </div>
 
                   <div className="flex items-center justify-between text-xs text-muted-foreground pt-2 border-t border-border/40">
                     <span className="flex items-center gap-1 font-semibold text-foreground">
                       <BookOpen className="size-3.5 text-primary" />
-                      {t('novel.chapterCountLabel', { count: novel.chapterCount })}
+                      {t('novel.chapterCountLabel', { count: novel.chapterCount ?? 0 })}
                     </span>
-                    <span className="text-amber-500 font-bold">⭐ {novel.rating}</span>
+                    <span className="text-amber-500 font-bold">⭐ {scoreText(novel.score)}</span>
                   </div>
                 </div>
               </CardContent>

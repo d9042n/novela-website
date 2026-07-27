@@ -1,19 +1,66 @@
+/**
+ * Nguồn thể loại — fetch ĐỘNG từ backend (/genres, 46 slug VN thật).
+ * KHÔNG hardcode (mock cũ có 10 id EN đã bỏ).
+ *
+ * Cung cấp:
+ *  - `useGenres()`: hook trả danh sách genre + loading (có cache module-level,
+ *    chỉ fetch 1 lần cho cả app).
+ *
+ * Lưu ý: để resolve TÊN thể loại của 1 truyện, dùng thẳng `novel.genres`
+ * (đã nhúng name+slug từ API list/detail) — KHÔNG cần lookup qua đây.
+ */
+
+import { useEffect, useState } from 'react';
+import { getGenres } from './api';
 import type { Genre } from './types';
 
-/** Danh mục thể loại — nguồn dữ liệu duy nhất, không hardcode trong component. */
-export const GENRES: Genre[] = [
-  { id: 'fantasy', name: { vi: 'Kỳ ảo', en: 'Fantasy' } },
-  { id: 'cultivation', name: { vi: 'Tu tiên', en: 'Cultivation' } },
-  { id: 'scifi', name: { vi: 'Khoa học viễn tưởng', en: 'Sci-Fi' } },
-  { id: 'romance', name: { vi: 'Ngôn tình', en: 'Romance' } },
-  { id: 'mystery', name: { vi: 'Trinh thám', en: 'Mystery' } },
-  { id: 'horror', name: { vi: 'Kinh dị', en: 'Horror' } },
-  { id: 'action', name: { vi: 'Hành động', en: 'Action' } },
-  { id: 'adventure', name: { vi: 'Phiêu lưu', en: 'Adventure' } },
-  { id: 'historical', name: { vi: 'Lịch sử', en: 'Historical' } },
-  { id: 'slice-of-life', name: { vi: 'Đời thường', en: 'Slice of Life' } },
-];
+let cache: Genre[] | null = null;
+let inflight: Promise<Genre[]> | null = null;
 
-export function getGenre(id: string): Genre | undefined {
-  return GENRES.find((g) => g.id === id);
+/** Fetch genres 1 lần, chia sẻ promise cho mọi caller đồng thời. */
+function loadGenres(): Promise<Genre[]> {
+  if (cache) return Promise.resolve(cache);
+  if (!inflight) {
+    inflight = getGenres()
+      .then((list) => {
+        cache = list;
+        return list;
+      })
+      .catch((err) => {
+        inflight = null; // cho phép retry lần sau
+        throw err;
+      });
+  }
+  return inflight;
+}
+
+/** Hook trả danh sách thể loại (cache toàn app). */
+export function useGenres(): { genres: Genre[]; loading: boolean } {
+  const [genres, setGenres] = useState<Genre[]>(cache ?? []);
+  const [loading, setLoading] = useState(cache === null);
+
+  useEffect(() => {
+    if (cache) {
+      setGenres(cache);
+      setLoading(false);
+      return;
+    }
+    let active = true;
+    setLoading(true);
+    loadGenres()
+      .then((list) => {
+        if (active) {
+          setGenres(list);
+          setLoading(false);
+        }
+      })
+      .catch(() => {
+        if (active) setLoading(false);
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  return { genres, loading };
 }

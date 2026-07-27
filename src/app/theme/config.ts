@@ -124,7 +124,6 @@ export function gridClassFor(id: SiteLayout): string {
 
 export type ReaderTheme = 'light' | 'sepia' | 'emerald' | 'mocha' | 'nordic' | 'dark' | 'ocean' | 'oled';
 export type ReaderLayout = 'scroll' | 'paged' | 'wide';
-export type ReaderFont = 'literata' | 'lora' | 'merriweather' | 'noto-serif' | 'sans';
 export type ReaderWidth = 'narrow' | 'normal' | 'wide';
 
 export const READER_THEMES: { id: ReaderTheme; labelKey: string; swatch: string; fg: string }[] = [

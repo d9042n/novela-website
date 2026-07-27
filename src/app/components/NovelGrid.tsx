@@ -17,7 +17,7 @@ export function NovelGrid({ novels, className }: NovelGridProps) {
   return (
     <div className={cn(gridClassFor(layout), className)}>
       {novels.map((n) => (
-        <NovelCard key={n.id} novel={n} variant={variant} />
+        <NovelCard key={n.slug} novel={n} variant={variant} />
       ))}
     </div>
   );

@@ -1,36 +1,81 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router';
 import { ArrowDownUp, Check, Search } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { ChapterSummary } from '../../data/types';
-import { useLocalized } from '../../hooks/useLocalized';
+import { getChapterList } from '../../data/api';
 import { Input } from '../ui/input';
 import { Button } from '../ui/button';
 import { ScrollArea } from '../ui/scroll-area';
 import { cn } from '../ui/utils';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationNext,
+  PaginationPrevious,
+} from '../ui/pagination';
 
 interface ChapterListProps {
-  novelId: string;
-  chapters: ChapterSummary[];
-  lastReadIndex?: number;
+  slug: string;
+  /** Tổng số chương (từ novel.chapterCount) — hiển thị + tính số trang. */
+  total: number | null;
+  /** chapter_no đang đọc dở (đánh dấu đã đọc / hiện tại). */
+  lastReadNo?: number;
 }
 
-export function ChapterList({ novelId, chapters, lastReadIndex }: ChapterListProps) {
+const PAGE_SIZE = 50;
+
+/**
+ * Danh sách chương — SERVER pagination (D4). Truyện có thể >11.000 chương nên
+ * KHÔNG load hết: mỗi lần chỉ tải 1 trang (size 50) theo `order`.
+ * Ô filter lọc CỤC BỘ trong trang đang tải (API không hỗ trợ search tên chương).
+ */
+export function ChapterList({ slug, total, lastReadNo }: ChapterListProps) {
   const { t } = useTranslation();
-  const { t: tl } = useLocalized();
   const [filter, setFilter] = useState('');
   const [desc, setDesc] = useState(false);
+  const [page, setPage] = useState(1);
+  const [items, setItems] = useState<ChapterSummary[]>([]);
+  const [serverTotal, setServerTotal] = useState<number>(total ?? 0);
+  const [loading, setLoading] = useState(true);
+
+  const order = desc ? 'desc' : 'asc';
+
+  // Đổi thứ tự -> quay về trang 1.
+  useEffect(() => {
+    setPage(1);
+  }, [order]);
+
+  useEffect(() => {
+    let active = true;
+    setLoading(true);
+    getChapterList(slug, { page, size: PAGE_SIZE, order })
+      .then((res) => {
+        if (!active) return;
+        setItems(res.items);
+        setServerTotal(res.total);
+        setLoading(false);
+      })
+      .catch(() => {
+        if (!active) return;
+        setItems([]);
+        setLoading(false);
+      });
+    return () => {
+      active = false;
+    };
+  }, [slug, page, order]);
+
+  const totalPages = Math.max(1, Math.ceil((serverTotal || 0) / PAGE_SIZE));
 
   const filtered = useMemo(() => {
     const q = filter.trim().toLowerCase();
-    let list = chapters;
-    if (q) {
-      list = list.filter(
-        (c) => tl(c.title).toLowerCase().includes(q) || String(c.index).includes(q),
-      );
-    }
-    return desc ? [...list].reverse() : list;
-  }, [chapters, filter, desc, tl]);
+    if (!q) return items;
+    return items.filter(
+      (c) => c.title.toLowerCase().includes(q) || String(c.chapterNo).includes(q),
+    );
+  }, [items, filter]);
 
   return (
     <div className="flex flex-col gap-3">
@@ -55,12 +100,12 @@ export function ChapterList({ novelId, chapters, lastReadIndex }: ChapterListPro
       <ScrollArea className="h-[520px] rounded-lg border border-border">
         <ul className="divide-y divide-border">
           {filtered.map((c) => {
-            const isRead = lastReadIndex != null && c.index <= lastReadIndex;
-            const isCurrent = c.index === lastReadIndex;
+            const isCurrent = c.chapterNo === lastReadNo;
+            const isRead = lastReadNo != null && !desc && c.chapterNo <= lastReadNo;
             return (
-              <li key={c.id}>
+              <li key={c.chapterNo}>
                 <Link
-                  to={`/novel/${novelId}/chapter/${c.index}`}
+                  to={`/novel/${slug}/chapter/${c.chapterNo}`}
                   className={cn(
                     'flex items-center gap-3 px-4 py-3 transition-colors hover:bg-accent',
                     isCurrent && 'bg-accent',
@@ -70,7 +115,7 @@ export function ChapterList({ novelId, chapters, lastReadIndex }: ChapterListPro
                     className="w-10 shrink-0 text-muted-foreground tabular-nums"
                     style={{ fontSize: '0.85rem' }}
                   >
-                    {c.index}
+                    {c.chapterNo}
                   </span>
                   <span
                     className={cn(
@@ -78,21 +123,50 @@ export function ChapterList({ novelId, chapters, lastReadIndex }: ChapterListPro
                       isRead ? 'text-muted-foreground' : 'text-foreground',
                     )}
                   >
-                    {tl(c.title)}
+                    {c.title}
                   </span>
-                  <span
-                    className="hidden shrink-0 text-muted-foreground sm:block"
-                    style={{ fontSize: '0.78rem' }}
-                  >
-                    {c.publishedAt}
-                  </span>
-                  {isRead && <Check className="size-4 shrink-0 text-primary" />}
+                  {isCurrent && <Check className="size-4 shrink-0 text-primary" />}
                 </Link>
               </li>
             );
           })}
+          {!loading && filtered.length === 0 && (
+            <li className="px-4 py-8 text-center text-muted-foreground" style={{ fontSize: '0.85rem' }}>
+              {t('common.loading') === filter ? '' : t('browse.noResults')}
+            </li>
+          )}
         </ul>
       </ScrollArea>
+
+      {totalPages > 1 && (
+        <Pagination>
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setPage((p) => Math.max(1, p - 1));
+                }}
+              />
+            </PaginationItem>
+            <PaginationItem>
+              <span className="px-3 text-xs text-muted-foreground tabular-nums">
+                {page} / {totalPages}
+              </span>
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationNext
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setPage((p) => Math.min(totalPages, p + 1));
+                }}
+              />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+      )}
     </div>
   );
 }

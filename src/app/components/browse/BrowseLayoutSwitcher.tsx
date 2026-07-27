@@ -1,12 +1,18 @@
-import { LayoutGrid, Sidebar, LayoutList } from 'lucide-react';
+import { LayoutGrid, Sidebar } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../../theme/ThemeProvider';
 import { BROWSE_PRESETS, type BrowsePreset } from '../../theme/config';
 
+// Keyed by BrowsePreset, so this map has exactly the presets BROWSE_PRESETS
+// renders. A `list` entry used to live here, but there is no 'list' preset:
+// BrowsePage only branches on 'sidebar' vs the grid default, and neither locale
+// has a settings.browsePresets.list label — so the icon was unreachable and the
+// key did not typecheck. BrowseListLayout.tsx is likewise unreferenced; if that
+// preset is ever finished, add 'list' to BrowsePreset + both locales + a
+// BrowsePage branch, then re-add the icon here.
 const BROWSE_ICONS: Record<BrowsePreset, typeof LayoutGrid> = {
   grid: LayoutGrid,
   sidebar: Sidebar,
-  list: LayoutList,
 };
 
 export function BrowseLayoutSwitcher() {

@@ -1,38 +1,44 @@
 import { Link } from 'react-router';
 import { ChevronLeft, List, Settings2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import type { Chapter, ChapterSummary, Novel } from '../../data/types';
-import { useLocalized } from '../../hooks/useLocalized';
+import type { Chapter, Novel } from '../../data/types';
 import { useReaderSettings } from './ReaderSettingsContext';
 import { fontCssVar, widthPx } from '../../theme/config';
-import { Button } from '../ui/button';
+import { displayTitle } from '../../data/format';
 import { ReaderSettingsPanel } from './ReaderSettingsPanel';
+import { ReaderContents } from './ReaderContents';
 
 interface ReaderDrawerLayoutProps {
   novel: Novel;
   chapter: Chapter;
-  chapters: ChapterSummary[];
-  currentIndex: number;
+  currentNo: number;
   total: number;
-  goToChapter: (idx: number) => void;
+  prevNo: number | null;
+  nextNo: number | null;
+  goToNo: (no: number | null) => void;
   progress: number;
-  scrollRef: React.RefObject<HTMLDivElement | null>;
+  // React 18: useRef<HTMLDivElement>(null) yields RefObject<HTMLDivElement>
+  // (current is already T | null). Writing RefObject<HTMLDivElement | null> is
+  // the React 19 shape and makes current HTMLDivElement | null | null, which no
+  // longer satisfies the <main> element's Ref<HTMLElement>.
+  scrollRef: React.RefObject<HTMLDivElement>;
   onScroll: () => void;
 }
 
+// TODO(i18n-content): tiêu đề truyện/chương + nội dung đơn ngữ VN (backend chỉ có VN).
 export function ReaderDrawerLayout({
   novel,
   chapter,
-  chapters,
-  currentIndex,
+  currentNo,
   total,
-  goToChapter,
+  prevNo,
+  nextNo,
+  goToNo,
   progress,
   scrollRef,
   onScroll,
 }: ReaderDrawerLayoutProps) {
   const { t } = useTranslation();
-  const { t: tl } = useLocalized();
   const { settings } = useReaderSettings();
 
   const maxWidth = widthPx(settings.width);
@@ -62,41 +68,38 @@ export function ReaderDrawerLayout({
       {/* Header */}
       <header className="flex h-14 items-center justify-between border-b border-border/40 px-4 bg-background/50 backdrop-blur-md z-30 shrink-0">
         <div className="flex items-center gap-3">
-          <Link to={`/novel/${novel.id}`} className="flex items-center gap-1 text-xs font-semibold hover:opacity-80">
+          <Link to={`/novel/${novel.slug}`} className="flex items-center gap-1 text-xs font-semibold hover:opacity-80">
             <ChevronLeft className="size-4" />
-            <span className="truncate max-w-[180px] sm:max-w-xs">{tl(novel.title)}</span>
+            <span className="truncate max-w-[180px] sm:max-w-xs">{displayTitle(novel.title, t('common.untitled'))}</span>
           </Link>
         </div>
 
         <div className="text-xs font-medium opacity-75">
-          {t('reader.chapterOf', { index: currentIndex, total })}
+          {t('reader.chapterOf', { index: currentNo, total })}
         </div>
       </header>
 
       {/* 3-Column Split Content */}
       <div className="flex-1 flex min-h-0 overflow-hidden">
-        {/* Left TOC Sidebar (Desktop) */}
-        <aside className="hidden lg:flex w-72 flex-col border-r border-border/40 bg-background/30 p-3 overflow-y-auto shrink-0 space-y-2">
-          <div className="flex items-center gap-2 px-2 py-1 text-xs font-bold uppercase tracking-wider opacity-70 border-b border-border/30 pb-2">
+        {/* Left TOC Sidebar (Desktop) — server pagination, KHÔNG load hết */}
+        <aside className="hidden lg:flex w-72 flex-col border-r border-border/40 bg-background/30 p-3 overflow-hidden shrink-0">
+          <div className="flex items-center gap-2 px-2 py-1 text-xs font-bold uppercase tracking-wider opacity-70 border-b border-border/30 pb-2 mb-2 shrink-0">
             <List className="size-4 text-primary" />
             <span>{t('novel.chapterList')}</span>
           </div>
-
-          <div className="space-y-0.5 text-xs">
-            {chapters.map((c) => (
-              <button
-                key={c.index}
-                type="button"
-                onClick={() => goToChapter(c.index)}
-                className={`w-full text-left px-3 py-2 rounded-lg transition-colors truncate ${
-                  c.index === currentIndex
-                    ? 'bg-primary text-primary-foreground font-semibold'
-                    : 'opacity-80 hover:opacity-100 hover:bg-black/5 dark:hover:bg-white/10'
-                }`}
-              >
-                {c.index}. {tl(c.title)}
-              </button>
-            ))}
+          <div className="flex-1 min-h-0">
+            {/* inSheet={false}: đây là <aside> sidebar TĨNH, không phải Sheet.
+                ReaderContents mặc định bọc mỗi hàng chương trong <SheetClose>
+                (để bấm là đóng sheet ở ReaderToolbar), mà SheetClose của Radix
+                bắt buộc nằm trong context Dialog — ngoài context nó throw
+                "`DialogClose` must be used within `Dialog`" và cả preset drawer
+                trắng trang. */}
+            <ReaderContents
+              slug={novel.slug}
+              currentNo={currentNo}
+              total={total}
+              inSheet={false}
+            />
           </div>
         </aside>
 
@@ -105,21 +108,21 @@ export function ReaderDrawerLayout({
           <div className="mx-auto" style={{ maxWidth: `${maxWidth}px` }}>
             <article style={contentStyle}>
               <h1 style={{ fontSize: '1.6em', fontWeight: 600, lineHeight: 1.3, marginBottom: '1.5rem' }}>
-                {tl(chapter.title)}
+                {chapter.title}
               </h1>
               {chapter.paragraphs.map((p, i) => (
                 <p key={i} style={{ marginBottom: '1.1em', textAlign: settings.align ?? 'justify' }}>
-                  {tl(p)}
+                  {p}
                 </p>
               ))}
             </article>
 
-            {/* Bottom Nav */}
+            {/* Bottom Nav (prev_no/next_no) */}
             <div className="mt-12 flex items-center justify-between gap-3 pt-6 border-t" style={{ borderColor: 'color-mix(in srgb, var(--reader-fg) 15%, transparent)' }}>
               <button
                 type="button"
-                disabled={currentIndex <= 1}
-                onClick={() => goToChapter(currentIndex - 1)}
+                disabled={prevNo == null}
+                onClick={() => goToNo(prevNo)}
                 className="flex items-center gap-1 rounded-xl px-4 py-2 text-xs font-semibold border transition-all duration-150 disabled:opacity-30 disabled:pointer-events-none active:scale-95"
                 style={{
                   backgroundColor: 'color-mix(in srgb, var(--reader-fg) 10%, transparent)',
@@ -131,8 +134,8 @@ export function ReaderDrawerLayout({
               </button>
               <button
                 type="button"
-                disabled={currentIndex >= total}
-                onClick={() => goToChapter(currentIndex + 1)}
+                disabled={nextNo == null}
+                onClick={() => goToNo(nextNo)}
                 className="flex items-center gap-1 rounded-xl px-4 py-2 text-xs font-semibold border transition-all duration-150 disabled:opacity-30 disabled:pointer-events-none active:scale-95"
                 style={{
                   backgroundColor: 'color-mix(in srgb, var(--reader-fg) 10%, transparent)',

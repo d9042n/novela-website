@@ -1,35 +1,75 @@
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Search } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { ChapterSummary } from '../../data/types';
-import { useLocalized } from '../../hooks/useLocalized';
+import { getChapterList } from '../../data/api';
 import { Input } from '../ui/input';
 import { ScrollArea } from '../ui/scroll-area';
 import { SheetClose } from '../ui/sheet';
+import { Button } from '../ui/button';
 import { cn } from '../ui/utils';
 
 interface ReaderContentsProps {
-  novelId: string;
-  chapters: ChapterSummary[];
-  currentIndex: number;
+  slug: string;
+  currentNo: number;
+  /** tổng số chương để tính số trang. */
+  total: number;
+  /**
+   * Mục lục này được render TRONG một <Sheet> hay không.
+   *
+   * Quan trọng vì mỗi hàng chương bọc trong <SheetClose> để bấm là đóng sheet —
+   * mà SheetClose của Radix BẮT BUỘC nằm trong context Dialog, không thì nó
+   * throw "`DialogClose` must be used within `Dialog`" và cả trang trắng.
+   * ReaderToolbar render trong <Sheet> (mặc định true), còn ReaderDrawerLayout
+   * render trong <aside> sidebar tĩnh nên phải truyền false.
+   */
+  inSheet?: boolean;
 }
 
-/** Mục lục nhanh trong reader (dùng trong Sheet). */
-export function ReaderContents({ novelId, chapters, currentIndex }: ReaderContentsProps) {
+const PAGE_SIZE = 50;
+
+/**
+ * Mục lục trong reader (Sheet) — SERVER pagination (D4, không load hết).
+ * Mở tới trang chứa chương hiện tại. Filter lọc CỤC BỘ trong trang đang tải.
+ */
+export function ReaderContents({ slug, currentNo, total, inSheet = true }: ReaderContentsProps) {
   const { t } = useTranslation();
-  const { t: tl } = useLocalized();
   const navigate = useNavigate();
   const [filter, setFilter] = useState('');
+  // Bắt đầu ở trang chứa chương hiện tại (ước lượng theo vị trí, asc order).
+  const [page, setPage] = useState(1);
+  const [items, setItems] = useState<ChapterSummary[]>([]);
+  const [serverTotal, setServerTotal] = useState(total || 0);
 
-  const q = filter.trim().toLowerCase();
-  const filtered = q
-    ? chapters.filter((c) => tl(c.title).toLowerCase().includes(q) || String(c.index).includes(q))
-    : chapters;
+  useEffect(() => {
+    let active = true;
+    getChapterList(slug, { page, size: PAGE_SIZE, order: 'asc' })
+      .then((res) => {
+        if (!active) return;
+        setItems(res.items);
+        setServerTotal(res.total);
+      })
+      .catch(() => {
+        if (active) setItems([]);
+      });
+    return () => {
+      active = false;
+    };
+  }, [slug, page]);
+
+  const totalPages = Math.max(1, Math.ceil((serverTotal || 0) / PAGE_SIZE));
+
+  const filtered = useMemo(() => {
+    const q = filter.trim().toLowerCase();
+    if (!q) return items;
+    return items.filter(
+      (c) => c.title.toLowerCase().includes(q) || String(c.chapterNo).includes(q),
+    );
+  }, [items, filter]);
 
   return (
     <div className="flex h-full flex-col gap-2.5 px-3 pb-3">
-      {/* Search Input với lề side mềm mại, không full-width đụng lề */}
       <div className="relative px-0.5">
         <Search className="pointer-events-none absolute left-3.5 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground/80" />
         <Input
@@ -40,33 +80,66 @@ export function ReaderContents({ novelId, chapters, currentIndex }: ReaderConten
         />
       </div>
 
-      {/* Danh sách chương bo góc mềm mại, có khoảng cách padding gọn gàng */}
       <ScrollArea className="flex-1 rounded-xl border border-border/50 bg-card/30 p-1">
         <div className="space-y-0.5 pr-1">
           {filtered.map((c) => {
-            const active = c.index === currentIndex;
-            return (
-              <SheetClose key={c.id} asChild>
-                <button
-                  type="button"
-                  onClick={() => navigate(`/novel/${novelId}/chapter/${c.index}`)}
-                  className={cn(
-                    'flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left transition-all duration-150',
-                    active
-                      ? 'bg-primary/10 text-primary font-bold border border-primary/20 shadow-xs'
-                      : 'text-foreground/80 hover:bg-muted/80 hover:text-foreground',
-                  )}
-                >
-                  <span className={cn('w-6 shrink-0 text-xs font-mono font-medium tabular-nums', active ? 'text-primary font-bold' : 'text-muted-foreground/75')}>
-                    {c.index}
-                  </span>
-                  <span className="line-clamp-1 text-xs font-medium">{tl(c.title)}</span>
-                </button>
+            const active = c.chapterNo === currentNo;
+            const row = (
+              <button
+                type="button"
+                onClick={() => navigate(`/novel/${slug}/chapter/${c.chapterNo}`)}
+                className={cn(
+                  'flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left transition-all duration-150',
+                  active
+                    ? 'bg-primary/10 text-primary font-bold border border-primary/20 shadow-xs'
+                    : 'text-foreground/80 hover:bg-muted/80 hover:text-foreground',
+                )}
+              >
+                <span className={cn('w-6 shrink-0 text-xs font-mono font-medium tabular-nums', active ? 'text-primary font-bold' : 'text-muted-foreground/75')}>
+                  {c.chapterNo}
+                </span>
+                <span className="line-clamp-1 text-xs font-medium">{c.title}</span>
+              </button>
+            );
+            // Chỉ bọc SheetClose khi THỰC SỰ ở trong Sheet: ngoài context Dialog
+            // thì Radix throw và cả trang trắng. Trong sidebar tĩnh, điều hướng
+            // đã đủ — không có gì để đóng.
+            return inSheet ? (
+              <SheetClose key={c.chapterNo} asChild>
+                {row}
               </SheetClose>
+            ) : (
+              <div key={c.chapterNo}>{row}</div>
             );
           })}
         </div>
       </ScrollArea>
+
+      {totalPages > 1 && (
+        <div className="flex items-center justify-between gap-2 px-1">
+          <Button
+            variant="outline"
+            size="sm"
+            className="h-8 text-xs"
+            disabled={page <= 1}
+            onClick={() => setPage((p) => Math.max(1, p - 1))}
+          >
+            {t('reader.prevChapter')}
+          </Button>
+          <span className="text-xs text-muted-foreground tabular-nums">
+            {page} / {totalPages}
+          </span>
+          <Button
+            variant="outline"
+            size="sm"
+            className="h-8 text-xs"
+            disabled={page >= totalPages}
+            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+          >
+            {t('reader.nextChapter')}
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

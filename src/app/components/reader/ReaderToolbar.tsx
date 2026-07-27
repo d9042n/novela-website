@@ -1,8 +1,8 @@
 import { RouterLink } from '../ui/router-link';
 import { ChevronLeft, List, Settings2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import type { Chapter, ChapterSummary, Novel } from '../../data/types';
-import { useLocalized } from '../../hooks/useLocalized';
+import { displayTitle } from '../../data/format';
+import type { Chapter, Novel } from '../../data/types';
 import { ReaderSettingsPanel } from './ReaderSettingsPanel';
 import { ReaderContents } from './ReaderContents';
 import { Button } from '../ui/button';
@@ -18,13 +18,12 @@ import { cn } from '../ui/utils';
 interface ReaderToolbarProps {
   novel: Novel;
   chapter: Chapter;
-  chapters: ChapterSummary[];
   visible: boolean;
 }
 
-export function ReaderToolbar({ novel, chapter, chapters, visible }: ReaderToolbarProps) {
+// TODO(i18n-content): tiêu đề truyện + chương đơn ngữ VN (backend chỉ có VN).
+export function ReaderToolbar({ novel, chapter, visible }: ReaderToolbarProps) {
   const { t } = useTranslation();
-  const { t: tl } = useLocalized();
 
   return (
     <header
@@ -41,17 +40,17 @@ export function ReaderToolbar({ novel, chapter, chapters, visible }: ReaderToolb
     >
       <div className="mx-auto flex h-14 max-w-5xl items-center gap-2 px-3 sm:px-4">
         <Button asChild variant="ghost" size="icon" style={{ color: 'var(--reader-fg)' }}>
-          <RouterLink to={`/novel/${novel.id}`} aria-label={t('actions.back')}>
+          <RouterLink to={`/novel/${novel.slug}`} aria-label={t('actions.back')}>
             <ChevronLeft className="size-5" />
           </RouterLink>
         </Button>
 
         <div className="min-w-0 flex-1">
           <p className="line-clamp-1" style={{ fontFamily: 'var(--font-display)', fontSize: '1.02rem', fontWeight: 600 }}>
-            {tl(novel.title)}
+            {displayTitle(novel.title, t('common.untitled'))}
           </p>
           <p className="line-clamp-1 opacity-70" style={{ fontSize: '0.78rem' }}>
-            {tl(chapter.title)}
+            {chapter.title}
           </p>
         </div>
 
@@ -68,9 +67,9 @@ export function ReaderToolbar({ novel, chapter, chapters, visible }: ReaderToolb
             </SheetHeader>
             <div className="flex-1 overflow-hidden pt-2">
               <ReaderContents
-                novelId={novel.id}
-                chapters={chapters}
-                currentIndex={chapter.index}
+                slug={novel.slug}
+                total={novel.chapterCount ?? 0}
+                currentNo={chapter.chapterNo}
               />
             </div>
           </SheetContent>

@@ -9,12 +9,11 @@ import { LanguageSwitcher } from './LanguageSwitcher';
 import { ThemeControls } from './ThemeControls';
 import { Footer } from './Footer';
 import { useTheme } from '../../theme/ThemeProvider';
-import { GENRES } from '../../data/genres';
-import { useLocalized } from '../../hooks/useLocalized';
+import { useGenres } from '../../data/genres';
 
 export function SidebarLayout() {
   const { t } = useTranslation();
-  const { t: tl } = useLocalized();
+  const { genres } = useGenres();
   const navigate = useNavigate();
   const { siteTheme } = useTheme();
   const [collapsed, setCollapsed] = useState(false);
@@ -108,14 +107,14 @@ export function SidebarLayout() {
                 <Sparkles className="size-3 text-muted-foreground" />
               </div>
               <div className="space-y-0.5 max-h-48 overflow-y-auto pr-1 text-xs">
-                {GENRES.slice(0, 8).map((g) => (
+                {genres.slice(0, 8).map((g) => (
                   <Link
-                    key={g.id}
-                    to={`/browse?genre=${g.id}`}
+                    key={g.slug}
+                    to={`/browse?genre=${g.slug}`}
                     className="flex items-center gap-2 px-3 py-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent/60 transition-colors"
                   >
                     <BookOpen className="size-3.5 text-primary/70" />
-                    <span className="truncate">{tl(g.name)}</span>
+                    <span className="truncate">{g.name}</span>
                   </Link>
                 ))}
               </div>
