@@ -91,3 +91,66 @@ export interface Chapter {
   prevNo: number | null;
   nextNo: number | null;
 }
+
+/* ------------------------------------------------------------------ */
+/* Core API (auth + library) — khác backend Go ở trên.                */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Reader đang đăng nhập — khớp `MeSchema` của core (`/auth/me`).
+ * Whitelist đúng 3 field; core KHÔNG bao giờ trả password hash / is_superuser /
+ * permissions.
+ */
+export interface AuthUser {
+  id: number;
+  username: string;
+  email: string;
+}
+
+/**
+ * Truyện dạng rút gọn nhúng trong bookmark / reading-progress
+ * (`StoryBriefSchema` của core).
+ *
+ * CHỈ 6 field — thiếu `description`, `score`, `chapterCount`, `authors`,
+ * `genres` so với `Novel`. Nên KHÔNG dùng chung `NovelCard` được mà không map
+ * bù hoặc làm card variant riêng.
+ *
+ * `cover` hiện LUÔN rỗng: core đọc thẳng cột `cover_url` (NULL 100% ở prod)
+ * trong khi backend Go có fallback sang `cover_url_origin`. Cùng một truyện,
+ * trang chi tiết có ảnh mà trong tủ sách thì không.
+ */
+export interface StoryBrief {
+  id: number;
+  slug: string;
+  title: string;
+  cover: string;
+  isAdult: boolean;
+  status: NovelStatus;
+}
+
+/** Một truyện đã đánh dấu (`BookmarkSchema`). */
+export interface Bookmark {
+  id: number;
+  story: StoryBrief;
+  /** ISO 8601 kèm micro giây, offset `+00:00`. */
+  createdAt: string;
+}
+
+/** Chương rút gọn nhúng trong reading-progress (`ChapterBriefSchema`). */
+export interface ChapterBrief {
+  id: number;
+  chapterNo: number;
+  title: string;
+}
+
+/**
+ * Tiến độ đọc lưu trên server (`ReadingProgressSchema`).
+ *
+ * KHÔNG có `id` (khác `Bookmark`), và KHÔNG có vị trí cuộn — server chỉ lưu tới
+ * mức CHƯƠNG. `scroll` vẫn phải giữ on-device ở `useReadingProgress`.
+ */
+export interface ServerReadingProgress {
+  story: StoryBrief;
+  chapter: ChapterBrief;
+  updatedAt: string;
+}
