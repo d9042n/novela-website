@@ -9,7 +9,8 @@
     "search": "Tìm tên truyện, tác giả...",
     "searchShort": "Tìm kiếm...",
     "expandSidebar": "Mở rộng thanh bên",
-    "collapseSidebar": "Thu gọn thanh bên"
+    "collapseSidebar": "Thu gọn thanh bên",
+    "library": "Tủ sách"
   },
   "home": {
     "featured": "Truyện nổi bật",
@@ -220,5 +221,38 @@
     "loadError": "Không tải được nội dung. Vui lòng thử lại.",
     "retry": "Thử lại",
     "untitled": "Truyện chưa có tiêu đề"
+  },
+  "auth": {
+    "login": "Đăng nhập",
+    "register": "Đăng ký",
+    "logout": "Đăng xuất",
+    "username": "Tên đăng nhập",
+    "email": "Email",
+    "password": "Mật khẩu",
+    "submitLogin": "Đăng nhập",
+    "submitRegister": "Tạo tài khoản",
+    "noAccount": "Chưa có tài khoản?",
+    "haveAccount": "Đã có tài khoản?",
+    "myAccount": "Tài khoản",
+    "loginPrompt": "Đăng nhập để lưu tủ sách và đồng bộ tiến độ đọc trên mọi thiết bị.",
+    "errors": {
+      "required": "Vui lòng nhập đầy đủ thông tin.",
+      "invalidCredentials": "Tên đăng nhập hoặc mật khẩu không đúng.",
+      "usernameTaken": "Tên đăng nhập hoặc email đã được sử dụng.",
+      "weakPassword": "Mật khẩu không đủ mạnh. Hãy dùng ít nhất 8 ký tự, không quá phổ biến.",
+      "rateLimited": "Bạn thử quá nhiều lần. Vui lòng chờ một phút rồi thử lại.",
+      "sessionExpired": "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại."
+    }
+  },
+  "library": {
+    "title": "Tủ sách",
+    "bookmarks": "Đã đánh dấu",
+    "reading": "Đang đọc",
+    "empty": "Chưa có truyện nào ở đây.",
+    "emptyReading": "Bạn chưa đọc truyện nào.",
+    "add": "Đánh dấu",
+    "remove": "Bỏ đánh dấu",
+    "added": "Đã thêm vào tủ sách",
+    "removed": "Đã bỏ khỏi tủ sách"
   }
 }

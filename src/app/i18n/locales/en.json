@@ -9,7 +9,8 @@
     "search": "Search title, author...",
     "searchShort": "Search...",
     "expandSidebar": "Expand sidebar",
-    "collapseSidebar": "Collapse sidebar"
+    "collapseSidebar": "Collapse sidebar",
+    "library": "Library"
   },
   "home": {
     "featured": "Featured Novels",
@@ -220,5 +221,38 @@
     "loadError": "Failed to load content. Please try again.",
     "retry": "Retry",
     "untitled": "Untitled novel"
+  },
+  "auth": {
+    "login": "Sign in",
+    "register": "Sign up",
+    "logout": "Sign out",
+    "username": "Username",
+    "email": "Email",
+    "password": "Password",
+    "submitLogin": "Sign in",
+    "submitRegister": "Create account",
+    "noAccount": "No account yet?",
+    "haveAccount": "Already have an account?",
+    "myAccount": "Account",
+    "loginPrompt": "Sign in to keep your library and sync reading progress across devices.",
+    "errors": {
+      "required": "Please fill in all fields.",
+      "invalidCredentials": "Incorrect username or password.",
+      "usernameTaken": "That username or email is already taken.",
+      "weakPassword": "Password is too weak. Use at least 8 characters and avoid common passwords.",
+      "rateLimited": "Too many attempts. Please wait a minute and try again.",
+      "sessionExpired": "Your session has expired. Please sign in again."
+    }
+  },
+  "library": {
+    "title": "Library",
+    "bookmarks": "Bookmarked",
+    "reading": "Reading",
+    "empty": "Nothing here yet.",
+    "emptyReading": "You haven't started any story yet.",
+    "add": "Bookmark",
+    "remove": "Remove bookmark",
+    "added": "Added to your library",
+    "removed": "Removed from your library"
   }
 }

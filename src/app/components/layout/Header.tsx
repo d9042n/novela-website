@@ -7,6 +7,7 @@ import { cn } from '../ui/utils';
 import { NovelaMark } from '../brand/NovelaMark';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { ThemeControls } from './ThemeControls';
+import { UserMenu } from './UserMenu';
 import { useTheme } from '../../theme/ThemeProvider';
 
 export function Header() {
@@ -95,6 +96,7 @@ export function Header() {
 
           <LanguageSwitcher />
           <ThemeControls />
+          <UserMenu compact />
         </div>
       </div>
     </header>

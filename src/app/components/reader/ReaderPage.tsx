@@ -5,6 +5,9 @@ import type { Chapter, Novel } from '../../data/types';
 import { getChapter, getNovelBySlug } from '../../data/api';
 import { ApiError } from '../../data/client';
 import { getProgress, saveProgress } from '../../hooks/useReadingProgress';
+import { putReadingProgress } from '../../data/libraryApi';
+import { recordStoryView } from '../../data/trackingApi';
+import { useAuth } from '../../auth/AuthContext';
 import { useReaderSettings } from './ReaderSettingsContext';
 import { ReaderToolbar } from './ReaderToolbar';
 import { ReaderControls } from './ReaderControls';
@@ -22,6 +25,7 @@ export function ReaderPage() {
   const { t } = useTranslation();
   const { settings } = useReaderSettings();
   const { readerPagePreset } = useTheme();
+  const { user } = useAuth();
 
   const [novel, setNovel] = useState<Novel | undefined | null>(undefined);
   const [chapter, setChapter] = useState<Chapter | undefined | null>(undefined);
@@ -107,6 +111,27 @@ export function ReaderPage() {
     }, 400);
     return () => clearTimeout(id);
   }, [slug, no, progress, chapter]);
+
+  // Đẩy tiến độ lên server khi ĐỔI CHƯƠNG, không theo `progress`.
+  //
+  // Effect ở trên chạy mỗi 400ms trong lúc cuộn — nối mạng vào đó là bắn hàng
+  // chục request mỗi chương, mà body chỉ có `chapter_no` nên mọi request sau cái
+  // đầu đều gửi đúng một giá trị. Server cũng không lưu `scroll` để mà cập nhật.
+  //
+  // Fire-and-forget: sync hỏng (mất mạng, 404 vì chapter_no lệch ở truyện dạng
+  // quyển) tuyệt đối không được làm gián đoạn việc đọc.
+  useEffect(() => {
+    if (!chapter || !user) return;
+    void putReadingProgress(slug, no).catch(() => {
+      /* im lặng có chủ ý */
+    });
+  }, [slug, no, chapter, user]);
+
+  // Ghi một lượt xem cho truyện. Server tự dedup theo khách/ngày nên gọi lại khi
+  // user nhảy chương cũng không cộng thêm; đếm theo TRUYỆN không theo chương.
+  useEffect(() => {
+    void recordStoryView(slug);
+  }, [slug]);
 
   // Restore scroll khi mở đúng chương đang đọc dở.
   useLayoutEffect(() => {

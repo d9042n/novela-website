@@ -1,12 +1,13 @@
 import { useState, type FormEvent } from 'react';
 import { Link, NavLink, Outlet, useNavigate } from 'react-router';
-import { Home, Compass, Search } from 'lucide-react';
+import { Home, Compass, Search, BookMarked } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '../ui/utils';
 import { NovelaMark } from '../brand/NovelaMark';
 import { Input } from '../ui/input';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { ThemeControls } from './ThemeControls';
+import { UserMenu } from './UserMenu';
 import { Footer } from './Footer';
 
 export function FloatingDockLayout() {
@@ -84,10 +85,26 @@ export function FloatingDockLayout() {
             <span className="hidden sm:inline">{t('nav.browse')}</span>
           </NavLink>
 
+          <NavLink
+            to="/library"
+            className={({ isActive }) =>
+              cn(
+                'flex items-center gap-1.5 rounded-full px-4 py-2 text-xs font-semibold transition-all',
+                isActive
+                  ? 'bg-primary text-primary-foreground shadow'
+                  : 'text-muted-foreground hover:bg-accent hover:text-foreground',
+              )
+            }
+          >
+            <BookMarked className="size-4" />
+            <span className="hidden sm:inline">{t('library.title')}</span>
+          </NavLink>
+
           <div className="h-4 w-px bg-border/80 mx-1" />
 
           <LanguageSwitcher />
           <ThemeControls />
+          <UserMenu compact />
         </div>
       </div>
     </div>

@@ -64,11 +64,39 @@ export default defineConfig({
     hmr: {
       clientPort: 5573, // Host exposed port for HMR WebSocket connection
     },
-    // Proxy API calls to the Go backend during dev so the SPA talks same-origin
-    // (`/api/v1/...`) and dodges CORS. Target overridable via VITE_API_PROXY_TARGET;
-    // default hits the backend service inside the compose network. When running
-    // the SPA on the host (vite outside Docker), set VITE_API_PROXY_TARGET=http://localhost:8480.
+    // Proxy API calls during dev so the SPA talks same-origin (`/api/v1/...`)
+    // and dodges CORS. Two targets because prod has ONE host but dev has TWO:
+    // Kong routes by longest-prefix in prod (`/auth`, `/library`, `/tracking`
+    // -> Django core; everything else -> Go backend), while in compose the two
+    // services are separate containers.
+    //
+    // ORDER AND TRAILING SLASH BOTH MATTER. Vite matches prefixes in insertion
+    // order, so the specific core prefixes must precede the `/api` catch-all.
+    // And they must end in `/`: bare `/api/v1/auth` also prefix-matches
+    // `/api/v1/authors`, which belongs to the Go backend — dropping the slash
+    // silently routes the authors endpoint to Django and gets a 404.
+    //
+    // changeOrigin STAYS FALSE for the core routes. Rewriting Host to
+    // `core:8000` trips Django's ALLOWED_HOSTS and every call comes back as a
+    // DisallowedHost HTML page instead of JSON. Keeping the original Host
+    // (`localhost:5573`) matches the `localhost` entry already in
+    // DJANGO_ALLOWED_HOSTS, and mirrors how prod behaves — Kong forwards with
+    // preserve_host: true, so Django always sees the public hostname. The Go
+    // backend doesn't validate Host, which is why its route can leave the
+    // default alone.
     proxy: {
+      '/api/v1/auth/': {
+        target: process.env.VITE_CORE_PROXY_TARGET || 'http://core:8000',
+        changeOrigin: false,
+      },
+      '/api/v1/library/': {
+        target: process.env.VITE_CORE_PROXY_TARGET || 'http://core:8000',
+        changeOrigin: false,
+      },
+      '/api/v1/tracking/': {
+        target: process.env.VITE_CORE_PROXY_TARGET || 'http://core:8000',
+        changeOrigin: false,
+      },
       '/api': {
         target: process.env.VITE_API_PROXY_TARGET || 'http://backend:8080',
         changeOrigin: true,

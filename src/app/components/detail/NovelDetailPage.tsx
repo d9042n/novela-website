@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router';
+import { BookmarkButton } from './BookmarkButton';
 import { RouterLink } from '../ui/router-link';
 import { BookOpen, Play, Star } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -7,6 +8,7 @@ import type { Novel } from '../../data/types';
 import { getChapterList, getNovelBySlug } from '../../data/api';
 import { ApiError } from '../../data/client';
 import { getProgress } from '../../hooks/useReadingProgress';
+import { recordStoryView } from '../../data/trackingApi';
 import { displayTitle, formatDate } from '../../data/format';
 import { ImageWithFallback } from '../figma/ImageWithFallback';
 import { NotFoundPage } from '../NotFoundPage';
@@ -30,6 +32,13 @@ export function NovelDetailPage() {
   /** chapter_no nhỏ nhất (điểm "đọc từ đầu" — chapter_no có thể không bắt đầu ở 1). */
   const [firstChapterNo, setFirstChapterNo] = useState<number>(1);
   const lastRead = getProgress(slug);
+
+  // Ghi một lượt xem. Server dedup theo khách/ngày nên mở lại truyện trong ngày
+  // không cộng thêm; đây là đường ghi duy nhất cho `view_count` (backend Go
+  // SELECT-only nên không tự tăng được).
+  useEffect(() => {
+    void recordStoryView(slug);
+  }, [slug]);
 
   useEffect(() => {
     let active = true;
@@ -178,6 +187,7 @@ export function NovelDetailPage() {
                 <RouterLink to={`/novel/${novel.slug}/chapter/${firstChapterNo}`}>{t('actions.readFromStart')}</RouterLink>
               </Button>
             )}
+            <BookmarkButton slug={novel.slug} />
           </div>
         </div>
       </div>

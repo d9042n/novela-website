@@ -1,4 +1,5 @@
 import { Link } from 'react-router';
+import { BookmarkButton } from './BookmarkButton';
 import { RouterLink } from '../ui/router-link';
 import { BookOpen, Play, Star } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -66,13 +67,14 @@ export function DetailMinimalLayout({
             </span>
           </div>
 
-          <div className="pt-3">
+          <div className="pt-3 flex flex-wrap items-center gap-3">
             <Button asChild size="lg" className="rounded-full gap-2 font-bold px-8">
               <RouterLink to={`/novel/${novel.slug}/chapter/${readTarget}`}>
                 <Play className="size-4" />
                 {lastRead ? t('actions.continueReading', { index: readTarget }) : t('actions.readFromStart')}
               </RouterLink>
             </Button>
+            <BookmarkButton slug={novel.slug} />
           </div>
         </div>
       </div>

@@ -1,12 +1,13 @@
 import { useState, type FormEvent } from 'react';
 import { Link, NavLink, Outlet, useNavigate } from 'react-router';
-import { Home, Compass, Search, ChevronLeft, ChevronRight, BookOpen, Sparkles } from 'lucide-react';
+import { Home, Compass, Search, ChevronLeft, ChevronRight, BookOpen, Sparkles, BookMarked } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '../ui/utils';
 import { NovelaMark } from '../brand/NovelaMark';
 import { Input } from '../ui/input';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { ThemeControls } from './ThemeControls';
+import { UserMenu } from './UserMenu';
 import { Footer } from './Footer';
 import { useTheme } from '../../theme/ThemeProvider';
 import { useGenres } from '../../data/genres';
@@ -95,6 +96,11 @@ export function SidebarLayout() {
               <Compass className="size-5 shrink-0" />
               {!collapsed && <span>{t('nav.browse')}</span>}
             </NavLink>
+
+            <NavLink to="/library" className={navLinkClass} title={collapsed ? t('library.title') : undefined}>
+              <BookMarked className="size-5 shrink-0" />
+              {!collapsed && <span>{t('library.title')}</span>}
+            </NavLink>
           </nav>
 
           {/* Genres section (if expanded) */}
@@ -128,10 +134,12 @@ export function SidebarLayout() {
             <div className="flex items-center justify-between gap-1">
               <LanguageSwitcher />
               <ThemeControls />
+              <UserMenu compact />
             </div>
           ) : (
             <div className="flex flex-col items-center gap-2 py-1">
               <ThemeControls />
+              <UserMenu compact />
             </div>
           )}
         </div>
