@@ -98,13 +98,44 @@ export interface Chapter {
 
 /**
  * Reader đang đăng nhập — khớp `MeSchema` của core (`/auth/me`).
- * Whitelist đúng 3 field; core KHÔNG bao giờ trả password hash / is_superuser /
+ * Whitelist có kiểm soát; core KHÔNG bao giờ trả password hash / is_superuser /
  * permissions.
  */
 export interface AuthUser {
   id: number;
   username: string;
   email: string;
+  /** Tên hiển thị; rỗng thì UI fallback về username (dùng displayNameOf). */
+  displayName: string;
+  avatarUrl: string;
+  bio: string;
+  gender: '' | 'male' | 'female' | 'other';
+  /** ISO date "YYYY-MM-DD", null khi chưa đặt. */
+  birthday: string | null;
+  emailVerified: boolean;
+  /** ISO 8601. */
+  joinedAt: string;
+  isStaff: boolean;
+}
+
+/** Số liệu tổng hợp của tài khoản (`/auth/me/stats`). */
+export interface AccountStats {
+  bookmarkCount: number;
+  readingCount: number;
+  joinedAt: string;
+  /** null khi user chưa có hoạt động nào được ghi nhận. */
+  lastActivityAt: string | null;
+}
+
+/**
+ * Tên hiển thị an toàn cho UI.
+ *
+ * `displayName` là field tuỳ chọn của user (và rỗng với mọi tài khoản cũ), nên
+ * MỌI chỗ render tên đều phải đi qua đây thay vì đọc thẳng `user.displayName` —
+ * nếu không sẽ có chỗ hiện tên trống.
+ */
+export function displayNameOf(u: Pick<AuthUser, 'displayName' | 'username'>): string {
+  return u.displayName || u.username;
 }
 
 /**
@@ -146,11 +177,36 @@ export interface ChapterBrief {
 /**
  * Tiến độ đọc lưu trên server (`ReadingProgressSchema`).
  *
- * KHÔNG có `id` (khác `Bookmark`), và KHÔNG có vị trí cuộn — server chỉ lưu tới
- * mức CHƯƠNG. `scroll` vẫn phải giữ on-device ở `useReadingProgress`.
+ * Hỗ trợ `scrollPercent` (0..100) được lưu trực tiếp trên database của Core.
  */
 export interface ServerReadingProgress {
   story: StoryBrief;
   chapter: ChapterBrief;
   updatedAt: string;
+  scrollPercent?: number | null;
 }
+
+/* ------------------------------------------------------------------ */
+/* Public Rankings, Sources, and Authors                              */
+/* ------------------------------------------------------------------ */
+
+export type RankingWindow = 'day' | 'week' | 'month';
+
+export interface RankingNovel extends Novel {
+  rank: number;
+  viewsInWindow: number;
+}
+
+export interface Source {
+  code: string;
+  name: string;
+  storyCount: number;
+  isActive: boolean;
+}
+
+export interface AuthorRef {
+  name: string;
+  slug: string;
+  storyCount: number;
+}
+

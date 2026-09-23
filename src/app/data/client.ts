@@ -202,7 +202,9 @@ function parseError(status: number, body: unknown, statusText: string): ApiError
   return new ApiError(status, 'internal_error', statusText || 'request failed');
 }
 
-export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
+// `PATCH` thêm vào cho `/auth/me` (cập nhật hồ sơ từng phần). DELETE + body đã
+// chạy sẵn qua nhánh chung bên dưới nên KHÔNG cần đụng gì thêm.
+export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 
 export interface RequestOptions {
   method?: HttpMethod;

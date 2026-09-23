@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router';
-import { Search, ChevronDown, Check, RotateCcw, Tag, Bookmark } from 'lucide-react';
+import { Search, ChevronDown, Check, RotateCcw, Tag, Bookmark, Globe } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { browseNovels, type SortKey } from '../../data/api';
+import { browseNovels, getSources, type SortKey } from '../../data/api';
 import { useGenres } from '../../data/genres';
-import type { Novel, NovelStatus } from '../../data/types';
+import type { Novel, NovelStatus, Source } from '../../data/types';
 import { NovelGrid } from '../NovelGrid';
 import { Input } from '../ui/input';
 import { Button } from '../ui/button';
@@ -92,6 +92,19 @@ export function BrowsePage() {
     [params],
   );
 
+  const [sources, setSources] = useState<Source[]>([]);
+  useEffect(() => {
+    let active = true;
+    getSources()
+      .then((data) => {
+        if (active) setSources(data);
+      })
+      .catch(() => {});
+    return () => {
+      active = false;
+    };
+  }, []);
+
   // Server pagination (D4): fetch đúng 1 trang mỗi lần, KHÔNG load hết.
   useEffect(() => {
     let active = true;
@@ -152,6 +165,17 @@ export function BrowsePage() {
     setPage(1);
   };
 
+  const toggleSource = (code: string) => {
+    const nextSources = sourceCodes.includes(code)
+      ? sourceCodes.filter((s) => s !== code)
+      : [...sourceCodes, code];
+    const next = new URLSearchParams(params);
+    if (nextSources.length > 0) next.set('source', nextSources.join(','));
+    else next.delete('source');
+    setParams(next, { replace: true });
+    setPage(1);
+  };
+
   const clearAllFilters = () => {
     const next = new URLSearchParams();
     if (sort !== 'popular') next.set('sort', sort);
@@ -161,7 +185,8 @@ export function BrowsePage() {
 
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
   const currentPage = Math.min(page, totalPages);
-  const hasActiveFilters = genreSlugs.length > 0 || statusList.length > 0 || query !== '';
+  const hasActiveFilters =
+    genreSlugs.length > 0 || statusList.length > 0 || sourceCodes.length > 0 || query !== '';
 
   const paginationNode = totalPages > 1 && (
     <Pagination className="mt-8">
@@ -208,12 +233,15 @@ export function BrowsePage() {
         query={query}
         genreSlugs={genreSlugs}
         statusList={statusList}
+        sourceCodes={sourceCodes}
         sort={sort}
         genres={genres}
+        sources={sources}
         results={results}
         total={total}
         toggleGenre={toggleGenre}
         toggleStatus={toggleStatus}
+        toggleSource={toggleSource}
         setParam={setParam}
         clearAllFilters={clearAllFilters}
         paginationNode={paginationNode}
@@ -376,7 +404,76 @@ export function BrowsePage() {
           </PopoverContent>
         </Popover>
 
-        {/* 3. Inline Sort Select */}
+        {/* 3. Multi-Select Source Popover */}
+        {sources.length > 0 && (
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant="outline" className="w-full sm:w-auto justify-between gap-2 border-border font-normal">
+                <span className="flex items-center gap-2">
+                  <Globe className="size-3.5 text-primary" />
+                  <span>
+                    {sourceCodes.length === 0
+                      ? t('browse.allSources')
+                      : t('browse.sourcesCount', { count: sourceCodes.length })}
+                  </span>
+                </span>
+                {sourceCodes.length > 0 ? (
+                  <Badge variant="default" className="h-5 px-1.5 text-[10px] rounded-full">
+                    {sourceCodes.length}
+                  </Badge>
+                ) : (
+                  <ChevronDown className="size-4 text-muted-foreground" />
+                )}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent align="start" className="w-56 p-3 space-y-2 border-border/80 bg-background/95 backdrop-blur-xl shadow-xl">
+              <div className="flex items-center justify-between border-b border-border pb-2 text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                <span>{t('browse.selectSources')}</span>
+                {sourceCodes.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const next = new URLSearchParams(params);
+                      next.delete('source');
+                      setParams(next, { replace: true });
+                      setPage(1);
+                    }}
+                    className="text-[11px] text-primary hover:underline font-medium capitalize"
+                  >
+                    {t('browse.clearSelection')}
+                  </button>
+                )}
+              </div>
+
+              <div className="space-y-1 text-xs max-h-60 overflow-y-auto">
+                {sources.map((src) => {
+                  const checked = sourceCodes.includes(src.code);
+                  return (
+                    <label
+                      key={src.code}
+                      className={`flex items-center justify-between p-2 rounded-md cursor-pointer transition-colors ${
+                        checked
+                          ? 'bg-primary/10 text-primary font-bold'
+                          : 'text-foreground/90 hover:bg-accent'
+                      }`}
+                    >
+                      <span className="flex items-center gap-2.5">
+                        <Checkbox
+                          checked={checked}
+                          onCheckedChange={() => toggleSource(src.code)}
+                        />
+                        <span>{src.name || src.code}</span>
+                      </span>
+                      {checked && <Check className="size-3.5 text-primary" />}
+                    </label>
+                  );
+                })}
+              </div>
+            </PopoverContent>
+          </Popover>
+        )}
+
+        {/* 4. Inline Sort Select */}
         <Select value={sort} onValueChange={(v) => setParam('sort', v)}>
           <SelectTrigger className="w-full sm:w-44">
             <SelectValue placeholder={t('browse.sortBy')} />

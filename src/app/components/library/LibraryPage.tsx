@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { BookMarked, RotateCcw } from 'lucide-react';
-import { listBookmarks, listReadingProgress } from '../../data/libraryApi';
+import { toast } from 'sonner';
+import { BookMarked, RotateCcw, X } from 'lucide-react';
+import { listBookmarks, listReadingProgress, removeBookmark, removeReadingProgress } from '../../data/libraryApi';
 import type { Bookmark, ServerReadingProgress, StoryBrief } from '../../data/types';
 import { displayTitle } from '../../data/format';
 import { ImageWithFallback } from '../figma/ImageWithFallback';
@@ -21,31 +22,58 @@ const PAGE_SIZE = 24;
  * null + authors rỗng sẽ hiện "—" và hàng trống ở mọi card, xấu hơn là làm card
  * gọn đúng dữ liệu đang có.
  */
-function BriefCard({ story, caption }: { story: StoryBrief; caption?: string }) {
+function BriefCard({
+  story,
+  caption,
+  onRemove,
+  removeLabel,
+}: {
+  story: StoryBrief;
+  caption?: string;
+  onRemove?: () => void;
+  removeLabel?: string;
+}) {
   const { t } = useTranslation();
   const title = displayTitle(story.title, t('common.untitled'));
 
   return (
-    <Link to={`/novel/${story.slug}`} className="group flex flex-col gap-2" aria-label={title}>
-      <div className="relative aspect-[2/3] overflow-hidden rounded-lg border border-border bg-muted shadow-sm">
-        <ImageWithFallback
-          src={story.cover}
-          alt={title}
-          className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-        />
-      </div>
-      <h3
-        className="line-clamp-2 transition-colors group-hover:text-primary"
-        style={{ fontFamily: 'var(--font-display)', fontSize: '0.95rem', fontWeight: 600, lineHeight: 1.3 }}
-      >
-        {title}
-      </h3>
-      {caption && (
-        <p className="line-clamp-1 text-muted-foreground" style={{ fontSize: '0.8rem' }}>
-          {caption}
-        </p>
+    <div className="group relative flex flex-col gap-2">
+      <Link to={`/novel/${story.slug}`} className="flex flex-col gap-2" aria-label={title}>
+        <div className="relative aspect-[2/3] overflow-hidden rounded-lg border border-border bg-muted shadow-sm">
+          <ImageWithFallback
+            src={story.cover}
+            alt={title}
+            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+          />
+        </div>
+        <h3
+          className="line-clamp-2 transition-colors group-hover:text-primary"
+          style={{ fontFamily: 'var(--font-display)', fontSize: '0.95rem', fontWeight: 600, lineHeight: 1.3 }}
+        >
+          {title}
+        </h3>
+        {caption && (
+          <p className="line-clamp-1 text-muted-foreground" style={{ fontSize: '0.8rem' }}>
+            {caption}
+          </p>
+        )}
+      </Link>
+      {onRemove && (
+        <button
+          type="button"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            onRemove();
+          }}
+          className="absolute right-2 top-2 z-10 flex size-7 items-center justify-center rounded-full bg-background/80 text-muted-foreground shadow-sm backdrop-blur-sm transition-colors hover:bg-destructive hover:text-destructive-foreground opacity-0 group-hover:opacity-100 focus:opacity-100"
+          title={removeLabel || t('actions.remove', 'Xoá')}
+          aria-label={removeLabel || t('actions.remove', 'Xoá')}
+        >
+          <X className="size-3.5" />
+        </button>
       )}
-    </Link>
+    </div>
   );
 }
 
@@ -118,6 +146,28 @@ export function LibraryPage() {
     };
   }, [reloadKey]);
 
+  const handleRemoveBookmark = async (slug: string) => {
+    setBookmarks((prev) => (prev ? prev.filter((b) => b.story.slug !== slug) : prev));
+    try {
+      await removeBookmark(slug);
+      toast.success(t('library.removed', 'Đã bỏ đánh dấu truyện.'));
+    } catch {
+      toast.error(t('common.loadError', 'Có lỗi xảy ra, vui lòng thử lại.'));
+      reload();
+    }
+  };
+
+  const handleRemoveProgress = async (slug: string) => {
+    setProgress((prev) => (prev ? prev.filter((p) => p.story.slug !== slug) : prev));
+    try {
+      await removeReadingProgress(slug);
+      toast.success(t('library.progressRemoved', 'Đã xoá khỏi danh sách đang đọc.'));
+    } catch {
+      toast.error(t('common.loadError', 'Có lỗi xảy ra, vui lòng thử lại.'));
+      reload();
+    }
+  };
+
   return (
     <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8">
       <div className="mb-6 flex items-center gap-3">
@@ -153,7 +203,12 @@ export function LibraryPage() {
             {(list) => (
               <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
                 {list.map((b) => (
-                  <BriefCard key={b.story.slug} story={b.story} />
+                  <BriefCard
+                    key={b.story.slug}
+                    story={b.story}
+                    onRemove={() => handleRemoveBookmark(b.story.slug)}
+                    removeLabel={t('library.remove', 'Bỏ đánh dấu')}
+                  />
                 ))}
               </div>
             )}
@@ -176,6 +231,8 @@ export function LibraryPage() {
                     key={p.story.slug}
                     story={p.story}
                     caption={t('actions.continueReading', { index: p.chapter.chapterNo })}
+                    onRemove={() => handleRemoveProgress(p.story.slug)}
+                    removeLabel={t('library.removeProgress', 'Xoá tiến độ đọc')}
                   />
                 ))}
               </div>

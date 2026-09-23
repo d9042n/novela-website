@@ -1,14 +1,10 @@
 /**
  * Đồng bộ tiến độ đọc giữa localStorage và core API.
  *
- * Ranh giới rõ ràng giữa hai bên:
- *  - Server lưu tới mức CHƯƠNG (`chapter_no`). Đó là toàn bộ những gì
- *    `PUT /library/reading-progress/{slug}` nhận.
- *  - `scroll` (0..1, vị trí trong chương) KHÔNG có cột trên server -> ở lại
- *    localStorage vĩnh viễn. Đọc tiếp trên máy khác sẽ mở đúng chương nhưng về
- *    đầu chương, không nhảy giữa đoạn.
+ * Server hỗ trợ lưu cả CHƯƠNG (`chapter_no`) và VỊ TRÍ CUỘN (`scroll_percent` 0..100%).
+ * Local lưu tỷ lệ `scroll` 0..1 nên được chuyển đổi sang phần trăm tương ứng.
  *
- * Client cũng KHÔNG gửi được `updated_at` (server tự set lúc nhận request), nên
+ * Client KHÔNG gửi được `updated_at` (server tự set lúc nhận request), nên
  * không làm last-write-wins theo thời gian đọc thật được. Bù bằng cách push
  * theo thứ tự `updatedAt` TĂNG DẦN: bản ghi đọc gần đây nhất được PUT sau cùng
  * nên có `updated_at` lớn nhất trên server, giữ đúng thứ tự tương đối của danh
@@ -64,7 +60,8 @@ export async function pushLocalProgress(userId: number): Promise<void> {
   for (const r of records) {
     if (!Number.isInteger(r.chapterNo) || r.chapterNo < 1) continue;
     try {
-      await putReadingProgress(r.slug, r.chapterNo);
+      const scrollPercent = r.scroll != null ? r.scroll * 100 : undefined;
+      await putReadingProgress(r.slug, r.chapterNo, scrollPercent);
     } catch {
       /* bản ghi hỏng -> bỏ qua, xem doc ở trên */
     }
@@ -92,10 +89,11 @@ export function mergeServerProgress(serverItems: ServerReadingProgress[]): void 
 
     if (local && local.chapterNo >= serverNo) continue;
 
+    const serverScroll = item.scrollPercent != null ? item.scrollPercent / 100 : 0;
     saveProgress({
       slug,
       chapterNo: serverNo,
-      scroll: local && local.chapterNo === serverNo ? local.scroll : 0,
+      scroll: local && local.chapterNo === serverNo ? local.scroll : serverScroll,
       updatedAt: Date.parse(item.updatedAt) || Date.now(),
     });
   }

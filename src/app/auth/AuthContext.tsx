@@ -43,6 +43,32 @@ interface AuthContextValue {
   login: (username: string, password: string) => Promise<void>;
   register: (username: string, email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
+  /**
+   * Nạp lại hồ sơ từ server (`getMe`). Lỗi thì GIỮ NGUYÊN user hiện tại.
+   *
+   * Vì sao không set `null` khi lỗi: một cú `getMe` hỏng vì mạng/5xx không phải
+   * bằng chứng phiên đã chết. `authorizedRequest` đã tự refresh token một lần
+   * trước khi bỏ cuộc, nên khi phiên thật sự hết hạn thì `setSessionExpiredHandler`
+   * mới là đường báo về — và đó là chỗ DUY NHẤT được quyền xoá phiên. Nếu
+   * `refreshUser` cũng tự đăng xuất, một lần mất wifi lúc mở trang Tài khoản sẽ
+   * đá user ra ngoài dù token còn nguyên giá trị.
+   */
+  refreshUser: () => Promise<void>;
+  /**
+   * Đặt thẳng user đã có sẵn từ response (ví dụ `updateProfile` trả về AuthUser).
+   *
+   * Tránh một round-trip `getMe` dư: server vừa trả đúng bản hồ sơ mới nhất rồi,
+   * gọi lại chỉ thêm độ trễ và thêm một cửa để hiện dữ liệu cũ nếu có replica lag.
+   */
+  applyUser: (u: AuthUser) => void;
+  /**
+   * Xoá phiên phía UI, KHÔNG gọi API.
+   *
+   * Dùng sau khi xoá tài khoản: `deleteAccount` đã `clearTokens()` ở tầng data,
+   * nên gọi `logout()` lúc này chỉ bắn một request chắc chắn 401 tới tài khoản
+   * không còn tồn tại.
+   */
+  clearSession: () => void;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -125,8 +151,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
   };
 
+  const refreshUser: AuthContextValue['refreshUser'] = async () => {
+    try {
+      setUser(await getMe());
+    } catch {
+      /* giữ nguyên user hiện tại — xem doc của interface */
+    }
+  };
+
+  const applyUser: AuthContextValue['applyUser'] = (u) => setUser(u);
+
+  const clearSession: AuthContextValue['clearSession'] = () => setUser(null);
+
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, logout }}>
+    <AuthContext.Provider
+      value={{ user, loading, login, register, logout, refreshUser, applyUser, clearSession }}
+    >
       {children}
     </AuthContext.Provider>
   );

@@ -16,6 +16,7 @@ import { useTheme } from '../../theme/ThemeProvider';
 import { HomePortalLayout } from './HomePortalLayout';
 import { HomeReelsLayout } from './HomeReelsLayout';
 import { HomeMagazineLayout } from './HomeMagazineLayout';
+import { HomeRankings } from './HomeRankings';
 
 function SectionHeader({ index, title, to }: { index: string; title: string; to?: string }) {
   const { t } = useTranslation();
@@ -85,8 +86,10 @@ export function HomePage() {
         <NovelGrid novels={popular} />
       </section>
 
+      <HomeRankings />
+
       <section className="mt-14">
-        <SectionHeader index="03" title={t('home.byGenre')} />
+        <SectionHeader index="04" title={t('home.byGenre')} />
         <div className="flex flex-wrap gap-2">
           {genres.map((g) => (
             <Link key={g.slug} to={`/browse?genre=${g.slug}`}>

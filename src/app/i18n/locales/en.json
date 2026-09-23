@@ -22,7 +22,16 @@
     "editorsChoice": "Editor's Choice",
     "magazineQuote": "“Words are in my not-so-humble opinion, our most inexhaustible source of magic. Capable of both inflicting injury, and remedying it.”",
     "magazineQuoteAuthor": "— Novela Curated Literary Highlights",
-    "goToSlide": "Go to featured novel {{index}} of {{total}}"
+    "goToSlide": "Go to featured novel {{index}} of {{total}}",
+    "rankings": {
+      "title": "Rankings",
+      "subtitle": "Most read and celebrated web novels",
+      "day": "Daily",
+      "week": "Weekly",
+      "month": "Monthly",
+      "views": "{{count}} views",
+      "empty": "No ranking data available for this timeframe."
+    }
   },
   "browse": {
     "title": "Search & Explore Library",
@@ -38,6 +47,9 @@
     "clearSelection": "Clear selection",
     "clearFilters": "Clear filters",
     "clearAllFilters": "Clear all filters",
+    "allSources": "All Sources",
+    "sourcesCount": "Sources ({{count}})",
+    "selectSources": "Select Sources",
     "sort": {
       "popular": "Most Popular",
       "latest": "Recently Updated",
@@ -242,6 +254,45 @@
       "weakPassword": "Password is too weak. Use at least 8 characters and avoid common passwords.",
       "rateLimited": "Too many attempts. Please wait a minute and try again.",
       "sessionExpired": "Your session has expired. Please sign in again."
+    },
+    "forgot": {
+      "link": "Forgot password?",
+      "title": "Forgot password",
+      "prompt": "Enter your email and we'll send you a password reset link.",
+      "emailHint": "Use the email you registered with.",
+      "submit": "Send reset link",
+      "resend": "Resend link",
+      "resendIn": "Resend in {{seconds}}s",
+      "sentNotice": "If an account exists for this email, we've sent password reset instructions. Check your spam folder too.",
+      "backToLogin": "Back to sign in"
+    },
+    "reset": {
+      "title": "Reset password",
+      "prompt": "Create a new password for your account.",
+      "newPassword": "New password",
+      "confirmPassword": "Confirm new password",
+      "minLengthHint": "At least {{min}} characters.",
+      "tooShort": "Password must be at least 8 characters.",
+      "mismatch": "Passwords do not match.",
+      "submit": "Reset password",
+      "success": "Password changed. Please sign in with your new password.",
+      "invalidToken": "This password reset link is invalid or has expired.",
+      "missingToken": "This password reset link is invalid. Please request a new one.",
+      "requestNewLink": "Request a new reset link",
+      "showPassword": "Show password",
+      "hidePassword": "Hide password"
+    },
+    "verifyEmail": {
+      "title": "Verify Email Address",
+      "verifying": "Verifying your token...",
+      "verifyingDesc": "Please wait a moment while we validate your verification link.",
+      "successTitle": "Email successfully verified!",
+      "successDesc": "Your email address has been verified. You now have full account privileges.",
+      "goHome": "Return Home",
+      "goAccount": "Go to Account",
+      "errorTitle": "Verification Failed",
+      "errorDesc": "The verification link may be invalid or expired.",
+      "loginPrompt": "Sign in again to request a new link"
     }
   },
   "library": {
@@ -253,6 +304,92 @@
     "add": "Bookmark",
     "remove": "Remove bookmark",
     "added": "Added to your library",
-    "removed": "Removed from your library"
+    "removed": "Removed from your library",
+    "progressRemoved": "Removed from reading history"
+  },
+  "account": {
+    "title": "Account",
+    "emailUnverified": "Unverified",
+    "verifyEmailBtn": "Verify Now",
+    "verifyEmailSent": "Verification email sent! Please check your inbox (and spam folder).",
+    "verifyEmailFailed": "Failed to send verification email. Please try again later.",
+    "resendAfter": "Resend in ({{seconds}}s)",
+    "joinedAt": "Joined {{date}}",
+    "stats": {
+      "bookmarks": "Bookmarked",
+      "reading": "Reading",
+      "lastActivity": "Last activity",
+      "never": "None yet"
+    },
+    "profile": {
+      "title": "Profile",
+      "displayName": "Display name",
+      "displayNamePlaceholder": "The name others will see",
+      "displayNameHint": "Leave empty to use your username.",
+      "email": "Email",
+      "avatarUrl": "Avatar (URL)",
+      "avatarPreviewAlt": "Avatar preview",
+      "avatarOfAlt": "Avatar of {{name}}",
+      "avatarBroken": "Could not load an image from this URL.",
+      "bio": "Bio",
+      "bioPlaceholder": "A few words about you...",
+      "gender": "Gender",
+      "genderUnset": "Not specified",
+      "genderMale": "Male",
+      "genderFemale": "Female",
+      "genderOther": "Other",
+      "birthday": "Date of birth",
+      "birthdayHint": "Leave empty to remove your date of birth.",
+      "save": "Save changes",
+      "reset": "Discard",
+      "noChanges": "No changes yet.",
+      "saved": "Profile saved."
+    },
+    "security": {
+      "title": "Security",
+      "back": "Back to account",
+      "changePassword": "Change password",
+      "logoutWarning": "Changing your password signs you out on all other devices. Your session on this device stays active.",
+      "currentPassword": "Current password",
+      "newPassword": "New password",
+      "confirmPassword": "Confirm new password",
+      "passwordHint": "At least 8 characters, not too common.",
+      "mismatch": "The two new passwords do not match.",
+      "submitChange": "Change password",
+      "changed": "Password changed. Other devices have been signed out.",
+      "badPassword": "Your current password is wrong, or the new password is not strong enough.",
+      "changeFailed": "Could not change your password. Please try again."
+    },
+    "delete": {
+      "zoneTitle": "Danger zone",
+      "zoneDescription": "Deleting your account is permanent and cannot be undone.",
+      "lossBookmarks": "All bookmarked stories in your library will be deleted.",
+      "lossProgress": "All synced reading progress will be deleted.",
+      "lossIrreversible": "The account cannot be recovered afterwards.",
+      "trigger": "Delete account",
+      "title": "Permanently delete your account?",
+      "description": "This cannot be undone. Confirm with your password and username.",
+      "passwordLabel": "Your password",
+      "confirmLabel": "Type \"{{username}}\" to confirm",
+      "confirmHint": "Must match exactly, case-sensitive.",
+      "cancel": "Cancel",
+      "confirmButton": "Delete permanently",
+      "wrongPassword": "Incorrect password.",
+      "failed": "Could not delete your account. Please try again.",
+      "done": "Your account has been deleted."
+    },
+    "errors": {
+      "fixFields": "Please check the highlighted fields.",
+      "displayNameTooLong": "Display name must be at most {{max}} characters.",
+      "bioTooLong": "Bio must be at most {{max}} characters.",
+      "invalidEmail": "Invalid email address.",
+      "invalidUrl": "The image URL must start with http:// or https://.",
+      "birthdayFuture": "Date of birth cannot be in the future.",
+      "birthdayTooOld": "Date of birth must be 1900 or later.",
+      "emailTaken": "That email is already in use.",
+      "invalidData": "Invalid data.",
+      "rateLimited": "Too many attempts. Please try again in a minute.",
+      "saveFailed": "Could not save your changes. Please try again."
+    }
   }
 }

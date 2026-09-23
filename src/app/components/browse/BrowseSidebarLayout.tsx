@@ -1,6 +1,6 @@
 import { Search, Filter, Check, RotateCcw } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import type { Genre, Novel, NovelStatus } from '../../data/types';
+import type { Genre, Novel, NovelStatus, Source } from '../../data/types';
 import { Input } from '../ui/input';
 import { Card } from '../ui/card';
 import { Checkbox } from '../ui/checkbox';
@@ -11,12 +11,15 @@ interface BrowseSidebarLayoutProps {
   query: string;
   genreSlugs: string[];
   statusList: NovelStatus[];
+  sourceCodes?: string[];
   sort: string;
   genres: Genre[];
+  sources?: Source[];
   results: Novel[];
   total: number;
   toggleGenre: (slug: string) => void;
   toggleStatus: (st: NovelStatus) => void;
+  toggleSource?: (code: string) => void;
   setParam: (key: string, value: string) => void;
   clearAllFilters: () => void;
   paginationNode: React.ReactNode;
@@ -28,19 +31,22 @@ export function BrowseSidebarLayout({
   query,
   genreSlugs = [],
   statusList = [],
+  sourceCodes = [],
   sort,
   genres = [],
+  sources = [],
   results = [],
   total,
   toggleGenre,
   toggleStatus,
+  toggleSource,
   setParam,
   clearAllFilters,
   paginationNode,
 }: BrowseSidebarLayoutProps) {
   const { t } = useTranslation();
 
-  const hasActiveFilters = genreSlugs.length > 0 || statusList.length > 0 || query !== '';
+  const hasActiveFilters = genreSlugs.length > 0 || statusList.length > 0 || sourceCodes.length > 0 || query !== '';
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8 space-y-6">
@@ -170,6 +176,45 @@ export function BrowseSidebarLayout({
                 })}
               </div>
             </div>
+
+            {/* Multi-Select Sources Filter */}
+            {sources.length > 0 && (
+              <div className="pt-3 border-t border-border/60 space-y-2">
+                <div className="flex items-center justify-between text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                  <span>{t('browse.selectSources')}</span>
+                  {sourceCodes.length > 0 && (
+                    <span className="text-primary font-bold text-[11px] lowercase">
+                      ({sourceCodes.length})
+                    </span>
+                  )}
+                </div>
+
+                <div className="space-y-1.5 max-h-48 overflow-y-auto pr-1 text-xs">
+                  {sources.map((s) => {
+                    const checked = sourceCodes.includes(s.code);
+                    return (
+                      <label
+                        key={s.code}
+                        className={`flex items-center justify-between px-2.5 py-1.5 rounded-md cursor-pointer transition-colors ${
+                          checked
+                            ? 'bg-primary/10 text-primary font-bold'
+                            : 'text-muted-foreground hover:bg-accent hover:text-foreground'
+                        }`}
+                      >
+                        <span className="flex items-center gap-2.5">
+                          <Checkbox
+                            checked={checked}
+                            onCheckedChange={() => toggleSource?.(s.code)}
+                          />
+                          <span>{s.name || s.code}</span>
+                        </span>
+                        {checked && <Check className="size-3.5 text-primary" />}
+                      </label>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
           </Card>
         </aside>
 

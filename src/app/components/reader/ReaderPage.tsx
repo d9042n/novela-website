@@ -14,6 +14,7 @@ import { ReaderControls } from './ReaderControls';
 import { fontCssVar, widthPx } from '../../theme/config';
 import { NotFoundPage } from '../NotFoundPage';
 import { Button } from '../ui/button';
+import { BookOpen } from 'lucide-react';
 import { useTheme } from '../../theme/ThemeProvider';
 import { ReaderDrawerLayout } from './ReaderDrawerLayout';
 
@@ -112,20 +113,23 @@ export function ReaderPage() {
     return () => clearTimeout(id);
   }, [slug, no, progress, chapter]);
 
-  // Đẩy tiến độ lên server khi ĐỔI CHƯƠNG, không theo `progress`.
+  // Đẩy tiến độ lên server (chapter_no + scroll_percent).
   //
-  // Effect ở trên chạy mỗi 400ms trong lúc cuộn — nối mạng vào đó là bắn hàng
-  // chục request mỗi chương, mà body chỉ có `chapter_no` nên mọi request sau cái
-  // đầu đều gửi đúng một giá trị. Server cũng không lưu `scroll` để mà cập nhật.
+  // Dùng trailing debounce 2s khi cuộn để không bắn bão request mạng, nhưng vẫn
+  // kịp lưu vị trí đọc dở lên database của Core khi người dùng dừng đọc hoặc đổi máy.
   //
   // Fire-and-forget: sync hỏng (mất mạng, 404 vì chapter_no lệch ở truyện dạng
   // quyển) tuyệt đối không được làm gián đoạn việc đọc.
   useEffect(() => {
     if (!chapter || !user) return;
-    void putReadingProgress(slug, no).catch(() => {
-      /* im lặng có chủ ý */
-    });
-  }, [slug, no, chapter, user]);
+    const scrollPercent = progress > 0.01 ? progress * 100 : 0;
+    const id = setTimeout(() => {
+      void putReadingProgress(slug, no, scrollPercent).catch(() => {
+        /* im lặng có chủ ý */
+      });
+    }, 2000);
+    return () => clearTimeout(id);
+  }, [slug, no, progress, chapter, user]);
 
   // Ghi một lượt xem cho truyện. Server tự dedup theo khách/ngày nên gọi lại khi
   // user nhảy chương cũng không cộng thêm; đếm theo TRUYỆN không theo chương.
@@ -169,7 +173,32 @@ export function ReaderPage() {
       </div>
     );
   }
-  if (novel === null || chapter === null) return <NotFoundPage />;
+  if (novel === null) return <NotFoundPage />;
+  if (chapter === null) {
+    return (
+      <div className="grid min-h-[70vh] place-items-center px-4">
+        <div className="text-center max-w-md">
+          <BookOpen className="size-12 mx-auto mb-4 text-muted-foreground opacity-40" />
+          <h2 className="text-xl font-bold mb-2">
+            {t('reader.chapterNotReady', 'Chương chưa có nội dung')}
+          </h2>
+          <p className="text-sm text-muted-foreground mb-6">
+            {t('reader.chapterNotReadyDesc', 'Nội dung chương này chưa được thu thập hoặc đang trong quá trình xử lý. Vui lòng chọn chương khác.')}
+          </p>
+          <div className="flex justify-center gap-3">
+            <Button variant="outline" onClick={() => navigate(`/novel/${slug}`)}>
+              {t('novel.info', 'Chi tiết truyện')}
+            </Button>
+            {prevNo != null && (
+              <Button onClick={() => goToNo(prevNo)}>
+                {t('reader.prevChapter', 'Chương trước')}
+              </Button>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (readerPagePreset === 'drawer' && novel && chapter) {
     return (
@@ -305,11 +334,17 @@ function ChapterBody({ chapter, align }: { chapter: Chapter; align: 'justify' | 
       <h1 style={{ fontSize: '1.6em', fontWeight: 600, lineHeight: 1.3, marginBottom: '1.5rem' }}>
         {chapter.title}
       </h1>
-      {chapter.paragraphs.map((p, i) => (
-        <p key={i} style={{ marginBottom: '1.1em', textAlign: align }}>
-          {p}
+      {chapter.paragraphs.length === 0 ? (
+        <p className="py-8 text-center text-muted-foreground italic">
+          Nội dung chương đang được cập nhật...
         </p>
-      ))}
+      ) : (
+        chapter.paragraphs.map((p, i) => (
+          <p key={i} style={{ marginBottom: '1.1em', textAlign: align }}>
+            {p}
+          </p>
+        ))
+      )}
     </article>
   );
 }

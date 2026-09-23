@@ -1,7 +1,9 @@
 import { Link, useNavigate } from 'react-router';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { BookMarked, LogIn, LogOut, User } from 'lucide-react';
+import { BookMarked, LogIn, LogOut, User, UserCog } from 'lucide-react';
 import { useAuth } from '../../auth/AuthContext';
+import { displayNameOf } from '../../data/types';
 import { Button } from '../ui/button';
 import {
   DropdownMenu,
@@ -26,6 +28,16 @@ export function UserMenu({ compact = false }: { compact?: boolean }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { user, loading, logout } = useAuth();
+  // Ảnh đại diện do user tự gõ URL nên chết là chuyện thường -> nhớ lại lần lỗi
+  // để lui về icon, không để trình duyệt hiện icon ảnh vỡ.
+  const [avatarBroken, setAvatarBroken] = useState(false);
+
+  const avatarUrl = user?.avatarUrl?.trim() ?? '';
+  // PHẢI reset theo URL: sau khi user sửa ảnh đại diện trong /account, cờ hỏng
+  // của ảnh CŨ vẫn còn nên menu tiếp tục hiện icon fallback dù ảnh mới tải được.
+  useEffect(() => {
+    setAvatarBroken(false);
+  }, [avatarUrl]);
 
   if (loading) return null;
 
@@ -45,16 +57,42 @@ export function UserMenu({ compact = false }: { compact?: boolean }) {
     );
   }
 
+  const showAvatar = avatarUrl !== '' && !avatarBroken;
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" size="icon" aria-label={t('auth.myAccount')}>
-          <User className="size-5" />
+          {showAvatar ? (
+            <img
+              src={avatarUrl}
+              alt=""
+              aria-hidden="true"
+              className="size-7 rounded-full object-cover"
+              onError={() => setAvatarBroken(true)}
+            />
+          ) : (
+            <User className="size-5" />
+          )}
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-48">
-        <DropdownMenuLabel className="truncate">{user.username}</DropdownMenuLabel>
+        <DropdownMenuLabel className="min-w-0">
+          <span className="block truncate font-medium">{displayNameOf(user)}</span>
+          <span
+            className="block truncate text-muted-foreground font-normal"
+            style={{ fontSize: '0.75rem' }}
+          >
+            @{user.username}
+          </span>
+        </DropdownMenuLabel>
         <DropdownMenuSeparator />
+        <DropdownMenuItem asChild>
+          <Link to="/account" className="gap-2">
+            <UserCog className="size-4" />
+            {t('account.title')}
+          </Link>
+        </DropdownMenuItem>
         <DropdownMenuItem asChild>
           <Link to="/library" className="gap-2">
             <BookMarked className="size-4" />

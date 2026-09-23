@@ -101,7 +101,7 @@ export function ChapterList({ slug, total, lastReadNo }: ChapterListProps) {
         <ul className="divide-y divide-border">
           {filtered.map((c) => {
             const isCurrent = c.chapterNo === lastReadNo;
-            const isRead = lastReadNo != null && !desc && c.chapterNo <= lastReadNo;
+            const isRead = lastReadNo != null && c.chapterNo <= lastReadNo;
             return (
               <li key={c.chapterNo}>
                 <Link

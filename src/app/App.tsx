@@ -11,7 +11,12 @@ import { NovelDetailPage } from './components/detail/NovelDetailPage';
 import { ReaderPage } from './components/reader/ReaderPage';
 import { LoginPage } from './components/auth/LoginPage';
 import { RegisterPage } from './components/auth/RegisterPage';
+import { ForgotPasswordPage } from './components/auth/ForgotPasswordPage';
+import { ResetPasswordPage } from './components/auth/ResetPasswordPage';
+import { VerifyEmailPage } from './components/auth/VerifyEmailPage';
 import { RequireAuth } from './components/auth/RequireAuth';
+import { AccountPage } from './components/account/AccountPage';
+import { SecurityPage } from './components/account/SecurityPage';
 import { LibraryPage } from './components/library/LibraryPage';
 import { NotFoundPage } from './components/NotFoundPage';
 import { Toaster } from './components/ui/sonner';
@@ -36,6 +41,25 @@ export default function App() {
                 element={
                   <RequireAuth>
                     <LibraryPage />
+                  </RequireAuth>
+                }
+              />
+              <Route path="forgot-password" element={<ForgotPasswordPage />} />
+              <Route path="reset-password" element={<ResetPasswordPage />} />
+              <Route path="verify-email" element={<VerifyEmailPage />} />
+              <Route
+                path="account"
+                element={
+                  <RequireAuth>
+                    <AccountPage />
+                  </RequireAuth>
+                }
+              />
+              <Route
+                path="account/security"
+                element={
+                  <RequireAuth>
+                    <SecurityPage />
                   </RequireAuth>
                 }
               />

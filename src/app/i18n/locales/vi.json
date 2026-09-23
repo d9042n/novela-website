@@ -22,7 +22,16 @@
     "editorsChoice": "Lựa chọn của biên tập viên",
     "magazineQuote": "“Từ ngữ, theo ý kiến không mấy khiêm tốn của tôi, là nguồn phép thuật vô tận nhất. Vừa có thể gây thương tổn, lại vừa có thể chữa lành.”",
     "magazineQuoteAuthor": "— Điểm nhấn văn học Novela",
-    "goToSlide": "Xem truyện nổi bật {{index}} trên {{total}}"
+    "goToSlide": "Xem truyện nổi bật {{index}} trên {{total}}",
+    "rankings": {
+      "title": "Bảng Xếp Hạng",
+      "subtitle": "Những tác phẩm được đón đọc nhiều nhất",
+      "day": "Theo Ngày",
+      "week": "Theo Tuần",
+      "month": "Theo Tháng",
+      "views": "{{count}} lượt xem",
+      "empty": "Chưa có dữ liệu xếp hạng cho mốc thời gian này."
+    }
   },
   "browse": {
     "title": "Tìm Kiếm & Khám Phá",
@@ -38,6 +47,9 @@
     "clearSelection": "Xóa chọn",
     "clearFilters": "Xóa lọc",
     "clearAllFilters": "Xóa tất cả bộ lọc",
+    "allSources": "Tất cả nguồn",
+    "sourcesCount": "Nguồn ({{count}})",
+    "selectSources": "Chọn nguồn truyện",
     "sort": {
       "popular": "Phổ biến nhất",
       "latest": "Mới nhất",
@@ -242,6 +254,45 @@
       "weakPassword": "Mật khẩu không đủ mạnh. Hãy dùng ít nhất 8 ký tự, không quá phổ biến.",
       "rateLimited": "Bạn thử quá nhiều lần. Vui lòng chờ một phút rồi thử lại.",
       "sessionExpired": "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại."
+    },
+    "forgot": {
+      "link": "Quên mật khẩu?",
+      "title": "Quên mật khẩu",
+      "prompt": "Nhập email của bạn, chúng tôi sẽ gửi liên kết đặt lại mật khẩu.",
+      "emailHint": "Dùng email bạn đã đăng ký tài khoản.",
+      "submit": "Gửi liên kết đặt lại",
+      "resend": "Gửi lại liên kết",
+      "resendIn": "Gửi lại sau {{seconds}}s",
+      "sentNotice": "Nếu email này có tài khoản, chúng tôi đã gửi hướng dẫn đặt lại mật khẩu. Kiểm tra cả hộp thư spam.",
+      "backToLogin": "Quay lại đăng nhập"
+    },
+    "reset": {
+      "title": "Đặt lại mật khẩu",
+      "prompt": "Tạo mật khẩu mới cho tài khoản của bạn.",
+      "newPassword": "Mật khẩu mới",
+      "confirmPassword": "Xác nhận mật khẩu mới",
+      "minLengthHint": "Tối thiểu {{min}} ký tự.",
+      "tooShort": "Mật khẩu phải có ít nhất 8 ký tự.",
+      "mismatch": "Hai mật khẩu không khớp.",
+      "submit": "Đặt lại mật khẩu",
+      "success": "Đã đổi mật khẩu. Hãy đăng nhập bằng mật khẩu mới.",
+      "invalidToken": "Link đặt lại mật khẩu không hợp lệ hoặc đã hết hạn.",
+      "missingToken": "Link đặt lại mật khẩu không hợp lệ. Hãy yêu cầu link mới.",
+      "requestNewLink": "Gửi lại link đặt lại mật khẩu",
+      "showPassword": "Hiện mật khẩu",
+      "hidePassword": "Ẩn mật khẩu"
+    },
+    "verifyEmail": {
+      "title": "Xác thực địa chỉ Email",
+      "verifying": "Đang kiểm tra mã xác thực...",
+      "verifyingDesc": "Vui lòng chờ trong giây lát khi chúng tôi xác nhận liên kết của bạn.",
+      "successTitle": "Xác thực email thành công!",
+      "successDesc": "Địa chỉ email của bạn đã được chứng thực. Bạn đã có đầy đủ quyền lợi tài khoản.",
+      "goHome": "Về trang chủ",
+      "goAccount": "Vào trang tài khoản",
+      "errorTitle": "Xác thực không thành công",
+      "errorDesc": "Liên kết xác thực có thể đã hết hạn hoặc không hợp lệ.",
+      "loginPrompt": "Đăng nhập lại để nhận liên kết mới"
     }
   },
   "library": {
@@ -253,6 +304,92 @@
     "add": "Đánh dấu",
     "remove": "Bỏ đánh dấu",
     "added": "Đã thêm vào tủ sách",
-    "removed": "Đã bỏ khỏi tủ sách"
+    "removed": "Đã bỏ khỏi tủ sách",
+    "progressRemoved": "Đã xóa lịch sử đọc"
+  },
+  "account": {
+    "title": "Tài khoản",
+    "emailUnverified": "Chưa xác thực",
+    "verifyEmailBtn": "Xác thực ngay",
+    "verifyEmailSent": "Đã gửi email xác thực! Vui lòng kiểm tra hộp thư (cả mục Spam/Junk).",
+    "verifyEmailFailed": "Không gửi được email xác thực. Vui lòng thử lại sau.",
+    "resendAfter": "Gửi lại sau ({{seconds}}s)",
+    "joinedAt": "Tham gia từ {{date}}",
+    "stats": {
+      "bookmarks": "Truyện đã đánh dấu",
+      "reading": "Đang đọc",
+      "lastActivity": "Hoạt động gần nhất",
+      "never": "Chưa có"
+    },
+    "profile": {
+      "title": "Thông tin cá nhân",
+      "displayName": "Tên hiển thị",
+      "displayNamePlaceholder": "Tên bạn muốn người khác thấy",
+      "displayNameHint": "Để trống thì hệ thống dùng tên đăng nhập.",
+      "email": "Email",
+      "avatarUrl": "Ảnh đại diện (URL)",
+      "avatarPreviewAlt": "Xem trước ảnh đại diện",
+      "avatarOfAlt": "Ảnh đại diện của {{name}}",
+      "avatarBroken": "Không tải được ảnh từ đường dẫn này.",
+      "bio": "Giới thiệu",
+      "bioPlaceholder": "Đôi dòng về bạn...",
+      "gender": "Giới tính",
+      "genderUnset": "Chưa khai",
+      "genderMale": "Nam",
+      "genderFemale": "Nữ",
+      "genderOther": "Khác",
+      "birthday": "Ngày sinh",
+      "birthdayHint": "Để trống để xoá ngày sinh.",
+      "save": "Lưu thay đổi",
+      "reset": "Hoàn tác",
+      "noChanges": "Chưa có thay đổi nào.",
+      "saved": "Đã lưu hồ sơ."
+    },
+    "security": {
+      "title": "Bảo mật",
+      "back": "Quay lại tài khoản",
+      "changePassword": "Đổi mật khẩu",
+      "logoutWarning": "Đổi mật khẩu sẽ đăng xuất mọi thiết bị khác. Phiên hiện tại trên máy này vẫn được giữ.",
+      "currentPassword": "Mật khẩu hiện tại",
+      "newPassword": "Mật khẩu mới",
+      "confirmPassword": "Nhập lại mật khẩu mới",
+      "passwordHint": "Ít nhất 8 ký tự, không quá phổ biến.",
+      "mismatch": "Hai lần nhập mật khẩu mới không khớp.",
+      "submitChange": "Đổi mật khẩu",
+      "changed": "Đã đổi mật khẩu. Các thiết bị khác đã bị đăng xuất.",
+      "badPassword": "Mật khẩu hiện tại không đúng, hoặc mật khẩu mới không đủ mạnh.",
+      "changeFailed": "Không đổi được mật khẩu. Vui lòng thử lại."
+    },
+    "delete": {
+      "zoneTitle": "Vùng nguy hiểm",
+      "zoneDescription": "Xoá tài khoản là thao tác vĩnh viễn, không hoàn tác được.",
+      "lossBookmarks": "Toàn bộ truyện đã đánh dấu trong tủ sách sẽ bị xoá.",
+      "lossProgress": "Toàn bộ tiến độ đọc đã đồng bộ sẽ bị xoá.",
+      "lossIrreversible": "Không thể khôi phục tài khoản sau khi xoá.",
+      "trigger": "Xoá tài khoản",
+      "title": "Xoá tài khoản vĩnh viễn?",
+      "description": "Thao tác này không hoàn tác được. Xác nhận bằng mật khẩu và tên đăng nhập của bạn.",
+      "passwordLabel": "Mật khẩu của bạn",
+      "confirmLabel": "Gõ \"{{username}}\" để xác nhận",
+      "confirmHint": "Phải gõ chính xác, phân biệt hoa thường.",
+      "cancel": "Huỷ",
+      "confirmButton": "Xoá vĩnh viễn",
+      "wrongPassword": "Mật khẩu không đúng.",
+      "failed": "Không xoá được tài khoản. Vui lòng thử lại.",
+      "done": "Tài khoản của bạn đã được xoá."
+    },
+    "errors": {
+      "fixFields": "Vui lòng kiểm tra lại các ô được đánh dấu.",
+      "displayNameTooLong": "Tên hiển thị tối đa {{max}} ký tự.",
+      "bioTooLong": "Giới thiệu tối đa {{max}} ký tự.",
+      "invalidEmail": "Email không hợp lệ.",
+      "invalidUrl": "Đường dẫn ảnh phải bắt đầu bằng http:// hoặc https://.",
+      "birthdayFuture": "Ngày sinh không thể ở tương lai.",
+      "birthdayTooOld": "Ngày sinh phải từ năm 1900 trở về sau.",
+      "emailTaken": "Email đã được sử dụng.",
+      "invalidData": "Dữ liệu không hợp lệ.",
+      "rateLimited": "Bạn thao tác quá nhanh. Vui lòng thử lại sau một phút.",
+      "saveFailed": "Không lưu được thay đổi. Vui lòng thử lại."
+    }
   }
 }

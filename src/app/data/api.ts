@@ -19,12 +19,16 @@ import {
 } from './client';
 import type {
   Author,
+  AuthorRef,
   Chapter,
   ChapterSummary,
   Genre,
   Novel,
   NovelGenre,
   NovelStatus,
+  RankingNovel,
+  RankingWindow,
+  Source,
 } from './types';
 
 /* ------------------------------------------------------------------ */
@@ -95,6 +99,24 @@ interface RawChapterContent {
   url: string;
   prev_no: number | null;
   next_no: number | null;
+}
+
+interface RawRankingItem extends RawStoryListItem {
+  rank: number;
+  views_in_window: number;
+}
+
+interface RawSource {
+  code: string;
+  name: string;
+  story_count: number;
+  is_active: boolean;
+}
+
+interface RawAuthorRef {
+  name: string;
+  slug: string;
+  story_count: number;
 }
 
 /* ------------------------------------------------------------------ */
@@ -203,6 +225,15 @@ function mapChapter(raw: RawChapterContent): Chapter {
     url: raw.url,
     prevNo: raw.prev_no,
     nextNo: raw.next_no,
+  };
+}
+
+function mapRankingItem(raw: RawRankingItem): RankingNovel {
+  const base = mapListItem(raw);
+  return {
+    ...base,
+    rank: raw.rank,
+    viewsInWindow: raw.views_in_window ?? 0,
   };
 }
 
@@ -362,4 +393,52 @@ export function getChapter(slug: string, chapterNo: number): Promise<Chapter> {
   return apiGet<RawChapterContent>(
     `/stories/${encodeURIComponent(slug)}/chapters/${chapterNo}`,
   ).then(mapChapter);
+}
+
+/**
+ * Bảng xếp hạng truyện theo khoảng thời gian (day / week / month).
+ * Trả danh sách snapshot đã tính sẵn kèm thứ hạng và số lượt xem trong khoảng.
+ */
+export function getRankings(
+  window: RankingWindow = 'day',
+  params: { page?: number; size?: number } = {},
+): Promise<Paginated<RankingNovel>> {
+  const { page = 1, size = 10 } = params;
+  return apiGetPaginated<RawRankingItem, RankingNovel>(
+    '/rankings',
+    { window, page, size },
+    mapRankingItem,
+  );
+}
+
+/** Danh sách nguồn cào (code, name, story_count, is_active). */
+export function getSources(): Promise<Source[]> {
+  return apiGetList<RawSource, Source>('/sources', (s) => ({
+    code: s.code,
+    name: s.name,
+    storyCount: s.story_count,
+    isActive: s.is_active,
+  }));
+}
+
+export interface AuthorListParams {
+  q?: string;
+  page?: number;
+  size?: number;
+}
+
+/** Danh sách tác giả phân trang kèm số lượng truyện. */
+export function getAuthors(
+  params: AuthorListParams = {},
+): Promise<Paginated<AuthorRef>> {
+  const { q, page = 1, size = 20 } = params;
+  return apiGetPaginated<RawAuthorRef, AuthorRef>(
+    '/authors',
+    { q, page, size },
+    (a) => ({
+      name: a.name,
+      slug: a.slug,
+      storyCount: a.story_count,
+    }),
+  );
 }

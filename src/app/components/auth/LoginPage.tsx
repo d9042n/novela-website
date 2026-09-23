@@ -101,7 +101,18 @@ export function LoginPage() {
         </div>
 
         <div className="grid gap-2">
-          <Label htmlFor="login-password">{t('auth.password')}</Label>
+          <div className="flex items-center justify-between gap-2">
+            <Label htmlFor="login-password">{t('auth.password')}</Label>
+            {/* Đặt cạnh field mật khẩu vì đó là đúng lúc user nhận ra mình không
+                nhớ nó — bắt cuộn xuống cuối trang tìm link là thêm ma sát. */}
+            <Link
+              to="/forgot-password"
+              className="text-primary hover:underline"
+              style={{ fontSize: '0.8rem' }}
+            >
+              {t('auth.forgot.link')}
+            </Link>
+          </div>
           <Input
             id="login-password"
             type="password"

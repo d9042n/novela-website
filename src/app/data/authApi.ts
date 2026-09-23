@@ -20,17 +20,37 @@
 
 import { ApiError, apiRequest, type RequestOptions } from './client';
 import { clearTokens, getAccessToken, getTokens, setTokens, type TokenPair } from './tokenStore';
-import type { AuthUser } from './types';
+import type { AccountStats, AuthUser } from './types';
 
 /* ------------------------------------------------------------------ */
 /* Raw shapes trả về từ core (snake_case).                            */
 /* ------------------------------------------------------------------ */
 
-/** MeSchema — whitelist đúng 3 field, core KHÔNG trả password hash / quyền. */
+/**
+ * MeSchema — whitelist hồ sơ, core KHÔNG trả password hash / quyền.
+ *
+ * Các field ngoài `id/username/email` khai OPTIONAL có chủ ý: xem `mapMe`.
+ */
 interface RawMe {
   id: number;
   username: string;
   email: string;
+  display_name?: string | null;
+  avatar_url?: string | null;
+  bio?: string | null;
+  gender?: string | null;
+  birthday?: string | null;
+  email_verified?: boolean | null;
+  date_joined?: string | null;
+  is_staff?: boolean | null;
+}
+
+/** Raw của `/auth/me/stats`. */
+interface RawAccountStats {
+  bookmark_count?: number | null;
+  reading_count?: number | null;
+  date_joined?: string | null;
+  last_activity_at?: string | null;
 }
 
 interface RawTokenPair {
@@ -42,8 +62,47 @@ interface RawTokenPair {
 /* Mappers raw -> domain.                                             */
 /* ------------------------------------------------------------------ */
 
+/** Giá trị hợp lệ của `gender`; khác đi thì coi như chưa đặt. */
+const GENDERS: ReadonlyArray<AuthUser['gender']> = ['', 'male', 'female', 'other'];
+
+function mapGender(raw: unknown): AuthUser['gender'] {
+  return GENDERS.includes(raw as AuthUser['gender']) ? (raw as AuthUser['gender']) : '';
+}
+
+/**
+ * Map MeSchema -> AuthUser, mỗi field mới đều có default.
+ *
+ * Vì sao phải phòng thủ chứ không khai bắt buộc: deploy web và deploy core KHÔNG
+ * nguyên tử. Trong vài phút giữa hai lần rollout, bản web mới hoàn toàn có thể
+ * nói chuyện với core cũ chưa có `display_name`/`birthday`/... Nếu tầng map cứ
+ * cho là field luôn có, một field optional thiếu sẽ kéo theo `undefined` chạy
+ * xuyên xuống component và làm trắng cả app — cái giá quá đắt cho một trường hồ
+ * sơ. Default ('' / null / false) cho ra UI khuyết chỗ đó nhưng vẫn dùng được.
+ */
 function mapMe(raw: RawMe): AuthUser {
-  return { id: raw.id, username: raw.username, email: raw.email };
+  return {
+    id: raw.id,
+    username: raw.username,
+    email: raw.email,
+    displayName: raw.display_name ?? '',
+    avatarUrl: raw.avatar_url ?? '',
+    bio: raw.bio ?? '',
+    gender: mapGender(raw.gender),
+    birthday: raw.birthday ?? null,
+    emailVerified: raw.email_verified ?? false,
+    joinedAt: raw.date_joined ?? '',
+    isStaff: raw.is_staff ?? false,
+  };
+}
+
+/** Cùng lý do phòng thủ như `mapMe`. */
+function mapAccountStats(raw: RawAccountStats): AccountStats {
+  return {
+    bookmarkCount: raw.bookmark_count ?? 0,
+    readingCount: raw.reading_count ?? 0,
+    joinedAt: raw.date_joined ?? '',
+    lastActivityAt: raw.last_activity_at ?? null,
+  };
 }
 
 /* ------------------------------------------------------------------ */
@@ -234,3 +293,114 @@ export async function changePassword(params: ChangePasswordParams): Promise<Toke
   setTokens(pair);
   return pair;
 }
+
+/* ------------------------------------------------------------------ */
+/* Hồ sơ + tài khoản.                                                 */
+/* ------------------------------------------------------------------ */
+
+/** Các field hồ sơ được phép sửa qua `PATCH /auth/me`. */
+export type ProfilePatch = Partial<{
+  displayName: string;
+  email: string;
+  avatarUrl: string;
+  bio: string;
+  gender: AuthUser['gender'];
+  birthday: string | null;
+}>;
+
+/** camelCase -> snake_case cho từng field patch được. */
+const PATCH_FIELD_MAP: Record<keyof ProfilePatch, string> = {
+  displayName: 'display_name',
+  email: 'email',
+  avatarUrl: 'avatar_url',
+  bio: 'bio',
+  gender: 'gender',
+  birthday: 'birthday',
+};
+
+/**
+ * Cập nhật hồ sơ (PATCH `/auth/me`), trả user đã cập nhật.
+ *
+ * CHỈ gửi những key CÓ MẶT trong `patch`. Đây là PATCH ngữ nghĩa thật: field
+ * không gửi = "đừng đụng", còn gửi kèm `undefined` thì `JSON.stringify` bỏ key
+ * đi (may) hoặc — với `null` — lại là lệnh XOÁ giá trị. Dùng `in` chứ không
+ * kiểm tra `!== undefined`, để `birthday: null` (chủ ý xoá ngày sinh) vẫn đi
+ * được tới server.
+ */
+export async function updateProfile(patch: ProfilePatch): Promise<AuthUser> {
+  const body: Record<string, unknown> = {};
+  for (const [key, apiKey] of Object.entries(PATCH_FIELD_MAP) as [keyof ProfilePatch, string][]) {
+    if (key in patch) body[apiKey] = patch[key];
+  }
+
+  const raw = await authorizedRequest<RawMe>('/auth/me', { method: 'PATCH', body });
+  return mapMe(raw);
+}
+
+/** Số liệu tổng hợp của tài khoản (GET `/auth/me/stats`). */
+export async function getAccountStats(): Promise<AccountStats> {
+  const raw = await authorizedRequest<RawAccountStats>('/auth/me/stats');
+  return mapAccountStats(raw);
+}
+
+/**
+ * Xoá tài khoản vĩnh viễn (DELETE `/auth/me`), cần xác nhận lại mật khẩu.
+ *
+ * Chỉ xoá token khi server ĐÃ xác nhận thành công — khác `logout`. Xoá sớm mà
+ * server từ chối (sai mật khẩu) thì user vừa mất phiên vừa còn nguyên tài khoản.
+ */
+export async function deleteAccount(password: string): Promise<void> {
+  await authorizedRequest<void>('/auth/me', { method: 'DELETE', body: { password } });
+  clearTokens();
+}
+
+/**
+ * Gửi email đặt lại mật khẩu (POST `/auth/forgot-password`). KHÔNG cần đăng nhập.
+ *
+ * Core trả thành công kể cả khi email không tồn tại (chống dò tài khoản), nên UI
+ * phải hiện đúng MỘT thông báo chung cho mọi kết quả.
+ */
+export async function forgotPassword(email: string): Promise<void> {
+  await apiRequest<void>('/auth/forgot-password', { method: 'POST', body: { email } });
+}
+
+/**
+ * Đặt lại mật khẩu bằng token trong email (POST `/auth/reset-password`). KHÔNG
+ * cần đăng nhập — user đang ở trạng thái không vào được tài khoản.
+ *
+ * KHÔNG trả cặp token: reset xong vẫn phải đăng nhập lại bằng mật khẩu mới.
+ */
+export async function resetPassword(token: string, newPassword: string): Promise<void> {
+  await apiRequest<void>('/auth/reset-password', {
+    method: 'POST',
+    body: { token, new_password: newPassword },
+  });
+}
+
+/**
+ * Gửi email xác thực tài khoản (POST `/auth/send-verification-email`). Cần đăng nhập.
+ * Trả 202 khi gửi thành công, 409 nếu email đã được xác thực trước đó hoặc user chưa có email.
+ */
+export async function sendVerificationEmail(): Promise<void> {
+  await authorizedRequest<void>('/auth/send-verification-email', { method: 'POST' });
+}
+
+/**
+ * Xác thực email bằng token nhận trong mail (POST `/auth/verify-email`). Public.
+ * Token tự nó là chứng chỉ. Trả 200 khi thành công, 400 nếu sai/hết hạn.
+ */
+export async function verifyEmail(token: string): Promise<void> {
+  await apiRequest<void>('/auth/verify-email', {
+    method: 'POST',
+    body: { token },
+  });
+}
+
+/**
+ * Kiểm tra tính hợp lệ của Access Token hiện tại (GET `/auth/verify`). Cần đăng nhập.
+ */
+export async function verifyToken(): Promise<{ valid: boolean; userId: number }> {
+  const res = await authorizedRequest<{ valid: boolean; user_id: number }>('/auth/verify');
+  return { valid: res.valid, userId: res.user_id };
+}
+

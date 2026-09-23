@@ -49,6 +49,7 @@ interface RawReadingProgress {
   story: RawStoryBrief;
   chapter: RawChapterBrief;
   updated_at: string;
+  scroll_percent?: number | null;
 }
 
 /* ------------------------------------------------------------------ */
@@ -90,6 +91,7 @@ function mapReadingProgress(raw: RawReadingProgress): ServerReadingProgress {
     story: mapStoryBrief(raw.story),
     chapter: mapChapterBrief(raw.chapter),
     updatedAt: raw.updated_at,
+    scrollPercent: raw.scroll_percent ?? null,
   };
 }
 
@@ -211,10 +213,15 @@ export async function getReadingProgress(slug: string): Promise<ServerReadingPro
 export async function putReadingProgress(
   slug: string,
   chapterNo: number,
+  scrollPercent?: number | null,
 ): Promise<ServerReadingProgress> {
+  const body: { chapter_no: number; scroll_percent?: number } = { chapter_no: chapterNo };
+  if (scrollPercent != null && scrollPercent >= 0 && scrollPercent <= 100) {
+    body.scroll_percent = Math.round(scrollPercent * 100) / 100;
+  }
   const raw = await authorizedRequest<RawReadingProgress>(
     `/library/reading-progress/${encodeURIComponent(slug)}`,
-    { method: 'PUT', body: { chapter_no: chapterNo } },
+    { method: 'PUT', body },
   );
   return mapReadingProgress(raw);
 }
