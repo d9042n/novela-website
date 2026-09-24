@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import type { Chapter, Novel } from '../../data/types';
@@ -11,12 +11,16 @@ import { useAuth } from '../../auth/AuthContext';
 import { useReaderSettings } from './ReaderSettingsContext';
 import { ReaderToolbar } from './ReaderToolbar';
 import { ReaderControls } from './ReaderControls';
+import { ChapterSkeleton } from './ChapterSkeleton';
 import { fontCssVar, widthPx } from '../../theme/config';
 import { NotFoundPage } from '../NotFoundPage';
 import { Button } from '../ui/button';
-import { BookOpen } from 'lucide-react';
+import { BookOpen, Minimize2, Sparkles } from 'lucide-react';
 import { useTheme } from '../../theme/ThemeProvider';
 import { ReaderDrawerLayout } from './ReaderDrawerLayout';
+import { displayTitle, formatChapterTitle } from '../../data/format';
+import { QuoteCardModal } from './QuoteCardModal';
+import { calculateReadTime } from './readingUtils';
 
 // TODO(i18n-content): tiêu đề chương + nội dung đơn ngữ VN (backend chỉ có VN).
 export function ReaderPage() {
@@ -24,7 +28,7 @@ export function ReaderPage() {
   const no = Number(chapterNo) || 1;
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const { settings } = useReaderSettings();
+  const { settings, zenMode, setZenMode, toggleZenMode } = useReaderSettings();
   const { readerPagePreset } = useTheme();
   const { user } = useAuth();
 
@@ -33,6 +37,48 @@ export function ReaderPage() {
   const [loadError, setLoadError] = useState(false);
   const [progress, setProgress] = useState(0);
   const [chromeVisible, setChromeVisible] = useState(true);
+
+  // Quote Card state
+  const [selectedText, setSelectedText] = useState('');
+  const [selectionPos, setSelectionPos] = useState<{ x: number; y: number } | null>(null);
+  const [quoteModalOpen, setQuoteModalOpen] = useState(false);
+
+  // Phím tắt Zen Mode (Escape / Z)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const tag = (e.target as HTMLElement)?.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+
+      if (e.key === 'Escape' && zenMode) {
+        setZenMode(false);
+      } else if (e.key.toLowerCase() === 'z' && !(e.metaKey || e.ctrlKey || e.altKey)) {
+        toggleZenMode();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [zenMode, setZenMode, toggleZenMode]);
+
+  const handleMouseUp = () => {
+    const sel = window.getSelection();
+    if (!sel || sel.isCollapsed) {
+      setSelectionPos(null);
+      return;
+    }
+    const text = sel.toString().trim();
+    if (text.length > 5) {
+      try {
+        const range = sel.getRangeAt(0);
+        const rect = range.getBoundingClientRect();
+        setSelectedText(text);
+        setSelectionPos({ x: rect.left + rect.width / 2, y: rect.top - 8 });
+      } catch {
+        setSelectionPos(null);
+      }
+    } else {
+      setSelectionPos(null);
+    }
+  };
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const lastScrollTop = useRef(0);
@@ -241,7 +287,21 @@ export function ReaderPage() {
         />
       </div>
 
-      {novel && chapter && (
+      {/* Nút thoát Zen Mode khi đang bật */}
+      {zenMode && (
+        <button
+          type="button"
+          onClick={() => setZenMode(false)}
+          className="fixed top-4 right-4 z-50 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-background/85 border border-border/70 text-xs font-semibold shadow-lg backdrop-blur-md hover:bg-accent transition-all opacity-40 hover:opacity-100 cursor-pointer"
+          title={t('zenMode.hint')}
+        >
+          <Minimize2 className="size-3.5 text-primary" />
+          <span>{t('zenMode.exit')}</span>
+          <kbd className="text-[10px] font-mono opacity-70 ml-1">Esc</kbd>
+        </button>
+      )}
+
+      {novel && !zenMode && (
         <ReaderToolbar novel={novel} chapter={chapter} visible={chromeVisible} />
       )}
 
@@ -249,12 +309,15 @@ export function ReaderPage() {
       <div
         ref={scrollRef}
         onScroll={handleScroll}
-        onClick={() => setChromeVisible((v) => !v)}
+        onMouseUp={handleMouseUp}
+        onClick={() => {
+          if (!zenMode) setChromeVisible((v) => !v);
+        }}
         className={paged ? 'flex-1 overflow-x-auto overflow-y-hidden' : 'flex-1 overflow-y-auto'}
         style={{ scrollBehavior: 'smooth' }}
       >
         {!chapter ? (
-          <div className="grid h-full place-items-center opacity-60">{t('common.loading')}</div>
+          <ChapterSkeleton maxWidth={maxWidth} />
         ) : paged ? (
           <div className="h-full px-5 py-16 sm:px-8">
             <div
@@ -310,11 +373,11 @@ export function ReaderPage() {
         )}
       </div>
 
-      {novel && chapter && (
+      {novel && !zenMode && (
         <ReaderControls
           slug={slug}
           currentNo={no}
-          currentTitle={chapter.title}
+          currentTitle={chapter ? formatChapterTitle(chapter.chapterNo, chapter.title) : `${t('reader.chapter', 'Chương')} ${no}`}
           total={total}
           prevNo={prevNo}
           nextNo={nextNo}
@@ -324,22 +387,77 @@ export function ReaderPage() {
           visible={chromeVisible}
         />
       )}
+
+      {/* Floating Action Button khi bôi đen chữ */}
+      {selectionPos && selectedText.length > 5 && (
+        <div
+          className="fixed z-50 -translate-x-1/2 -translate-y-full mb-3"
+          style={{ left: `${selectionPos.x}px`, top: `${selectionPos.y}px` }}
+        >
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              setQuoteModalOpen(true);
+              setSelectionPos(null);
+            }}
+            className="flex items-center gap-1.5 rounded-full border border-primary/40 bg-background/95 px-3.5 py-1.5 text-xs font-semibold text-primary shadow-xl backdrop-blur-md hover:bg-primary hover:text-primary-foreground transition-all cursor-pointer"
+          >
+            <Sparkles className="size-3.5" />
+            <span>{t('quoteCard.action')}</span>
+          </button>
+        </div>
+      )}
+
+      {/* Quote Card Generator Modal */}
+      {novel && (
+        <QuoteCardModal
+          open={quoteModalOpen}
+          onOpenChange={setQuoteModalOpen}
+          quoteText={selectedText}
+          novelTitle={displayTitle(novel.title, t('common.untitled'))}
+          authorName={novel.authors[0]?.name}
+          chapterNo={chapter?.chapterNo}
+        />
+      )}
     </div>
   );
 }
 
 function ChapterBody({ chapter, align }: { chapter: Chapter; align: 'justify' | 'left' }) {
+  const { t } = useTranslation();
+  const displayTitle = formatChapterTitle(chapter.chapterNo, chapter.title);
+  const readTime = calculateReadTime(chapter.content || '');
+
+  // Khử rác scraper: loại bỏ dòng gạch ngang '____', '----', khoảng trắng thừa
+  const cleanedParagraphs = useMemo(() => {
+    return chapter.paragraphs
+      .map((p) => {
+        let cleaned = p
+          .replace(/_{3,}/g, '')
+          .replace(/-{3,}/g, '')
+          .replace(/\*{3,}/g, '')
+          .replace(/[ \t]{2,}/g, ' ')
+          .trim();
+        return cleaned;
+      })
+      .filter((p) => p.length > 0);
+  }, [chapter.paragraphs]);
+
   return (
     <article>
-      <h1 style={{ fontSize: '1.6em', fontWeight: 600, lineHeight: 1.3, marginBottom: '1.5rem' }}>
-        {chapter.title}
+      <h1 style={{ fontSize: '1.6em', fontWeight: 600, lineHeight: 1.3, marginBottom: '0.6rem' }}>
+        {displayTitle}
       </h1>
-      {chapter.paragraphs.length === 0 ? (
+      <div className="flex items-center gap-2 mb-8 pb-3 border-b border-current/15 opacity-65 text-xs font-mono">
+        <span>{t('readingTime.badge', { minutes: readTime.minutes, words: readTime.words.toLocaleString() })}</span>
+      </div>
+      {cleanedParagraphs.length === 0 ? (
         <p className="py-8 text-center text-muted-foreground italic">
           Nội dung chương đang được cập nhật...
         </p>
       ) : (
-        chapter.paragraphs.map((p, i) => (
+        cleanedParagraphs.map((p, i) => (
           <p key={i} style={{ marginBottom: '1.1em', textAlign: align }}>
             {p}
           </p>

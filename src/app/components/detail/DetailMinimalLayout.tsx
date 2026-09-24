@@ -14,13 +14,14 @@ interface DetailMinimalLayoutProps {
   novel: Novel;
   readTarget: number;
   firstChapterNo: number;
-  lastRead: { chapterNo: number; updatedAt: number } | null;
+  lastRead: { chapterNo: number; updatedAt: number; scroll?: number } | null;
 }
 
 // TODO(i18n-content): title/author/genre/description đơn ngữ VN (backend chỉ có VN).
 export function DetailMinimalLayout({
   novel,
   readTarget,
+  firstChapterNo,
   lastRead,
 }: DetailMinimalLayoutProps) {
   const { t } = useTranslation();
@@ -71,9 +72,20 @@ export function DetailMinimalLayout({
             <Button asChild size="lg" className="rounded-full gap-2 font-bold px-8">
               <RouterLink to={`/novel/${novel.slug}/chapter/${readTarget}`}>
                 <Play className="size-4" />
-                {lastRead ? t('actions.continueReading', { index: readTarget }) : t('actions.readFromStart')}
+                {lastRead
+                  ? (lastRead.scroll && lastRead.scroll > 0.05
+                      ? t('actions.continueReadingPercent', { index: readTarget, percent: Math.round(lastRead.scroll * 100) })
+                      : t('actions.continueReading', { index: readTarget }))
+                  : t('actions.readFromStart')}
               </RouterLink>
             </Button>
+            {lastRead && (
+              <Button asChild size="lg" variant="outline" className="rounded-full">
+                <RouterLink to={`/novel/${novel.slug}/chapter/${firstChapterNo}`}>
+                  {t('actions.readFromStart')}
+                </RouterLink>
+              </Button>
+            )}
             <BookmarkButton slug={novel.slug} />
           </div>
         </div>

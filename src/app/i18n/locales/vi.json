@@ -5,7 +5,8 @@
   },
   "nav": {
     "home": "Trang chủ",
-    "browse": "Tìm kiếm",
+    "browse": "Khám phá",
+    "rankings": "Bảng xếp hạng",
     "search": "Tìm tên truyện, tác giả...",
     "searchShort": "Tìm kiếm...",
     "expandSidebar": "Mở rộng thanh bên",
@@ -75,6 +76,7 @@
     "readNow": "Đọc ngay",
     "readFromStart": "Đọc từ đầu",
     "continueReading": "Đọc tiếp ch. {{index}}",
+    "continueReadingPercent": "Đọc tiếp ch. {{index}} ({{percent}}%)",
     "viewAll": "Xem tất cả",
     "previousChapter": "Chương trước",
     "nextChapter": "Chương sau",
@@ -199,7 +201,8 @@
       "classic": "Lưới Tiêu Chuẩn (Classic Grid)",
       "portal": "Cổng Thông Tin & Xếp Hạng (Portal Feed)",
       "reels": "Trình Chiếu Điện Ảnh (Cinematic Reels)",
-      "magazine": "Tạp Chí Văn Học (Editorial Bento)"
+      "magazine": "Tạp Chí Văn Học (Editorial)",
+      "bento": "Không Gian Đa Tầng (Modern Bento Grid)"
     },
     "browsePresetTitle": "Bố cục trang Tìm kiếm & Khám phá",
     "browsePresets": {
@@ -391,5 +394,58 @@
       "rateLimited": "Bạn thao tác quá nhanh. Vui lòng thử lại sau một phút.",
       "saveFailed": "Không lưu được thay đổi. Vui lòng thử lại."
     }
+  },
+  "commandPalette": {
+    "placeholder": "Tìm kiếm truyện hoặc nhập lệnh... (⌘K)",
+    "quickActions": "Lệnh nhanh",
+    "novels": "Tác phẩm",
+    "themes": "Chuyển giao diện",
+    "noResults": "Không tìm thấy kết quả nào",
+    "toggleMode": "Chuyển chế độ Sáng / Tối",
+    "goHome": "Trang chủ",
+    "goBrowse": "Duyệt tác phẩm",
+    "goLibrary": "Tủ sách cá nhân",
+    "recentRead": "Tiếp tục đọc: {{title}}"
+  },
+  "zenMode": {
+    "title": "Chế độ Tập trung (Zen)",
+    "enable": "Bật Zen Mode",
+    "exit": "Thoát Zen Mode",
+    "hint": "Nhấn Esc hoặc rê chuột lên góc trên để thoát"
+  },
+  "readingTime": {
+    "badge": "⏱ ~{{minutes}} phút • {{words}} từ"
+  },
+  "soundscapes": {
+    "title": "Âm thanh đọc sách",
+    "off": "Tắt âm thanh",
+    "rain": "Mưa rào êm dịu",
+    "fire": "Lò sưởi lách tách",
+    "wind": "Gió rừng thanh tịnh",
+    "volume": "Âm lượng"
+  },
+  "quoteCard": {
+    "action": "Tạo thiệp trích dẫn ✨",
+    "copied": "Đã sao chép câu trích dẫn!",
+    "modalTitle": "Thiệp Trích Dẫn Nghệ Thuật",
+    "download": "Tải ảnh về máy",
+    "copyImage": "Sao chép ảnh",
+    "copyImageSuccess": "Đã sao chép ảnh vào bộ nhớ tạm!",
+    "styleInk": "Mực Cổ Điển",
+    "styleOled": "Đêm Đen AMOLED",
+    "styleSepia": "Giấy Cũ Sepia",
+    "styleSunset": "Hoàng Hôn Hồng"
+  },
+  "streak": {
+    "title": "Thói quen đọc sách",
+    "days": "{{count}} ngày liên tiếp",
+    "todayChapters": "Hôm nay: {{count}} chương",
+    "celebrate": "Chúc mừng bạn đã duy trì chuỗi đọc sách!",
+    "activeDays": "Nhật ký đọc sách"
+  },
+  "quickJump": {
+    "title": "Chọn nhanh cụm chương",
+    "search": "Tìm số chương...",
+    "range": "Chương {{start}} - {{end}}"
   }
 }

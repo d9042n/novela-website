@@ -1,10 +1,11 @@
-import { Layout, Rows3, Tv, Newspaper } from 'lucide-react';
+import { Layout, Rows3, Tv, Newspaper, Grid2x2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../../theme/ThemeProvider';
 import { HOME_PRESETS, type HomePreset } from '../../theme/config';
 
 const HOME_ICONS: Record<HomePreset, typeof Layout> = {
   classic: Layout,
+  bento: Grid2x2,
   portal: Rows3,
   reels: Tv,
   magazine: Newspaper,

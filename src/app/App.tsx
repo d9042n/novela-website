@@ -20,6 +20,7 @@ import { SecurityPage } from './components/account/SecurityPage';
 import { LibraryPage } from './components/library/LibraryPage';
 import { NotFoundPage } from './components/NotFoundPage';
 import { Toaster } from './components/ui/sonner';
+import { CommandPalette } from './components/command/CommandPalette';
 
 export default function App() {
   return (
@@ -69,6 +70,7 @@ export default function App() {
             </Route>
             <Route path="novel/:slug/chapter/:chapterNo" element={<ReaderPage />} />
           </Routes>
+          <CommandPalette />
           </AuthProvider>
         </BrowserRouter>
         <Toaster />

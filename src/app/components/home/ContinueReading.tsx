@@ -7,6 +7,7 @@ import { displayTitle } from '../../data/format';
 import { getContinueList, type ReadingRecord } from '../../hooks/useReadingProgress';
 import { ImageWithFallback } from '../figma/ImageWithFallback';
 import { Progress } from '../ui/progress';
+import { Skeleton } from '../ui/skeleton';
 
 interface Entry {
   record: ReadingRecord;
@@ -17,6 +18,8 @@ interface Entry {
 export function ContinueReading() {
   const { t } = useTranslation();
   const [entries, setEntries] = useState<Entry[]>([]);
+  const records = getContinueList().slice(0, 8);
+  const [loading, setLoading] = useState(records.length > 0);
 
   useEffect(() => {
     // active flag: mỗi record là một request riêng, tối đa 8 cái. Người dùng
@@ -25,9 +28,14 @@ export function ContinueReading() {
     // luôn tham chiếu tới state đã bỏ. Các effect khác trong repo dùng đúng
     // pattern này (xem NovelDetailPage, ReaderPage).
     let active = true;
-    const records = getContinueList().slice(0, 8);
+    const currentRecords = getContinueList().slice(0, 8);
+    if (currentRecords.length === 0) {
+      setLoading(false);
+      return;
+    }
+
     Promise.all(
-      records.map(async (record) => {
+      currentRecords.map(async (record) => {
         try {
           const novel = await getNovelBySlug(record.slug);
           return { record, novel };
@@ -39,11 +47,46 @@ export function ContinueReading() {
     ).then((list) => {
       if (!active) return;
       setEntries(list.filter(Boolean) as Entry[]);
+      setLoading(false);
     });
     return () => {
       active = false;
     };
   }, []);
+
+  if (records.length === 0) return null;
+
+  if (loading && entries.length === 0) {
+    return (
+      <section className="mt-14">
+        <div className="mb-5 flex items-baseline gap-3 border-b border-border pb-3">
+          <span className="text-muted-foreground" style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic', fontSize: '1rem' }}>
+            ✦
+          </span>
+          <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '1.6rem', fontWeight: 600, lineHeight: 1.1 }}>
+            {t('home.continueReading')}
+          </h2>
+        </div>
+        <div className="flex gap-4 overflow-x-auto pb-2">
+          {Array.from({ length: records.length }).map((_, i) => (
+            <div
+              key={i}
+              className="flex w-64 shrink-0 gap-3 rounded-lg border border-border bg-card p-3"
+            >
+              <Skeleton className="h-24 w-16 shrink-0 rounded-md" />
+              <div className="flex min-w-0 flex-1 flex-col justify-between py-0.5">
+                <div className="space-y-1.5">
+                  <Skeleton className="h-4 w-4/5 rounded" />
+                  <Skeleton className="h-3 w-1/2 rounded" />
+                </div>
+                <Skeleton className="h-1.5 w-full rounded-full" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+    );
+  }
 
   if (entries.length === 0) return null;
 

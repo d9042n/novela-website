@@ -6,6 +6,7 @@
   "nav": {
     "home": "Home",
     "browse": "Search & Explore",
+    "rankings": "Rankings",
     "search": "Search title, author...",
     "searchShort": "Search...",
     "expandSidebar": "Expand sidebar",
@@ -75,6 +76,7 @@
     "readNow": "Read Now",
     "readFromStart": "Start Reading",
     "continueReading": "Continue Ch. {{index}}",
+    "continueReadingPercent": "Continue Ch. {{index}} ({{percent}}%)",
     "viewAll": "View All",
     "previousChapter": "Previous Chapter",
     "nextChapter": "Next Chapter",
@@ -199,7 +201,8 @@
       "classic": "Classic Standard Grid",
       "portal": "Reader Portal & Rankings",
       "reels": "Cinematic Reels Showcase",
-      "magazine": "Editorial Bento Magazine"
+      "magazine": "Editorial Magazine",
+      "bento": "Modern Bento Grid"
     },
     "browsePresetTitle": "Search Page Layout",
     "browsePresets": {
@@ -391,5 +394,58 @@
       "rateLimited": "Too many attempts. Please try again in a minute.",
       "saveFailed": "Could not save your changes. Please try again."
     }
+  },
+  "commandPalette": {
+    "placeholder": "Search stories or type a command... (⌘K)",
+    "quickActions": "Quick Actions",
+    "novels": "Stories",
+    "themes": "Switch Theme",
+    "noResults": "No results found",
+    "toggleMode": "Toggle Light / Dark Mode",
+    "goHome": "Home",
+    "goBrowse": "Browse Stories",
+    "goLibrary": "My Library",
+    "recentRead": "Continue reading: {{title}}"
+  },
+  "zenMode": {
+    "title": "Zen Focus Mode",
+    "enable": "Enter Zen Mode",
+    "exit": "Exit Zen Mode",
+    "hint": "Press Esc or hover near the top to exit"
+  },
+  "readingTime": {
+    "badge": "⏱ ~{{minutes}} min • {{words}} words"
+  },
+  "soundscapes": {
+    "title": "Reading Soundscapes",
+    "off": "Sound Off",
+    "rain": "Gentle Rain",
+    "fire": "Cozy Fireplace",
+    "wind": "Calm Forest Wind",
+    "volume": "Volume"
+  },
+  "quoteCard": {
+    "action": "Create Quote Card ✨",
+    "copied": "Quote text copied!",
+    "modalTitle": "Artistic Quote Card",
+    "download": "Download Image",
+    "copyImage": "Copy Image",
+    "copyImageSuccess": "Image copied to clipboard!",
+    "styleInk": "Classic Ink",
+    "styleOled": "Midnight AMOLED",
+    "styleSepia": "Vintage Sepia",
+    "styleSunset": "Sunset Rose"
+  },
+  "streak": {
+    "title": "Reading Habits",
+    "days": "{{count}} days streak",
+    "todayChapters": "Today: {{count}} chapters",
+    "celebrate": "Congratulations on keeping your reading streak!",
+    "activeDays": "Reading Activity Log"
+  },
+  "quickJump": {
+    "title": "Quick Chapter Range",
+    "search": "Find chapter number...",
+    "range": "Chapters {{start}} - {{end}}"
   }
 }

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { Trophy, TrendingUp, Star, Eye, Calendar, Sparkles } from 'lucide-react';
+import { Trophy, Star, Eye, Calendar } from 'lucide-react';
 import { getRankings } from '../../data/api';
 import type { RankingNovel, RankingWindow } from '../../data/types';
 import { displayTitle, formatViews } from '../../data/format';
@@ -38,7 +38,7 @@ export function HomeRankings() {
   }, [window]);
 
   return (
-    <section className="mt-14">
+    <section id="rankings" className="mt-14 scroll-mt-20">
       <div className="mb-6 flex flex-col gap-4 border-b border-border pb-4 sm:flex-row sm:items-end sm:justify-between">
         <div className="flex items-baseline gap-3">
           <span
@@ -71,14 +71,19 @@ export function HomeRankings() {
       </div>
 
       {loading ? (
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-2">
           {Array.from({ length: 6 }).map((_, i) => (
-            <div key={i} className="flex items-center gap-4 rounded-lg border border-border/50 p-3">
-              <Skeleton className="h-10 w-8 rounded" />
-              <Skeleton className="aspect-[2/3] w-14 rounded" />
-              <div className="flex-1 space-y-2">
-                <Skeleton className="h-4 w-3/4" />
-                <Skeleton className="h-3 w-1/2" />
+            <div key={i} className="flex items-center gap-3.5 rounded-xl border border-border/60 bg-card p-3">
+              <Skeleton className="size-8 shrink-0 rounded-lg" />
+              <div className="relative aspect-[2/3] w-14 shrink-0 overflow-hidden rounded-md border border-border/80 bg-muted">
+                <Skeleton className="size-full rounded-none" />
+              </div>
+              <div className="flex min-w-0 flex-1 flex-col gap-1.5">
+                <Skeleton className="h-4 w-4/5 rounded" />
+                <div className="flex items-center gap-2 pt-0.5">
+                  <Skeleton className="h-3 w-1/3 rounded" />
+                  <Skeleton className="h-4 w-12 rounded" />
+                </div>
               </div>
             </div>
           ))}

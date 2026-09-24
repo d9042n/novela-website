@@ -6,6 +6,7 @@ import { Badge } from '../ui/badge';
 import { useGenres } from '../../data/genres';
 import { HeroCarousel } from './HeroCarousel';
 import { NovelCard } from '../NovelCard';
+import { NovelCardSkeleton } from '../NovelCardSkeleton';
 import {
   Carousel,
   CarouselContent,
@@ -18,6 +19,7 @@ interface HomeReelsLayoutProps {
   featured: Novel[];
   latest: Novel[];
   popular: Novel[];
+  loading?: boolean;
 }
 
 function ReelRow({
@@ -25,15 +27,15 @@ function ReelRow({
   icon: Icon,
   novels = [],
   to,
+  loading = false,
 }: {
   title: string;
   icon: typeof Flame;
   novels: Novel[];
   to?: string;
+  loading?: boolean;
 }) {
   const { t } = useTranslation();
-
-  if (!novels || novels.length === 0) return null;
 
   return (
     <div className="space-y-3 relative">
@@ -58,33 +60,44 @@ function ReelRow({
       </div>
 
       {/* Slider Carousel với từng NovelCard độc lập */}
-      <Carousel opts={{ align: 'start', loop: true }} className="w-full relative px-1">
-        <CarouselContent className="-ml-3">
-          {(novels || []).map((novel) => (
-            <CarouselItem key={novel.slug} className="pl-3 basis-1/2 sm:basis-1/3 md:basis-1/4 lg:basis-1/5 xl:basis-1/6">
-              <NovelCard novel={novel} />
-            </CarouselItem>
+      {loading || !novels || novels.length === 0 ? (
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <NovelCardSkeleton key={i} variant="card" />
           ))}
-        </CarouselContent>
-        <CarouselPrevious className="-left-3 size-8 bg-background/80 backdrop-blur-md shadow-md border border-border" />
-        <CarouselNext className="-right-3 size-8 bg-background/80 backdrop-blur-md shadow-md border border-border" />
-      </Carousel>
+        </div>
+      ) : (
+        <Carousel opts={{ align: 'start', loop: true }} className="w-full relative px-1">
+          <CarouselContent className="-ml-3">
+            {novels.map((novel) => (
+              <CarouselItem key={novel.slug} className="pl-3 basis-1/2 sm:basis-1/3 md:basis-1/4 lg:basis-1/5 xl:basis-1/6">
+                <NovelCard novel={novel} />
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <CarouselPrevious className="-left-3 size-8 bg-background/80 backdrop-blur-md shadow-md border border-border" />
+          <CarouselNext className="-right-3 size-8 bg-background/80 backdrop-blur-md shadow-md border border-border" />
+        </Carousel>
+      )}
     </div>
   );
 }
 
-export function HomeReelsLayout({ featured = [], latest = [], popular = [] }: HomeReelsLayoutProps) {
+export function HomeReelsLayout({
+  featured = [],
+  latest = [],
+  popular = [],
+  loading = false,
+}: HomeReelsLayoutProps) {
   const { t } = useTranslation();
   const { genres } = useGenres();
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8 space-y-8 pb-8">
       {/* Bounded Hero Slider Carousel */}
-      {featured && featured.length > 0 && (
-        <section className="relative overflow-hidden">
-          <HeroCarousel novels={featured} />
-        </section>
-      )}
+      <section className="relative overflow-hidden">
+        <HeroCarousel novels={featured} />
+      </section>
 
       <div className="space-y-8">
         {/* Row 1: Popular Reels Slider */}
@@ -93,6 +106,7 @@ export function HomeReelsLayout({ featured = [], latest = [], popular = [] }: Ho
           icon={TrendingUp}
           novels={popular}
           to="/browse?sort=popular"
+          loading={loading}
         />
 
         {/* Row 2: Latest Releases Reels Slider */}
@@ -101,6 +115,7 @@ export function HomeReelsLayout({ featured = [], latest = [], popular = [] }: Ho
           icon={Flame}
           novels={latest}
           to="/browse?sort=latest"
+          loading={loading}
         />
 
         {/* Row 3: Featured Reels Slider */}
@@ -109,6 +124,7 @@ export function HomeReelsLayout({ featured = [], latest = [], popular = [] }: Ho
           icon={Sparkles}
           novels={featured}
           to="/browse?sort=rating"
+          loading={loading}
         />
 
         {/* Category Pills */}

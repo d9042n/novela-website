@@ -16,10 +16,11 @@ import { ChapterList } from './ChapterList';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
-import { Skeleton } from '../ui/skeleton';
+import { NovelDetailSkeleton } from './NovelDetailSkeleton';
 import { useTheme } from '../../theme/ThemeProvider';
 import { DetailCinematicLayout } from './DetailCinematicLayout';
 import { DetailMinimalLayout } from './DetailMinimalLayout';
+import { AmbientCoverGlow } from '../visual/AmbientCoverGlow';
 
 // TODO(i18n-content): title/author/genre/description đơn ngữ VN (backend chỉ có VN).
 export function NovelDetailPage() {
@@ -76,11 +77,7 @@ export function NovelDetailPage() {
     );
   }
   if (!novel) {
-    return (
-      <div className="mx-auto max-w-5xl px-4 py-8">
-        <Skeleton className="h-72 w-full rounded-xl" />
-      </div>
-    );
+    return <NovelDetailSkeleton preset={detailPreset} />;
   }
 
   const readTarget = lastRead ? lastRead.chapterNo : firstChapterNo;
@@ -122,15 +119,17 @@ export function NovelDetailPage() {
       {/* Header truyện */}
       <div className="flex flex-col gap-6 sm:flex-row">
         <div className="mx-auto w-44 shrink-0 sm:mx-0">
-          <div className="overflow-hidden rounded-xl border border-border shadow-lg">
-            <div className="aspect-[2/3]">
-              <ImageWithFallback
-                src={novel.cover}
-                alt={title}
-                className="h-full w-full object-cover"
-              />
+          <AmbientCoverGlow src={novel.cover} intensity="vibrant">
+            <div className="overflow-hidden rounded-xl border border-border shadow-lg ring-1 ring-black/5 dark:ring-white/10">
+              <div className="aspect-[2/3]">
+                <ImageWithFallback
+                  src={novel.cover}
+                  alt={title}
+                  className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
+                />
+              </div>
             </div>
-          </div>
+          </AmbientCoverGlow>
         </div>
 
         <div className="flex flex-1 flex-col">
@@ -179,7 +178,11 @@ export function NovelDetailPage() {
             <Button asChild size="lg" className="gap-2">
               <RouterLink to={`/novel/${novel.slug}/chapter/${readTarget}`}>
                 <Play className="size-4" />
-                {lastRead ? t('actions.continueReading', { index: readTarget }) : t('actions.readFromStart')}
+                {lastRead
+                  ? (lastRead.scroll && lastRead.scroll > 0.05
+                      ? t('actions.continueReadingPercent', { index: readTarget, percent: Math.round(lastRead.scroll * 100) })
+                      : t('actions.continueReading', { index: readTarget }))
+                  : t('actions.readFromStart')}
               </RouterLink>
             </Button>
             {lastRead && (

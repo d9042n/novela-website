@@ -15,6 +15,7 @@ import {
 import { Button } from '../ui/button';
 import { cn } from '../ui/utils';
 import { displayTitle } from '../../data/format';
+import { HeroCarouselSkeleton } from './HeroCarouselSkeleton';
 
 // TODO(i18n-content): title/author/description/genre đơn ngữ VN (backend chỉ có VN).
 export function HeroCarousel({ novels }: { novels: Novel[] }) {
@@ -119,7 +120,9 @@ export function HeroCarousel({ novels }: { novels: Novel[] }) {
     return () => clearInterval(id);
   }, [api, paused]);
 
-  if (novels.length === 0) return null;
+  if (novels.length === 0) {
+    return <HeroCarouselSkeleton />;
+  }
 
   return (
     // wrapper riêng cho ref: Carousel là function component KHÔNG forwardRef,

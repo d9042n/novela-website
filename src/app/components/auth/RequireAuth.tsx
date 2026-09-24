@@ -20,8 +20,16 @@ export function RequireAuth({ children }: { children: ReactNode }) {
 
   if (loading || user === undefined) {
     return (
-      <div className="mx-auto max-w-5xl px-4 py-8">
-        <Skeleton className="h-64 w-full rounded-xl" />
+      <div className="mx-auto max-w-5xl px-4 py-8 space-y-6">
+        <div className="flex items-center gap-3">
+          <Skeleton className="size-8 rounded-full" />
+          <Skeleton className="h-8 w-48 rounded-lg" />
+        </div>
+        <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3">
+          <Skeleton className="h-36 rounded-xl" />
+          <Skeleton className="h-36 rounded-xl" />
+          <Skeleton className="h-36 rounded-xl" />
+        </div>
       </div>
     );
   }

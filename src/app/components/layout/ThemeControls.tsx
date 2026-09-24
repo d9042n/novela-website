@@ -62,6 +62,7 @@ const SHELL_ICONS: Record<ShellLayout, typeof PanelTop> = {
 
 const HOME_ICONS: Record<HomePreset, typeof Layout> = {
   classic: Layout,
+  bento: Grid2x2,
   portal: Rows3,
   reels: Tv,
   magazine: Newspaper,

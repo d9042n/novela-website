@@ -1,4 +1,4 @@
-import { createContext, useContext, type ReactNode } from 'react';
+import { createContext, useContext, useState, type ReactNode } from 'react';
 import { useLocalStorage } from '../../hooks/useLocalStorage';
 import type {
   ReaderFont,
@@ -37,6 +37,9 @@ interface ReaderSettingsContextValue {
   settings: ReaderSettings;
   update: <K extends keyof ReaderSettings>(key: K, value: ReaderSettings[K]) => void;
   reset: () => void;
+  zenMode: boolean;
+  setZenMode: (val: boolean) => void;
+  toggleZenMode: () => void;
 }
 
 const Ctx = createContext<ReaderSettingsContextValue | null>(null);
@@ -46,6 +49,7 @@ export function ReaderSettingsProvider({ children }: { children: ReactNode }) {
     'novela.readerSettings',
     DEFAULT_SETTINGS,
   );
+  const [zenMode, setZenMode] = useState(false);
 
   const mergedSettings: ReaderSettings = {
     ...DEFAULT_SETTINGS,
@@ -56,9 +60,19 @@ export function ReaderSettingsProvider({ children }: { children: ReactNode }) {
     setSettings((prev) => ({ ...DEFAULT_SETTINGS, ...prev, [key]: value }));
 
   const reset = () => setSettings(DEFAULT_SETTINGS);
+  const toggleZenMode = () => setZenMode((prev) => !prev);
 
   return (
-    <Ctx.Provider value={{ settings: mergedSettings, update, reset }}>
+    <Ctx.Provider
+      value={{
+        settings: mergedSettings,
+        update,
+        reset,
+        zenMode,
+        setZenMode,
+        toggleZenMode,
+      }}
+    >
       {children}
     </Ctx.Provider>
   );

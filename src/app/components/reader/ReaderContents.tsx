@@ -4,6 +4,7 @@ import { Search } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { ChapterSummary } from '../../data/types';
 import { getChapterList } from '../../data/api';
+import { formatChapterTitle } from '../../data/format';
 import { Input } from '../ui/input';
 import { ScrollArea } from '../ui/scroll-area';
 import { SheetClose } from '../ui/sheet';
@@ -95,10 +96,10 @@ export function ReaderContents({ slug, currentNo, total, inSheet = true }: Reade
                     : 'text-foreground/80 hover:bg-muted/80 hover:text-foreground',
                 )}
               >
-                <span className={cn('w-6 shrink-0 text-xs font-mono font-medium tabular-nums', active ? 'text-primary font-bold' : 'text-muted-foreground/75')}>
+                <span className="w-6 shrink-0 text-xs font-mono font-medium tabular-nums" style={{ color: active ? 'var(--primary)' : undefined }}>
                   {c.chapterNo}
                 </span>
-                <span className="line-clamp-1 text-xs font-medium">{c.title}</span>
+                <span className="line-clamp-1 text-xs font-medium">{formatChapterTitle(c.chapterNo, c.title)}</span>
               </button>
             );
             // Chỉ bọc SheetClose khi THỰC SỰ ở trong Sheet: ngoài context Dialog

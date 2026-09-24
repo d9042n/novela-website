@@ -10,6 +10,7 @@ import { ImageWithFallback } from '../figma/ImageWithFallback';
 import { Button } from '../ui/button';
 import { Skeleton } from '../ui/skeleton';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
+import { ReadingStreakWidget } from './ReadingStreakWidget';
 
 const PAGE_SIZE = 24;
 
@@ -82,8 +83,14 @@ function GridSkeleton() {
     <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
       {Array.from({ length: 12 }).map((_, i) => (
         <div key={i} className="flex flex-col gap-2">
-          <Skeleton className="aspect-[2/3] w-full rounded-lg" />
-          <Skeleton className="h-4 w-4/5" />
+          <div className="relative aspect-[2/3] overflow-hidden rounded-lg border border-border bg-muted shadow-xs">
+            <Skeleton className="size-full rounded-none" />
+          </div>
+          <div className="space-y-1 pt-0.5">
+            <Skeleton className="h-4 w-5/6 rounded" />
+            <Skeleton className="h-3.5 w-3/5 rounded" />
+            <Skeleton className="h-3 w-1/2 rounded" />
+          </div>
         </div>
       ))}
     </div>
@@ -183,6 +190,11 @@ export function LibraryPage() {
         >
           {t('library.title')}
         </h1>
+      </div>
+
+      {/* Chuỗi ngày đọc sách & Thói quen đọc */}
+      <div className="mb-8">
+        <ReadingStreakWidget />
       </div>
 
       <Tabs defaultValue="bookmarks">

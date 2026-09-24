@@ -78,26 +78,26 @@ export function NovelCard({ novel, variant = 'card', className }: NovelCardProps
   return (
     <Link
       to={`/novel/${novel.slug}`}
-      className={cn('group flex flex-col gap-2', className)}
+      className={cn('group flex flex-col gap-2 transition-all duration-300 hover:-translate-y-1', className)}
       aria-label={title}
     >
-      <div className="relative overflow-hidden rounded-lg border border-border bg-muted shadow-sm">
+      <div className="relative overflow-hidden rounded-lg border border-border/80 bg-muted shadow-xs transition-all duration-300 group-hover:shadow-md group-hover:border-primary/30">
         <div className="aspect-[2/3] w-full">
           <ImageWithFallback
             src={novel.cover}
             alt={title}
-            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
         </div>
         {novel.score != null && (
-          <div className="absolute right-2 top-2 flex items-center gap-1 rounded-full bg-black/60 px-2 py-0.5 text-white backdrop-blur-sm">
+          <div className="absolute right-2 top-2 flex items-center gap-1 rounded-full bg-black/65 px-2 py-0.5 text-white backdrop-blur-sm">
             <Star className="size-3 fill-amber-400 text-amber-400" />
             <span style={{ fontSize: '0.75rem' }}>{scoreText}</span>
           </div>
         )}
         <Badge
           variant="secondary"
-          className="absolute bottom-2 left-2 bg-black/60 text-white backdrop-blur-sm"
+          className="absolute bottom-2 left-2 bg-black/65 text-white backdrop-blur-sm text-[0.7rem] px-2 py-0.5"
         >
           {t(`status.${novel.status}`)}
         </Badge>
@@ -105,21 +105,24 @@ export function NovelCard({ novel, variant = 'card', className }: NovelCardProps
 
       <div className="flex flex-col gap-0.5">
         <h3
-          className="line-clamp-1 transition-colors group-hover:text-primary"
-          style={{ fontFamily: 'var(--font-display)', fontSize: '1.05rem', fontWeight: 600, lineHeight: 1.25 }}
+          className="line-clamp-2 min-h-[2.5rem] transition-colors group-hover:text-primary font-semibold text-foreground"
+          style={{ fontFamily: 'var(--font-display)', fontSize: '1rem', lineHeight: 1.25 }}
         >
           {title}
         </h3>
-        {/* Giữ chỗ khi thiếu author/genre để đáy card thẳng hàng trong lưới. */}
-        <p className="line-clamp-1 text-muted-foreground" style={{ fontSize: '0.85rem' }}>
-          {authorName || ' '}
+        {/* Tác giả & Số chương */}
+        <p className="line-clamp-1 text-muted-foreground text-xs font-medium">
+          {authorName
+            ? `${authorName}${novel.chapterCount ? ` • ${novel.chapterCount} ${t('novel.chapters')}` : ''}`
+            : novel.chapterCount
+              ? `${novel.chapterCount} ${t('novel.chapters')}`
+              : ' '}
         </p>
-        <span
-          className="mt-0.5 uppercase text-muted-foreground"
-          style={{ fontSize: '0.68rem', letterSpacing: '0.1em' }}
-        >
-          {firstGenre?.name ?? ' '}
-        </span>
+        <div className="mt-0.5 flex items-center justify-between text-[0.68rem] text-muted-foreground">
+          <span className="uppercase tracking-wider font-medium">
+            {firstGenre?.name ?? ' '}
+          </span>
+        </div>
       </div>
     </Link>
   );

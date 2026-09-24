@@ -1,11 +1,15 @@
 import { RouterLink } from '../ui/router-link';
-import { ChevronLeft, List, Settings2 } from 'lucide-react';
+import { ChevronLeft, List, Settings2, Maximize2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { displayTitle } from '../../data/format';
+import { displayTitle, formatChapterTitle } from '../../data/format';
 import type { Chapter, Novel } from '../../data/types';
 import { ReaderSettingsPanel } from './ReaderSettingsPanel';
 import { ReaderContents } from './ReaderContents';
+import { SoundscapesPlayer } from './SoundscapesPlayer';
+import { useReaderSettings } from './ReaderSettingsContext';
+import { calculateReadTime } from './readingUtils';
 import { Button } from '../ui/button';
+import { Skeleton } from '../ui/skeleton';
 import {
   Sheet,
   SheetContent,
@@ -17,13 +21,17 @@ import { cn } from '../ui/utils';
 
 interface ReaderToolbarProps {
   novel: Novel;
-  chapter: Chapter;
+  chapter?: Chapter | null;
   visible: boolean;
 }
 
 // TODO(i18n-content): tiêu đề truyện + chương đơn ngữ VN (backend chỉ có VN).
 export function ReaderToolbar({ novel, chapter, visible }: ReaderToolbarProps) {
   const { t } = useTranslation();
+  const { toggleZenMode } = useReaderSettings();
+  const { minutes, words } = chapter
+    ? calculateReadTime(chapter.content || '')
+    : { minutes: 0, words: 0 };
 
   return (
     <header
@@ -49,10 +57,36 @@ export function ReaderToolbar({ novel, chapter, visible }: ReaderToolbarProps) {
           <p className="line-clamp-1" style={{ fontFamily: 'var(--font-display)', fontSize: '1.02rem', fontWeight: 600 }}>
             {displayTitle(novel.title, t('common.untitled'))}
           </p>
-          <p className="line-clamp-1 opacity-70" style={{ fontSize: '0.78rem' }}>
-            {chapter.title}
-          </p>
+          <div className="flex items-center gap-2">
+            {chapter ? (
+              <p className="line-clamp-1 opacity-70" style={{ fontSize: '0.78rem' }}>
+                {formatChapterTitle(chapter.chapterNo, chapter.title)}
+              </p>
+            ) : (
+              <Skeleton className="h-3 w-32 rounded inline-block opacity-40" />
+            )}
+            {words > 0 && (
+              <span className="hidden sm:inline-flex text-[10px] opacity-60 font-mono">
+                • {t('readingTime.badge', { minutes, words: words.toLocaleString() })}
+              </span>
+            )}
+          </div>
         </div>
+
+        {/* Âm thanh đọc sách */}
+        <SoundscapesPlayer />
+
+        {/* Nút bật Zen Mode */}
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={toggleZenMode}
+          style={{ color: 'var(--reader-fg)' }}
+          title={t('zenMode.enable')}
+          aria-label={t('zenMode.enable')}
+        >
+          <Maximize2 className="size-4.5" />
+        </Button>
 
         {/* Mục lục */}
         <Sheet>
@@ -69,7 +103,7 @@ export function ReaderToolbar({ novel, chapter, visible }: ReaderToolbarProps) {
               <ReaderContents
                 slug={novel.slug}
                 total={novel.chapterCount ?? 0}
-                currentNo={chapter.chapterNo}
+                currentNo={chapter?.chapterNo ?? 1}
               />
             </div>
           </SheetContent>

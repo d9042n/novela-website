@@ -100,6 +100,16 @@ export function FloatingDockLayout() {
             <span className="hidden sm:inline">{t('library.title')}</span>
           </NavLink>
 
+          <button
+            type="button"
+            onClick={() => window.dispatchEvent(new CustomEvent('open-command-palette'))}
+            className="flex items-center gap-1.5 rounded-full px-3 py-2 text-xs font-semibold text-muted-foreground hover:bg-accent hover:text-foreground transition-all"
+            title="Command Palette (⌘K)"
+          >
+            <Search className="size-4" />
+            <span className="hidden sm:inline font-mono text-[10px] opacity-75">⌘K</span>
+          </button>
+
           <div className="h-4 w-px bg-border/80 mx-1" />
 
           <LanguageSwitcher />

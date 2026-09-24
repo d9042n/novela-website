@@ -59,10 +59,11 @@ export const SHELL_LAYOUTS: { id: ShellLayout; labelKey: string }[] = [
 ];
 
 /* --- Mẫu Bố cục Trang Chủ (Home Page Presets) --- */
-export type HomePreset = 'classic' | 'portal' | 'reels' | 'magazine';
+export type HomePreset = 'classic' | 'bento' | 'portal' | 'reels' | 'magazine';
 
 export const HOME_PRESETS: { id: HomePreset; labelKey: string }[] = [
   { id: 'classic', labelKey: 'settings.homePresets.classic' },
+  { id: 'bento', labelKey: 'settings.homePresets.bento' },
   { id: 'portal', labelKey: 'settings.homePresets.portal' },
   { id: 'reels', labelKey: 'settings.homePresets.reels' },
   { id: 'magazine', labelKey: 'settings.homePresets.magazine' },

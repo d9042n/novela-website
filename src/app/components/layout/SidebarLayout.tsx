@@ -1,10 +1,9 @@
-import { useState, type FormEvent } from 'react';
-import { Link, NavLink, Outlet, useNavigate } from 'react-router';
+import { useState } from 'react';
+import { Link, NavLink, Outlet } from 'react-router';
 import { Home, Compass, Search, ChevronLeft, ChevronRight, BookOpen, Sparkles, BookMarked } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '../ui/utils';
 import { NovelaMark } from '../brand/NovelaMark';
-import { Input } from '../ui/input';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { ThemeControls } from './ThemeControls';
 import { UserMenu } from './UserMenu';
@@ -15,17 +14,8 @@ import { useGenres } from '../../data/genres';
 export function SidebarLayout() {
   const { t } = useTranslation();
   const { genres } = useGenres();
-  const navigate = useNavigate();
   const { siteTheme } = useTheme();
   const [collapsed, setCollapsed] = useState(false);
-  const [query, setQuery] = useState('');
-
-  const onSearch = (e: FormEvent) => {
-    e.preventDefault();
-    if (query.trim()) {
-      navigate(`/browse?q=${encodeURIComponent(query.trim())}`);
-    }
-  };
 
   const navLinkClass = ({ isActive }: { isActive: boolean }) =>
     cn(
@@ -70,17 +60,32 @@ export function SidebarLayout() {
         </div>
 
         {/* Quick Search */}
-        {!collapsed && (
+        {!collapsed ? (
           <div className="p-3 border-b border-border/50">
-            <form onSubmit={onSearch} className="relative">
-              <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-              <Input
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder={t('nav.searchShort')}
-                className="pl-9 h-9 text-xs"
-              />
-            </form>
+            <button
+              type="button"
+              onClick={() => window.dispatchEvent(new CustomEvent('open-command-palette'))}
+              className="flex w-full items-center justify-between rounded-lg border border-border/70 bg-input-background/60 px-3 py-2 text-xs text-muted-foreground hover:border-primary/50 hover:bg-input-background transition-all"
+            >
+              <div className="flex items-center gap-2">
+                <Search className="size-3.5 text-muted-foreground" />
+                <span>{t('nav.searchShort')}...</span>
+              </div>
+              <kbd className="inline-flex h-4 items-center rounded border border-border bg-background px-1 font-mono text-[9px] text-muted-foreground">
+                ⌘K
+              </kbd>
+            </button>
+          </div>
+        ) : (
+          <div className="p-2 border-b border-border/50 flex justify-center">
+            <button
+              type="button"
+              onClick={() => window.dispatchEvent(new CustomEvent('open-command-palette'))}
+              className="p-2 text-muted-foreground hover:text-foreground hover:bg-accent rounded-md transition-colors"
+              title="Command Palette (⌘K)"
+            >
+              <Search className="size-4" />
+            </button>
           </div>
         )}
 
@@ -155,9 +160,14 @@ export function SidebarLayout() {
             </span>
           </Link>
           <div className="flex items-center gap-2">
-            <NavLink to="/browse" className="text-muted-foreground hover:text-foreground p-1">
+            <button
+              type="button"
+              onClick={() => window.dispatchEvent(new CustomEvent('open-command-palette'))}
+              className="text-muted-foreground hover:text-foreground p-1 transition-colors"
+              aria-label={t('nav.searchShort')}
+            >
               <Search className="size-5" />
-            </NavLink>
+            </button>
             <ThemeControls />
           </div>
         </header>

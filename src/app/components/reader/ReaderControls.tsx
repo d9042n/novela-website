@@ -3,6 +3,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { ChapterSummary } from '../../data/types';
 import { getChapterList } from '../../data/api';
+import { formatChapterTitle } from '../../data/format';
 import { useReaderSettings } from './ReaderSettingsContext';
 import {
   Select,
@@ -161,7 +162,7 @@ export function ReaderControls({
                     className="font-medium"
                     style={{ color: isDark ? '#ffffff' : '#0f172a' }}
                   >
-                    {c.title}
+                    {formatChapterTitle(c.chapterNo, c.title)}
                   </span>
                 </SelectItem>
               ))}

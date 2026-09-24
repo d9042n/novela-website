@@ -1,8 +1,6 @@
-import { useState, type FormEvent } from 'react';
-import { Link, NavLink, useNavigate } from 'react-router';
-import { Compass, Search } from 'lucide-react';
+import { Link, NavLink } from 'react-router';
+import { BookMarked, Compass, Search } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { Input } from '../ui/input';
 import { cn } from '../ui/utils';
 import { NovelaMark } from '../brand/NovelaMark';
 import { LanguageSwitcher } from './LanguageSwitcher';
@@ -12,14 +10,7 @@ import { useTheme } from '../../theme/ThemeProvider';
 
 export function Header() {
   const { t } = useTranslation();
-  const navigate = useNavigate();
   const { siteTheme } = useTheme();
-  const [query, setQuery] = useState('');
-
-  const onSearch = (e: FormEvent) => {
-    e.preventDefault();
-    navigate(`/browse?q=${encodeURIComponent(query.trim())}`);
-  };
 
   const navLinkClass = ({ isActive }: { isActive: boolean }) =>
     cn(
@@ -58,20 +49,32 @@ export function Header() {
           <NavLink to="/browse" className={navLinkClass}>
             {t('nav.browse')}
           </NavLink>
+          <a
+            href="/#rankings"
+            className="px-3 py-2 rounded-md transition-colors hover:text-foreground text-sm font-medium text-muted-foreground"
+          >
+            {t('nav.rankings')}
+          </a>
+          <NavLink to="/library" className={navLinkClass}>
+            {t('nav.library')}
+          </NavLink>
         </nav>
 
-        <form onSubmit={onSearch} className="ml-auto hidden max-w-xs flex-1 sm:block">
-          <div className="relative">
-            <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-            <Input
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder={t('nav.search')}
-              className="pl-9 h-9 text-xs"
-              aria-label={t('nav.searchShort')}
-            />
-          </div>
-        </form>
+        <div className="ml-auto hidden max-w-xs flex-1 sm:block">
+          <button
+            type="button"
+            onClick={() => window.dispatchEvent(new CustomEvent('open-command-palette'))}
+            className="group relative flex h-9 w-full items-center justify-between rounded-lg border border-border/80 bg-input-background/70 px-3 text-xs text-muted-foreground transition-all hover:border-primary/50 hover:bg-input-background hover:text-foreground"
+          >
+            <div className="flex items-center gap-2">
+              <Search className="size-3.5 text-muted-foreground group-hover:text-primary transition-colors" />
+              <span>{t('nav.search')}...</span>
+            </div>
+            <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-0.5 rounded border border-border bg-background/80 px-1.5 font-mono text-[10px] font-medium text-muted-foreground shadow-xs">
+              <span className="text-xs">⌘</span>K
+            </kbd>
+          </button>
+        </div>
 
         {/* gap-1 -> gap-0.5 dưới sm: ở 320px hàng này từng rộng 280px cố định và
             đẩy tràn ngang 102px (đo được). Nút Home cũ đã bỏ hẳn — nó trùng đúng
@@ -85,9 +88,17 @@ export function Header() {
             <Compass className="size-5" />
           </NavLink>
 
+          <NavLink
+            to="/library"
+            className="hidden sm:inline-flex md:hidden p-2 text-muted-foreground hover:text-foreground transition-colors rounded-lg hover:bg-accent"
+            title={t('library.title')}
+          >
+            <BookMarked className="size-5" />
+          </NavLink>
+
           <button
             type="button"
-            onClick={() => navigate('/browse')}
+            onClick={() => window.dispatchEvent(new CustomEvent('open-command-palette'))}
             className="text-muted-foreground hover:text-foreground sm:hidden p-2 transition-colors rounded-lg hover:bg-accent"
             aria-label={t('nav.searchShort')}
           >

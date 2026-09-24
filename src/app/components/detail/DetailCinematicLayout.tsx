@@ -9,18 +9,20 @@ import { ImageWithFallback } from '../figma/ImageWithFallback';
 import { ChapterList } from './ChapterList';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
+import { AmbientCoverGlow } from '../visual/AmbientCoverGlow';
 
 interface DetailCinematicLayoutProps {
   novel: Novel;
   readTarget: number;
   firstChapterNo: number;
-  lastRead: { chapterNo: number; updatedAt: number } | null;
+  lastRead: { chapterNo: number; updatedAt: number; scroll?: number } | null;
 }
 
 // TODO(i18n-content): title/author/genre/description đơn ngữ VN (backend chỉ có VN).
 export function DetailCinematicLayout({
   novel,
   readTarget,
+  firstChapterNo,
   lastRead,
 }: DetailCinematicLayoutProps) {
   const { t } = useTranslation();
@@ -41,13 +43,15 @@ export function DetailCinematicLayout({
         </div>
 
         <div className="relative z-10 mx-auto max-w-6xl px-4 py-8 sm:px-6 w-full flex flex-col sm:flex-row items-center sm:items-end gap-6">
-          <div className="relative aspect-[2/3] w-40 sm:w-48 shrink-0 overflow-hidden rounded-xl shadow-2xl border-2 border-white/20">
-            <ImageWithFallback
-              src={novel.cover}
-              alt={displayTitle(novel.title, t('common.untitled'))}
-              className="h-full w-full object-cover"
-            />
-          </div>
+          <AmbientCoverGlow src={novel.cover} intensity="deep">
+            <div className="relative aspect-[2/3] w-40 sm:w-48 shrink-0 overflow-hidden rounded-xl shadow-2xl border-2 border-white/20">
+              <ImageWithFallback
+                src={novel.cover}
+                alt={displayTitle(novel.title, t('common.untitled'))}
+                className="h-full w-full object-cover"
+              />
+            </div>
+          </AmbientCoverGlow>
 
           <div className="flex-1 space-y-3 text-center sm:text-left">
             <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
@@ -80,9 +84,20 @@ export function DetailCinematicLayout({
               <Button asChild size="lg" className="rounded-full gap-2 font-bold shadow-lg">
                 <RouterLink to={`/novel/${novel.slug}/chapter/${readTarget}`}>
                   <Play className="size-4" />
-                  {lastRead ? t('actions.continueReading', { index: readTarget }) : t('actions.readFromStart')}
+                  {lastRead
+                    ? (lastRead.scroll && lastRead.scroll > 0.05
+                        ? t('actions.continueReadingPercent', { index: readTarget, percent: Math.round(lastRead.scroll * 100) })
+                        : t('actions.continueReading', { index: readTarget }))
+                    : t('actions.readFromStart')}
                 </RouterLink>
               </Button>
+              {lastRead && (
+                <Button asChild size="lg" variant="outline" className="rounded-full bg-black/40 border-white/20 text-white hover:bg-black/60">
+                  <RouterLink to={`/novel/${novel.slug}/chapter/${firstChapterNo}`}>
+                    {t('actions.readFromStart')}
+                  </RouterLink>
+                </Button>
+              )}
               <BookmarkButton slug={novel.slug} />
             </div>
           </div>

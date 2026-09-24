@@ -4,9 +4,11 @@ import { ArrowDownUp, Check, Search } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { ChapterSummary } from '../../data/types';
 import { getChapterList } from '../../data/api';
+import { formatChapterTitle } from '../../data/format';
 import { Input } from '../ui/input';
 import { Button } from '../ui/button';
 import { ScrollArea } from '../ui/scroll-area';
+import { Skeleton } from '../ui/skeleton';
 import { cn } from '../ui/utils';
 import {
   Pagination,
@@ -95,45 +97,80 @@ export function ChapterList({ slug, total, lastReadNo }: ChapterListProps) {
             {desc ? t('novel.newestFirst') : t('novel.oldestFirst')}
           </span>
         </Button>
+
+        {totalPages > 1 && (
+          <select
+            value={page}
+            onChange={(e) => setPage(Number(e.target.value))}
+            className="h-9 max-w-[150px] sm:max-w-none rounded-md border border-border bg-background px-2.5 text-xs font-medium text-foreground focus:outline-hidden cursor-pointer"
+            aria-label={t('quickJump.title')}
+          >
+            {Array.from({ length: totalPages }, (_, idx) => {
+              const p = idx + 1;
+              const start = desc
+                ? Math.max(1, (serverTotal || 0) - p * PAGE_SIZE + 1)
+                : (p - 1) * PAGE_SIZE + 1;
+              const end = desc
+                ? (serverTotal || 0) - (p - 1) * PAGE_SIZE
+                : Math.min(serverTotal || 0, p * PAGE_SIZE);
+              return (
+                <option key={p} value={p}>
+                  {t('quickJump.range', { start, end })}
+                </option>
+              );
+            })}
+          </select>
+        )}
       </div>
 
       <ScrollArea className="h-[520px] rounded-lg border border-border">
         <ul className="divide-y divide-border">
-          {filtered.map((c) => {
-            const isCurrent = c.chapterNo === lastReadNo;
-            const isRead = lastReadNo != null && c.chapterNo <= lastReadNo;
-            return (
-              <li key={c.chapterNo}>
-                <Link
-                  to={`/novel/${slug}/chapter/${c.chapterNo}`}
-                  className={cn(
-                    'flex items-center gap-3 px-4 py-3 transition-colors hover:bg-accent',
-                    isCurrent && 'bg-accent',
-                  )}
-                >
-                  <span
-                    className="w-10 shrink-0 text-muted-foreground tabular-nums"
-                    style={{ fontSize: '0.85rem' }}
-                  >
-                    {c.chapterNo}
-                  </span>
-                  <span
-                    className={cn(
-                      'line-clamp-1 flex-1',
-                      isRead ? 'text-muted-foreground' : 'text-foreground',
-                    )}
-                  >
-                    {c.title}
-                  </span>
-                  {isCurrent && <Check className="size-4 shrink-0 text-primary" />}
-                </Link>
+          {loading ? (
+            Array.from({ length: 12 }).map((_, i) => (
+              <li key={i} className="flex items-center gap-3 px-4 py-3.5">
+                <Skeleton className="h-4 w-8 rounded" />
+                <Skeleton className="h-4 w-3/5 rounded" />
               </li>
-            );
-          })}
-          {!loading && filtered.length === 0 && (
-            <li className="px-4 py-8 text-center text-muted-foreground" style={{ fontSize: '0.85rem' }}>
-              {t('common.loading') === filter ? '' : t('browse.noResults')}
-            </li>
+            ))
+          ) : (
+            <>
+              {filtered.map((c) => {
+                const isCurrent = c.chapterNo === lastReadNo;
+                const isRead = lastReadNo != null && c.chapterNo <= lastReadNo;
+                return (
+                  <li key={c.chapterNo}>
+                    <Link
+                      to={`/novel/${slug}/chapter/${c.chapterNo}`}
+                      className={cn(
+                        'flex items-center gap-3 px-4 py-3 transition-colors hover:bg-accent',
+                        isCurrent && 'bg-accent',
+                      )}
+                    >
+                      <span
+                        className="w-10 shrink-0 text-muted-foreground tabular-nums"
+                        style={{ fontSize: '0.85rem' }}
+                      >
+                        {c.chapterNo}
+                      </span>
+                      <span
+                        className={cn(
+                          'line-clamp-1 flex-1',
+                          isRead ? 'text-muted-foreground' : 'text-foreground',
+                        )}
+                      >
+                        {formatChapterTitle(c.chapterNo, c.title)}
+                      </span>
+                      {isCurrent && <Check className="size-4 shrink-0 text-primary" />}
+                    </Link>
+                  </li>
+                );
+              })}
+              {filtered.length === 0 && (
+                <li className="px-4 py-8 text-center text-muted-foreground" style={{ fontSize: '0.85rem' }}>
+                  {t('common.loading') === filter ? '' : t('browse.noResults')}
+                </li>
+              )}
+            </>
           )}
         </ul>
       </ScrollArea>

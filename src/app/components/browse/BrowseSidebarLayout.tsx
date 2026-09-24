@@ -17,6 +17,9 @@ interface BrowseSidebarLayoutProps {
   sources?: Source[];
   results: Novel[];
   total: number;
+  loading?: boolean;
+  error?: boolean;
+  onRetry?: () => void;
   toggleGenre: (slug: string) => void;
   toggleStatus: (st: NovelStatus) => void;
   toggleSource?: (code: string) => void;
@@ -37,6 +40,9 @@ export function BrowseSidebarLayout({
   sources = [],
   results = [],
   total,
+  loading = false,
+  error = false,
+  onRetry,
   toggleGenre,
   toggleStatus,
   toggleSource,
@@ -220,7 +226,19 @@ export function BrowseSidebarLayout({
 
         {/* Right Main Grid Area */}
         <main className="lg:col-span-9 space-y-6">
-          {total === 0 ? (
+          {error ? (
+            <div className="flex flex-col items-center gap-4 py-16 text-center">
+              <p className="text-muted-foreground">{t('common.loadError')}</p>
+              {onRetry && (
+                <Button variant="outline" onClick={onRetry}>
+                  <RotateCcw className="size-4" />
+                  {t('common.retry')}
+                </Button>
+              )}
+            </div>
+          ) : loading ? (
+            <NovelGrid loading count={18} />
+          ) : total === 0 ? (
             <p className="py-16 text-center text-muted-foreground">{t('browse.noResults')}</p>
           ) : (
             <>

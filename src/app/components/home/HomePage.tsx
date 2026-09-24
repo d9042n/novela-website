@@ -16,6 +16,7 @@ import { useTheme } from '../../theme/ThemeProvider';
 import { HomePortalLayout } from './HomePortalLayout';
 import { HomeReelsLayout } from './HomeReelsLayout';
 import { HomeMagazineLayout } from './HomeMagazineLayout';
+import { HomeBentoLayout } from './HomeBentoLayout';
 import { HomeRankings } from './HomeRankings';
 
 function SectionHeader({ index, title, to }: { index: string; title: string; to?: string }) {
@@ -53,20 +54,24 @@ export function HomePage() {
   // TODO(i18n-content): tên thể loại đơn ngữ VN (từ API /genres).
   const { genres } = useGenres();
 
-  const { data: featured = [] } = useAsync(() => getFeaturedNovels(6), [], []);
-  const { data: latest = [] } = useAsync(() => getLatestNovels(12), [], []);
-  const { data: popular = [] } = useAsync(() => getPopularNovels(12), [], []);
+  const { data: featured = [], loading: loadingFeatured } = useAsync(() => getFeaturedNovels(6), [], []);
+  const { data: latest = [], loading: loadingLatest } = useAsync(() => getLatestNovels(12), [], []);
+  const { data: popular = [], loading: loadingPopular } = useAsync(() => getPopularNovels(12), [], []);
+
+  if (homePreset === 'bento') {
+    return <HomeBentoLayout featured={featured} latest={latest} popular={popular} loading={loadingFeatured || loadingPopular} />;
+  }
 
   if (homePreset === 'portal') {
-    return <HomePortalLayout featured={featured} latest={latest} popular={popular} />;
+    return <HomePortalLayout featured={featured} latest={latest} popular={popular} loading={loadingLatest || loadingPopular} />;
   }
 
   if (homePreset === 'reels') {
-    return <HomeReelsLayout featured={featured} latest={latest} popular={popular} />;
+    return <HomeReelsLayout featured={featured} latest={latest} popular={popular} loading={loadingFeatured || loadingLatest || loadingPopular} />;
   }
 
   if (homePreset === 'magazine') {
-    return <HomeMagazineLayout featured={featured} latest={latest} popular={popular} />;
+    return <HomeMagazineLayout featured={featured} latest={latest} popular={popular} loading={loadingFeatured || loadingPopular} />;
   }
 
   // Classic Preset
@@ -78,12 +83,12 @@ export function HomePage() {
 
       <section className="mt-14">
         <SectionHeader index="01" title={t('home.latest')} to="/browse?sort=latest" />
-        <NovelGrid novels={latest} />
+        <NovelGrid novels={latest} loading={loadingLatest} count={12} />
       </section>
 
       <section className="mt-14">
         <SectionHeader index="02" title={t('home.popular')} to="/browse?sort=popular" />
-        <NovelGrid novels={popular} />
+        <NovelGrid novels={popular} loading={loadingPopular} count={12} />
       </section>
 
       <HomeRankings />

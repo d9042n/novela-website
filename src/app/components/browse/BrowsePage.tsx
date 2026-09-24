@@ -30,9 +30,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from '../ui/pagination';
-import { Skeleton } from '../ui/skeleton';
 import { useTheme } from '../../theme/ThemeProvider';
-import { gridClassFor } from '../../theme/config';
 import { BrowseSidebarLayout } from './BrowseSidebarLayout';
 
 const PAGE_SIZE = 18;
@@ -52,7 +50,7 @@ function pageWindow(current: number, totalPages: number): number[] {
 export function BrowsePage() {
   const { t } = useTranslation();
   const { genres } = useGenres();
-  const { browsePreset, layout } = useTheme();
+  const { browsePreset } = useTheme();
   const [params, setParams] = useSearchParams();
   const [page, setPage] = useState(1);
 
@@ -239,6 +237,9 @@ export function BrowsePage() {
         sources={sources}
         results={results}
         total={total}
+        loading={loading}
+        error={error}
+        onRetry={() => setReloadKey((k) => k + 1)}
         toggleGenre={toggleGenre}
         toggleStatus={toggleStatus}
         toggleSource={toggleSource}
@@ -523,16 +524,7 @@ export function BrowsePage() {
           </Button>
         </div>
       ) : loading ? (
-        // Skeleton giữ đúng khung lưới nên không bị giật layout khi data về.
-        <div className={gridClassFor(layout)}>
-          {Array.from({ length: PAGE_SIZE }).map((_, i) => (
-            <div key={i} className="flex flex-col gap-2">
-              <Skeleton className="aspect-[2/3] w-full rounded-lg" />
-              <Skeleton className="h-4 w-4/5" />
-              <Skeleton className="h-3 w-2/5" />
-            </div>
-          ))}
-        </div>
+        <NovelGrid loading count={PAGE_SIZE} />
       ) : total === 0 ? (
         <p className="py-16 text-center text-muted-foreground">{t('browse.noResults')}</p>
       ) : (

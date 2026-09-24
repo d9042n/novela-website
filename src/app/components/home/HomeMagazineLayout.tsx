@@ -6,11 +6,13 @@ import type { Novel } from '../../data/types';
 import { ImageWithFallback } from '../figma/ImageWithFallback';
 import { Badge } from '../ui/badge';
 import { Card, CardContent } from '../ui/card';
+import { Skeleton } from '../ui/skeleton';
 
 interface HomeMagazineLayoutProps {
   featured: Novel[];
   latest: Novel[];
   popular: Novel[];
+  loading?: boolean;
 }
 
 const scoreText = (score: number | null) => (score != null ? score.toFixed(1) : '—');
@@ -18,7 +20,11 @@ const scoreText = (score: number | null) => (score != null ? score.toFixed(1) : 
 // TODO(i18n-content): title/author/genre/description đơn ngữ VN (backend chỉ có VN).
 // `latest` stays in the props type — HomePage passes it — but this layout never
 // renders it: the magazine grid is built from featured + popular only.
-export function HomeMagazineLayout({ featured = [], popular = [] }: HomeMagazineLayoutProps) {
+export function HomeMagazineLayout({
+  featured = [],
+  popular = [],
+  loading = false,
+}: HomeMagazineLayoutProps) {
   const { t } = useTranslation();
 
   const heroMain = (featured && featured[0]) || (popular && popular[0]);
@@ -39,7 +45,23 @@ export function HomeMagazineLayout({ featured = [], popular = [] }: HomeMagazine
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* Main Bento Hero Card (7 cols) */}
-          {heroMain && (
+          {loading || !heroMain ? (
+            <div className="lg:col-span-7 flex flex-col justify-end min-h-[380px] sm:min-h-[460px] rounded-2xl bg-muted/40 p-6 sm:p-8 border border-border/40 space-y-4">
+              <div className="flex gap-2">
+                <Skeleton className="h-6 w-28 rounded-full" />
+                <Skeleton className="h-6 w-16 rounded-full" />
+              </div>
+              <Skeleton className="h-9 sm:h-12 w-4/5 rounded-lg" />
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-full rounded" />
+                <Skeleton className="h-4 w-3/4 rounded" />
+              </div>
+              <div className="pt-3 flex justify-between border-t border-border/30">
+                <Skeleton className="h-4 w-28 rounded" />
+                <Skeleton className="h-4 w-20 rounded" />
+              </div>
+            </div>
+          ) : (
             <Link
               to={`/novel/${heroMain.slug}`}
               className="lg:col-span-7 group relative flex flex-col justify-end min-h-[380px] sm:min-h-[460px] rounded-2xl overflow-hidden bg-black p-6 sm:p-8 text-white shadow-xl transition-all duration-300 hover:shadow-2xl border border-border/40"
@@ -83,35 +105,54 @@ export function HomeMagazineLayout({ featured = [], popular = [] }: HomeMagazine
 
           {/* Sub Bento Tiles (5 cols - 3 stacked cards) */}
           <div className="lg:col-span-5 grid grid-cols-1 gap-4">
-            {(heroSub || []).map((novel) => (
-              <Link
-                key={novel.slug}
-                to={`/novel/${novel.slug}`}
-                className="group relative flex items-center gap-4 rounded-xl border border-border bg-card p-3 transition-all hover:border-primary/50 hover:shadow-md"
-              >
-                <div className="relative aspect-[3/4] w-20 shrink-0 overflow-hidden rounded-lg bg-muted">
-                  <ImageWithFallback
-                    src={novel.cover}
-                    alt={displayTitle(novel.title, t('common.untitled'))}
-                    className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                  />
-                </div>
-                <div className="flex-1 min-w-0 space-y-1">
-                  <h3 className="font-bold text-sm truncate group-hover:text-primary transition-colors">
-                    {displayTitle(novel.title, t('common.untitled'))}
-                  </h3>
-                  <p className="text-xs text-muted-foreground truncate">{novel.authors[0]?.name ?? ''}</p>
-                  <p className="text-xs text-muted-foreground line-clamp-2 leading-tight">
-                    {novel.description}
-                  </p>
-                  <div className="pt-1 flex items-center gap-2 text-[11px] text-muted-foreground">
-                    <span className="text-amber-500 font-semibold">⭐ {scoreText(novel.score)}</span>
-                    <span>•</span>
-                    <span>{t('novel.chapterCountLabel', { count: novel.chapterCount ?? 0 })}</span>
+            {loading || heroSub.length === 0 ? (
+              Array.from({ length: 3 }).map((_, i) => (
+                <div key={i} className="flex items-center gap-4 rounded-xl border border-border bg-card p-3">
+                  <div className="relative aspect-[3/4] w-20 shrink-0 overflow-hidden rounded-lg bg-muted">
+                    <Skeleton className="size-full rounded-none" />
+                  </div>
+                  <div className="flex-1 min-w-0 space-y-2">
+                    <Skeleton className="h-4 w-3/4 rounded" />
+                    <Skeleton className="h-3 w-1/3 rounded" />
+                    <Skeleton className="h-3 w-full rounded" />
+                    <div className="flex gap-2 pt-1">
+                      <Skeleton className="h-3 w-12 rounded" />
+                      <Skeleton className="h-3 w-16 rounded" />
+                    </div>
                   </div>
                 </div>
-              </Link>
-            ))}
+              ))
+            ) : (
+              heroSub.map((novel) => (
+                <Link
+                  key={novel.slug}
+                  to={`/novel/${novel.slug}`}
+                  className="group relative flex items-center gap-4 rounded-xl border border-border bg-card p-3 transition-all hover:border-primary/50 hover:shadow-md"
+                >
+                  <div className="relative aspect-[3/4] w-20 shrink-0 overflow-hidden rounded-lg bg-muted">
+                    <ImageWithFallback
+                      src={novel.cover}
+                      alt={displayTitle(novel.title, t('common.untitled'))}
+                      className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
+                  </div>
+                  <div className="flex-1 min-w-0 space-y-1">
+                    <h3 className="font-bold text-sm truncate group-hover:text-primary transition-colors">
+                      {displayTitle(novel.title, t('common.untitled'))}
+                    </h3>
+                    <p className="text-xs text-muted-foreground truncate">{novel.authors[0]?.name ?? ''}</p>
+                    <p className="text-xs text-muted-foreground line-clamp-2 leading-tight">
+                      {novel.description}
+                    </p>
+                    <div className="pt-1 flex items-center gap-2 text-[11px] text-muted-foreground">
+                      <span className="text-amber-500 font-semibold">⭐ {scoreText(novel.score)}</span>
+                      <span>•</span>
+                      <span>{t('novel.chapterCountLabel', { count: novel.chapterCount ?? 0 })}</span>
+                    </div>
+                  </div>
+                </Link>
+              ))
+            )}
           </div>
         </div>
       </section>
@@ -148,51 +189,78 @@ export function HomeMagazineLayout({ featured = [], popular = [] }: HomeMagazine
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {(popular || []).slice(0, 6).map((novel) => (
-            <Card key={novel.slug} className="overflow-hidden transition-all hover:border-primary/50 hover:shadow-lg">
-              <CardContent className="p-4 flex gap-4">
-                <Link to={`/novel/${novel.slug}`} className="shrink-0 group">
-                  <div className="relative aspect-[3/4] w-28 overflow-hidden rounded-lg bg-muted shadow">
-                    <ImageWithFallback
-                      src={novel.cover}
-                      alt={displayTitle(novel.title, t('common.untitled'))}
-                      className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                      loading="lazy"
-                    />
+          {loading || !popular || popular.length === 0 ? (
+            Array.from({ length: 6 }).map((_, i) => (
+              <Card key={i} className="overflow-hidden border-border/80">
+                <CardContent className="p-4 flex gap-4">
+                  <div className="relative aspect-[3/4] w-28 overflow-hidden rounded-lg bg-muted shrink-0 shadow">
+                    <Skeleton className="size-full rounded-none" />
                   </div>
-                </Link>
-
-                <div className="flex-1 flex flex-col justify-between space-y-2 min-w-0">
-                  <div>
-                    <div className="flex items-center gap-2 mb-1">
-                      {(novel.genres || []).slice(0, 2).map((genre) => (
-                        <Badge key={genre.slug} variant="outline" className="text-[10px] px-2 py-0">
-                          {genre.name}
-                        </Badge>
-                      ))}
+                  <div className="flex-1 flex flex-col justify-between space-y-2 min-w-0">
+                    <div className="space-y-2">
+                      <div className="flex gap-2">
+                        <Skeleton className="h-4 w-16 rounded-full" />
+                        <Skeleton className="h-4 w-20 rounded-full" />
+                      </div>
+                      <Skeleton className="h-5 w-4/5 rounded" />
+                      <Skeleton className="h-3.5 w-1/3 rounded" />
+                      <Skeleton className="h-3 w-full rounded" />
                     </div>
-                    <Link to={`/novel/${novel.slug}`}>
-                      <h3 className="font-bold text-base hover:text-primary transition-colors line-clamp-1">
-                        {displayTitle(novel.title, t('common.untitled'))}
-                      </h3>
-                    </Link>
-                    <p className="text-xs text-muted-foreground">{novel.authors[0]?.name ?? ''}</p>
-                    <p className="text-xs text-muted-foreground line-clamp-2 mt-2 leading-relaxed">
-                      {novel.description}
-                    </p>
+                    <div className="flex items-center justify-between pt-2 border-t border-border/40">
+                      <Skeleton className="h-3.5 w-20 rounded" />
+                      <Skeleton className="h-3.5 w-12 rounded" />
+                    </div>
                   </div>
+                </CardContent>
+              </Card>
+            ))
+          ) : (
+            popular.slice(0, 6).map((novel) => (
+              <Card key={novel.slug} className="overflow-hidden transition-all hover:border-primary/50 hover:shadow-lg">
+                <CardContent className="p-4 flex gap-4">
+                  <Link to={`/novel/${novel.slug}`} className="shrink-0 group">
+                    <div className="relative aspect-[3/4] w-28 overflow-hidden rounded-lg bg-muted shadow">
+                      <ImageWithFallback
+                        src={novel.cover}
+                        alt={displayTitle(novel.title, t('common.untitled'))}
+                        className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                        loading="lazy"
+                      />
+                    </div>
+                  </Link>
 
-                  <div className="flex items-center justify-between text-xs text-muted-foreground pt-2 border-t border-border/40">
-                    <span className="flex items-center gap-1 font-semibold text-foreground">
-                      <BookOpen className="size-3.5 text-primary" />
-                      {t('novel.chapterCountLabel', { count: novel.chapterCount ?? 0 })}
-                    </span>
-                    <span className="text-amber-500 font-bold">⭐ {scoreText(novel.score)}</span>
+                  <div className="flex-1 flex flex-col justify-between space-y-2 min-w-0">
+                    <div>
+                      <div className="flex items-center gap-2 mb-1">
+                        {(novel.genres || []).slice(0, 2).map((genre) => (
+                          <Badge key={genre.slug} variant="outline" className="text-[10px] px-2 py-0">
+                            {genre.name}
+                          </Badge>
+                        ))}
+                      </div>
+                      <Link to={`/novel/${novel.slug}`}>
+                        <h3 className="font-bold text-base hover:text-primary transition-colors line-clamp-1">
+                          {displayTitle(novel.title, t('common.untitled'))}
+                        </h3>
+                      </Link>
+                      <p className="text-xs text-muted-foreground">{novel.authors[0]?.name ?? ''}</p>
+                      <p className="text-xs text-muted-foreground line-clamp-2 mt-2 leading-relaxed">
+                        {novel.description}
+                      </p>
+                    </div>
+
+                    <div className="flex items-center justify-between text-xs text-muted-foreground pt-2 border-t border-border/40">
+                      <span className="flex items-center gap-1 font-semibold text-foreground">
+                        <BookOpen className="size-3.5 text-primary" />
+                        {t('novel.chapterCountLabel', { count: novel.chapterCount ?? 0 })}
+                      </span>
+                      <span className="text-amber-500 font-bold">⭐ {scoreText(novel.score)}</span>
+                    </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+                </CardContent>
+              </Card>
+            ))
+          )}
         </div>
       </section>
     </div>
